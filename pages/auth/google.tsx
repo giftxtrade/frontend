@@ -8,28 +8,21 @@ export default function Google() {
   const router = useRouter()
   const { code, scope, authuser, prompt } = router.query
 
-  const [loading, setLoading] = useState(true)
-  const [name, setName] = useState('')
-  const [picture, setPicture] = useState('')
-  const [email, setEmail] = useState('')
-  const [accessToken, setAT] = useState('')
-  const [val, setVal] = useState(false);
+  const [error, setError] = useState(false)
+  const [val, setVal] = useState(false)
 
   useEffect(() => {
     if (code && scope && authuser && prompt) {
       const requestUri = `${api.google_redirect}?code=${code}&scope=${scope}&authuser=${authuser}&propmt=${prompt}`
       axios.get(requestUri)
         .then(({ data }) => {
-          setName(data.user.name)
-          setPicture(data.user.imageUrl)
-          setEmail(data.user.email)
-          setAT(data.accessToken)
-
-          setLoading(false)
-
+          setError(false)
           localStorage.setItem('access_token', data.accessToken);
+          router.push('/home')
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          setError(true)
+        })
     } else {
       setVal(!val)
     }
@@ -38,34 +31,14 @@ export default function Google() {
   return (
     <>
       {
-        loading ? (
+        error ? (
           <Flex alignItems="center" justifyContent='center' p='20' >
-            <Spinner size='xl' />
+            <Text>Something went wrong, please try logging in <Link color='blue.600' href={api.google} fontWeight='bold'>again</Link></Text>
           </Flex>
         ) : (
-          <>
-            <Flex
-              direction="row"
-              alignItems="center"
-              justifyContent='start'
-              p='20'
-            >
-              <Image src={picture} mr='3' rounded='md' />
-              <div>
-                  <Heading size='md'>{name}</Heading>
-                <Text>{email}</Text>
-
-                <Link href="/">
-                    <Button size='sm' mt='3'>Logout</Button>
-                </Link>
-              </div>
+            <Flex alignItems="center" justifyContent='center' p='20' >
+              <Spinner size='xl' />
             </Flex>
-
-              <Box p='3' overflowX='auto'>
-                <Text>Access Token:</Text>
-                <pre>{accessToken}</pre>
-              </Box>
-          </>
         )
       }
     </>
