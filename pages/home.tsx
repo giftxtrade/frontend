@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { Flex, Spinner, Image, Heading, Text, Button, Link, Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 import { useCookies } from 'react-cookie';
+import Navbar from '../components/Navbar';
 
 export default function Home() {
   const router = useRouter();
@@ -36,6 +37,8 @@ export default function Home() {
       </Head>
 
       <Container maxW='4xl'>
+        <Navbar />
+
         <Flex
           direction="row"
           alignItems="center"

@@ -15,10 +15,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider>
-      {
-        loggedIn ? <Navbar /> : <></>
-      }
-
       <Component {...pageProps} />
     </ChakraProvider>
   )

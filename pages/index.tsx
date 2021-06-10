@@ -1,4 +1,4 @@
-import { Button, Container, Link, Image, Flex, Heading, Text, Box } from '@chakra-ui/react';
+import { Button, Container, Link, Image, Flex, Heading, Text, Box, Spinner } from '@chakra-ui/react';
 import axios from 'axios'
 import { useRouter } from 'next/dist/client/router';
 import Head from 'next/head'
@@ -8,11 +8,13 @@ import styles from '../styles/landing-page.module.css'
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     authStore.subscribe(() => setLoggedIn(authStore.getState().loggedIn))
-    console.log('Use effect called')
+    setLoading(false)
+
     if (loggedIn) {
       router.push('/home')
     }
@@ -27,33 +29,41 @@ export default function LandingPage() {
       </Head>
 
       <Container maxW='full' p='0'>
-        <Container p='0' maxW='full' h='100vh' className={styles.landingPageHero}>
-          <Flex p='20'
-            direction='row'
-            alignItems='center'
-            justifyContent='center'
-          >
-            <Image w='48' src='/giftxtrade_logo_color.svg' />
-          </Flex>
+        {
+          loading ? (
+            <Flex alignItems="center" justifyContent='center' p='20' >
+              <Spinner size='md' />
+            </Flex>
+          ) : (
+              <Container p='0' maxW='full' h='100vh' className={styles.landingPageHero}>
+                <Flex p='20'
+                  direction='row'
+                  alignItems='center'
+                  justifyContent='center'
+                >
+                  <Image w='48' src='/giftxtrade_logo_color.svg' />
+                </Flex>
 
-          <Container maxW='5xl' mt='7vh'>
-            <Box rounded='xl' pt='20' pb='20'>
-              <Heading size='2xl' mb='7'>Gift Exchange. Made Simple.</Heading>
-              <Text color='gray.800' fontSize='xl'>
-                Setting up gift exchanges can be difficult, so we made the proccess simple.
-              </Text>
-              <Text color='gray.800' fontSize='xl'>
-                With simple Google sign-in and contacts integration, setting up <i>your</i> secret santa is only a few clicks away.
-              </Text>
+                <Container maxW='5xl' mt='7vh'>
+                  <Box rounded='xl' pt='20' pb='20'>
+                    <Heading size='2xl' mb='7'>Gift Exchange. Made Simple.</Heading>
+                    <Text color='gray.800' fontSize='xl'>
+                      Setting up gift exchanges can be difficult, so we made the proccess simple.
+                    </Text>
+                    <Text color='gray.800' fontSize='xl'>
+                      With simple Google sign-in and contacts integration, setting up <i>your</i> secret santa is only a few clicks away.
+                    </Text>
 
-              <Container maxW='full' p='0' mt='5vh'>
-                <Link href='http://localhost:3001/auth/google'>
-                  <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
-                </Link>
+                    <Container maxW='full' p='0' mt='5vh'>
+                      <Link href='http://localhost:3001/auth/google'>
+                        <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
+                      </Link>
+                    </Container>
+                  </Box>
+                </Container>
               </Container>
-            </Box>
-          </Container>
-        </Container>
+          )
+        }
       </Container>
     </>
   )
