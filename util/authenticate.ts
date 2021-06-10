@@ -5,7 +5,9 @@ import { authStore, login, logout } from '../store/auth-store';
 export default async function authenticate() {
   const accessToken = localStorage.getItem('access_token')
   if (!accessToken || accessToken.trim() === '')
-    return
+    return false
+
+  let loggedIn = false
 
   await axios.get(api.profile, {
     headers: { 'Authorization': `Bearer ${accessToken}` }
@@ -16,9 +18,12 @@ export default async function authenticate() {
         user: data.user,
         gToken: data.gToken
       }))
+
+      loggedIn = true
     })
     .catch(_ => {
       authStore.dispatch(logout())
-      console.log('You were logged out!')
     })
+
+  return loggedIn
 }
