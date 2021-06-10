@@ -1,10 +1,12 @@
 import type { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import authenticate from '../util/authenticate';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  useEffect(() => authenticate())
+  useEffect(() => {
+    authenticate()
+  })
 
   return (
     <ChakraProvider>
