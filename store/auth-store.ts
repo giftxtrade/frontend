@@ -11,8 +11,7 @@ export const authSlice = createSlice({
   },
   reducers: {
     login: (state, { payload }: { payload: JwtPayload }) => {
-      const aT = localStorage.getItem('access_token')
-      if (!aT || aT.trim() === '')
+      if (!payload.accessToken || payload.accessToken.trim() === '')
         return;
 
       state.loggedIn = true
