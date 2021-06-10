@@ -3,6 +3,7 @@ import { Flex, Spinner, Image, Heading, Text, Button, Link, Box } from '@chakra-
 import { api } from "../../util/api"
 import axios from "axios"
 import { useEffect, useState } from "react"
+import { useCookies } from 'react-cookie';
 
 export default function Google() {
   const router = useRouter()
@@ -10,6 +11,7 @@ export default function Google() {
 
   const [error, setError] = useState(false)
   const [val, setVal] = useState(false)
+  const [cookie, setCookie] = useCookies(['access_token'])
 
   useEffect(() => {
     if (code && scope && authuser && prompt) {
@@ -18,6 +20,7 @@ export default function Google() {
         .then(({ data }) => {
           setError(false)
           localStorage.setItem('access_token', data.accessToken);
+          setCookie('access_token', data.accessToken)
           router.push('/home')
         })
         .catch(err => {
