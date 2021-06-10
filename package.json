@@ -23,6 +23,7 @@
     "react-icons": "^4.2.0"
   },
   "devDependencies": {
+    "@types/cookies": "^0.7.6",
     "@types/react": "17.0.9",
     "typescript": "4.3.2"
   }
