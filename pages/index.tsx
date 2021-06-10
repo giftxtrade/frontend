@@ -38,7 +38,7 @@ export default function LandingPage() {
 
           <Container maxW='5xl' mt='7vh'>
             <Box rounded='xl' pt='20' pb='20'>
-              <Heading size='2xl' mb='7'>Gift Exchange Made Simple.</Heading>
+              <Heading size='2xl' mb='7'>Gift Exchange. Made Simple.</Heading>
               <Text color='gray.800' fontSize='xl'>
                 Setting up gift exchanges can be difficult, so we made the proccess simple.
               </Text>
