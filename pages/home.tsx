@@ -1,50 +1,67 @@
-import { Component } from "react";
+import { Component, useState, useEffect } from "react";
 import { User } from '../store/jwt-payload';
-import { authStore } from '../store/auth-store';
-import Router from 'next/router'
-import { Flex, Spinner, Image, Heading, Text, Button, Link, Box } from '@chakra-ui/react'
+import { authStore, logout } from '../store/auth-store';
+import { useRouter } from 'next/router'
+import { Flex, Spinner, Image, Heading, Text, Button, Link, Box, Container } from '@chakra-ui/react';
+import Head from 'next/head';
+import { useCookies } from 'react-cookie';
 
-export default class Home extends Component<{
-  loggedIn: boolean,
-  gToken: string,
-  user: User,
-  loading: false,
-}> {
-  state = {
-    loggedIn: false,
-    accessToken: '',
-    gToken: '',
-    user: { id: 0, name: '', email: '', imageUrl: '' },
-    loading: false
-  }
+export default function Home() {
+  const router = useRouter();
 
-  componentDidMount() {
+  const [loggedIn, setLoggedIn] = useState(true)
+  const [accessToken, setAccessToken] = useState('')
+  const [gToken, setGToken] = useState('')
+  const [user, setUser] = useState({ id: 0, name: '', email: '', imageUrl: '' })
+  const [val, setVal] = useState(false)
+  const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
+
+  useEffect(() => {
     authStore.subscribe(() => {
-      const { loggedIn, gToken, user } = authStore.getState()
-      this.setState({ gToken, user, loggedIn })
-      if (!loggedIn)
-        Router.push('/')
+      const { loggedIn, gToken, user, accessToken } = authStore.getState()
+      setLoggedIn(loggedIn)
+      setAccessToken(accessToken)
+      setGToken(gToken)
+      setUser(user)
     })
-  }
 
-  render() {
-    return (
-      <Flex
-        direction="row"
-        alignItems="center"
-        justifyContent='start'
-        p='20'
-      >
-        <Image src={this.state.user.imageUrl} mr='3' rounded='md' />
-        <div>
-          <Heading size='md'>{this.state.user.name}</Heading>
-          <Text>{this.state.user.email}</Text>
+    if (!loggedIn)
+      router.push('/')
+  }, [val])
 
-          <Link href="/">
-            <Button size='sm' mt='3'>Logout</Button>
-          </Link>
-        </div>
-      </Flex>
-    )
-  }
+  return (
+    <>
+      <Head>
+        <title>Home - GiftXTrade</title>
+      </Head>
+
+      <Container maxW='4xl'>
+        <Flex
+          direction="row"
+          alignItems="center"
+          justifyContent='start'
+        >
+          <Image src={user.imageUrl} mr='3' rounded='md' />
+          <div>
+            <Heading size='md'>{user.name}</Heading>
+            <Text>{user.email}</Text>
+
+            <Link href="/">
+              <Button
+                size='sm'
+                mt='3'
+                onClick={() => {
+                  authStore.dispatch(logout())
+                  removeCookie('access_token')
+                  router.push('/')
+                }}
+              >
+                Logout
+              </Button>
+            </Link>
+          </div>
+        </Flex>
+      </Container>
+    </>
+  )
 }
