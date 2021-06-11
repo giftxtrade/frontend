@@ -25,10 +25,13 @@ export default function Home() {
       setGToken(gToken)
       setUser(user)
     })
-
-    if (!loggedIn)
-      router.push('/')
   }, [val])
+
+  useEffect(() => {
+    console.log(loggedIn)
+    if (!loggedIn || !localStorage.getItem('access_token'))
+      router.push('/')
+  })
 
   return (
     <>
@@ -36,34 +39,15 @@ export default function Home() {
         <title>Home - GiftXTrade</title>
       </Head>
 
+      <Navbar
+        loggedIn={loggedIn}
+        accessToken={accessToken}
+        user={user}
+        gToken={gToken}
+      />
+
       <Container maxW='4xl'>
-        <Navbar />
-
-        <Flex
-          direction="row"
-          alignItems="center"
-          justifyContent='start'
-        >
-          <Image src={user.imageUrl} mr='3' rounded='md' />
-          <div>
-            <Heading size='md'>{user.name}</Heading>
-            <Text>{user.email}</Text>
-
-            <Link href="/">
-              <Button
-                size='sm'
-                mt='3'
-                onClick={() => {
-                  authStore.dispatch(logout())
-                  removeCookie('access_token')
-                  router.push('/')
-                }}
-              >
-                Logout
-              </Button>
-            </Link>
-          </div>
-        </Flex>
+        <Text>No organizations</Text>
       </Container>
     </>
   )
