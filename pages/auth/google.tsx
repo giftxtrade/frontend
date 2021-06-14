@@ -20,7 +20,11 @@ export default function Google() {
         .then(({ data }) => {
           setError(false)
           localStorage.setItem('access_token', data.accessToken);
-          setCookie('access_token', data.accessToken)
+          setCookie('access_token', data.accessToken, {
+            maxAge: 2000 * 3600,
+            sameSite: 'lax',
+            path: '/'
+          })
           router.push('/home')
         })
         .catch(err => {
