@@ -36,7 +36,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Home - GiftXTrade</title>
+        <title>Home - Gift. Trade</title>
       </Head>
 
       <Navbar
