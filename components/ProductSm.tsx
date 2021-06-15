@@ -13,7 +13,14 @@ export default function ProductSm({ product }: { product: IProduct }) {
           rounded='md'
           mb='3'
         />
-        <Heading size='sm' noOfLines={3} mb='2'>{product.title}</Heading>
+        <Heading
+          size='sm'
+          noOfLines={3}
+          mb='2'
+          title={product.title}
+        >
+          {product.title}
+        </Heading>
       </Link>
       <Text textDecoration='none'>${product.price}</Text>
     </Box>
