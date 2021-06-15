@@ -106,6 +106,7 @@ export default function Search(
         position='sticky'
         top='2'
         mb='1'
+        zIndex='1'
       >
         <InputGroup>
           <InputLeftElement
