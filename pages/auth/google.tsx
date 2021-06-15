@@ -4,6 +4,8 @@ import { api } from "../../util/api"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useCookies } from 'react-cookie';
+import { DocumentContext } from "next/document";
+import { redirectHomeIfLoggedIn } from "../../util/server-side-auth";
 
 export default function Google() {
   const router = useRouter()
@@ -51,3 +53,5 @@ export default function Google() {
     </>
   )
 }
+
+export const getServerSideProps = async (ctx: DocumentContext) => await redirectHomeIfLoggedIn(ctx);
