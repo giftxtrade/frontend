@@ -33,7 +33,7 @@ export default function Home(props: any) {
             accessToken={accessToken}
             minPrice={0}
             maxPrice={50}
-            pageLimit={10}
+            pageLimit={50}
           />
 
           <Container

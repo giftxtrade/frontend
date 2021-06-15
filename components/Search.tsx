@@ -8,7 +8,7 @@ import {
   Image,
   Spinner,
   Flex,
-  Grid
+  SimpleGrid
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState } from 'react';
@@ -77,13 +77,13 @@ export default function Search(
           <Spinner size='lg' />
         </Flex>
       ) : (
-        <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+          <SimpleGrid columns={3} spacing={4}>
           {results.map((result: IProduct) => (
             <ProductSm
               product={result}
             />
           ))}
-        </Grid>
+          </SimpleGrid>
       )}
     </Box>
   )
