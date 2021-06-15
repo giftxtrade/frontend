@@ -2,11 +2,11 @@
   display: -webkit-box; /* Not needed if autoprefixing */
   display: -ms-flexbox; /* Not needed if autoprefixing */
   display: flex;
-  margin-left: -20px; /* gutter size offset */
+  margin-left: -15px; /* gutter size offset */
   width: auto;
 }
 .gridColumn {
-  padding-left: 20px; /* gutter size */
+  padding-left: 15px; /* gutter size */
   background-clip: padding-box;
 }
 
