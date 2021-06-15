@@ -5,11 +5,11 @@ import StarRatings from 'react-star-ratings';
 
 export default function ProductSm({ product }: { product: IProduct }) {
   const link = generateAmazonAffiliateLink(product.productKey)
+  const price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)
+
   return (
-    <Box mb='5'>
-      <Box
-        mb='3'
-      >
+    <Box mb='10'>
+      <Box>
         <Link
           href={link} target='blank'
           isExternal={true}
@@ -37,7 +37,7 @@ export default function ProductSm({ product }: { product: IProduct }) {
         />
       </Box>
 
-      <Text textDecoration='none'>${product.price}</Text>
+      <Text textDecoration='none'>{price}</Text>
     </Box>
   )
 }
