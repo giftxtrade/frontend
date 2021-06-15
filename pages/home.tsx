@@ -15,7 +15,7 @@ export default function Home(props: any) {
   return (
     <>
       <Head>
-        <title>Home - Gift. Trade</title>
+        <title>Home - GiftTrade</title>
       </Head>
 
       <Navbar
@@ -31,7 +31,7 @@ export default function Home(props: any) {
         >
           <Search
             accessToken={accessToken}
-            minPrice={0}
+            minPrice={5}
             maxPrice={50}
             pageLimit={50}
           />

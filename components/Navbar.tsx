@@ -15,7 +15,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   return (
     <Container maxW='4xl' p='5' mb='10'>
       <Flex direction='row' justifyContent='space-between' alignItems='center'>
-        <Image w='40' src='/giftxtrade_logo_color.svg' />
+        <Image w='40' src='/giftxtrade_logotype_color.svg' />
 
         <Flex
           direction="row"
