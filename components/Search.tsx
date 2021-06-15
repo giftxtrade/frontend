@@ -8,15 +8,17 @@ import {
   Image,
   Spinner,
   Flex,
-  SimpleGrid
+  SimpleGrid,
+  Icon
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
-import React, { useState } from 'react';
+import React, { useState, SetStateAction } from 'react';
 import { useEffect } from 'react';
 import axios from 'axios';
 import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import ProductSm from './ProductSm';
+import { FcHighPriority } from 'react-icons/fc'
 
 export default function Search(
   { accessToken, pageLimit, minPrice, maxPrice, }: {
@@ -29,17 +31,53 @@ export default function Search(
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
+  const [error, setError] = useState(false)
 
-  useEffect(() => {
-    axios.get(`${api.products}?limit=${pageLimit}&page=1&min_price=${minPrice}&max_price=${maxPrice}`, {
+  const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
+    if (search) {
+      if (search === '' || search.length <= 2)
+        return
+      url += `&search=${search}`
+    }
+    setLoadState(true)
+
+    axios.get(url, {
       headers: {
         "Authorization": "Beare " + accessToken
       }
     }).then(({ data }: { data: IProduct[] }) => {
       setResults(data)
-      setInitLoading(false)
-    }).catch(err => console.log(err))
+      setLoadState(false)
+      setError(false)
+    }).catch(err => setError(true))
+  }
+
+  useEffect(() => {
+    getProducts(setInitLoading, 1)
   }, [])
+
+  const renderResults = () => {
+    return (
+      <>
+        {
+          initLoading || searchLoading ? (
+            <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
+              <Spinner size='lg' />
+            </Flex>
+          ) : (
+            <SimpleGrid columns={3} spacing={4}>
+              {results.map((result: IProduct) => (
+                <ProductSm
+                  product={result}
+                />
+              ))}
+            </SimpleGrid>
+          )
+        }
+      </>
+    )
+  }
 
   return (
     <Box
@@ -59,7 +97,7 @@ export default function Search(
           variant='filled'
           placeholder="Search for products"
           autoFocus={true}
-          onKeyUp={(event: any) => console.log(event.target.value)}
+          onKeyUp={(event: any) => getProducts(setSearchLoading, 1, event.target.value.trim())}
         />
         <InputRightElement
           children={
@@ -72,19 +110,14 @@ export default function Search(
         />
       </InputGroup>
 
-      {initLoading ? (
-        <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
-          <Spinner size='lg' />
-        </Flex>
-      ) : (
-          <SimpleGrid columns={3} spacing={4}>
-          {results.map((result: IProduct) => (
-            <ProductSm
-              product={result}
-            />
-          ))}
-          </SimpleGrid>
-      )}
+      {
+        error ? (
+          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
+            <Icon as={FcHighPriority} boxSize='20' mb='7' />
+            <Heading textAlign='center'>Park not found</Heading>
+          </Flex>
+        ) : renderResults()
+      }
     </Box>
   )
 }
