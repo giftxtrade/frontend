@@ -86,33 +86,40 @@ export default function Search(
   return (
     <Box
       flex='2'
-      pl='2'
-      pr='2'
-      pb='2'
+      pl='2' pr='2' pb='2'
+      position='relative'
     >
-      <InputGroup mb='5'>
-        <InputLeftElement
-          pointerEvents="none"
-          color="gray.300"
-          fontSize="1em"
-          children={<SearchIcon color="gray.400" w='5' />}
-        />
-        <Input
-          variant='filled'
-          placeholder="Search for products"
-          autoFocus={true}
-          onKeyUp={(event: any) => getProducts(setSearchLoading, 1, event.target.value.trim())}
-        />
-        <InputRightElement
-          children={
-            searchLoading ? (
-              <Spinner size='sm' color='gray.500' />
-            ) : (
-              <></>
-            )
-          }
-        />
-      </InputGroup>
+      <Box
+        pb='2'
+        position='sticky'
+        top='2'
+        mb='1'
+      >
+        <InputGroup>
+          <InputLeftElement
+            pointerEvents="none"
+            color="gray.300"
+            fontSize="1em"
+            children={<SearchIcon color="gray.400" w='5' />}
+          />
+          <Input
+            bg='white'
+            placeholder="Search for products"
+            autoFocus={true}
+            onKeyUp={(event: any) => getProducts(setSearchLoading, 1, event.target.value.trim())}
+            shadow='sm'
+          />
+          <InputRightElement
+            children={
+              searchLoading ? (
+                <Spinner size='sm' color='gray.500' />
+              ) : (
+                <></>
+              )
+            }
+          />
+        </InputGroup>
+      </Box>
 
       {
         error ? (
