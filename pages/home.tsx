@@ -1,19 +1,16 @@
 import { useState } from "react";
-import { useRouter } from 'next/router'
 import { Flex, Spinner, Image, Heading, Text, Button, Link, Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import { DocumentContext } from "next/document";
 import { serverSideAuth } from "../util/server-side-auth";
+import Search from "../components/Search";
 
 export default function Home(props: any) {
-  const router = useRouter();
-
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
   const [accessToken, setAccessToken] = useState(props.accessToken)
   const [gToken, setGToken] = useState(props.gToken)
   const [user, setUser] = useState(props.user)
-  const [val, setVal] = useState(false)
 
   return (
     <>
@@ -29,8 +26,24 @@ export default function Home(props: any) {
       />
 
       <Container maxW='4xl'>
-        <h1>{props.user.name}</h1>
-        <Text>No organizations</Text>
+        <Flex
+          direction='row'
+        >
+          <Search
+            accessToken={accessToken}
+            minPrice={0}
+            maxPrice={50}
+            pageLimit={10}
+          />
+
+          <Container
+            flex='1'
+            pl='2'
+            pr='0'
+          >
+            <Text>My wish list</Text>
+          </Container>
+        </Flex>
       </Container>
     </>
   )
