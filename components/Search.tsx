@@ -19,6 +19,8 @@ import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import ProductSm from './ProductSm';
 import { FcHighPriority } from 'react-icons/fc'
+import Masonry from 'react-masonry-css'
+import styles from '../styles/masonary.module.css'
 
 export default function Search(
   { accessToken, pageLimit, minPrice, maxPrice, }: {
@@ -60,6 +62,12 @@ export default function Search(
     getProducts(setInitLoading, 1)
   }, [])
 
+  const breakpointColumnsObj = {
+    default: 3,
+    800: 2,
+    300: 1
+  };
+
   const renderResults = () => {
     return (
       <>
@@ -69,14 +77,18 @@ export default function Search(
               <Spinner size='lg' />
             </Flex>
           ) : (
-            <SimpleGrid columns={3} spacing={4}>
+              <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className={styles.grid}
+                columnClassName={styles.gridColumn}
+              >
                 {results.map((result: IProduct, i) => (
-                <ProductSm
-                  product={result}
+                  <ProductSm
+                    product={result}
                     key={`sp#${i}`}
-                />
-              ))}
-            </SimpleGrid>
+                  />
+                ))}
+              </Masonry>
           )
         }
       </>
