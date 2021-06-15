@@ -21,19 +21,24 @@ import ProductSm from './ProductSm';
 import { FcHighPriority } from 'react-icons/fc'
 import Masonry from 'react-masonry-css'
 import styles from '../styles/masonary.module.css'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-export default function Search(
-  { accessToken, pageLimit, minPrice, maxPrice, }: {
-    accessToken: string,
-    pageLimit: number,
-    minPrice: number,
-    maxPrice: number,
-  }
-) {
+interface ISearchProps {
+  accessToken: string
+  pageLimit: number
+  minPrice: number
+  maxPrice: number
+}
+
+export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: ISearchProps) {
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
   const [error, setError] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [page, setPage] = useState(1)
+  const [infiniteLoading, setInitialLoading] = useState(false)
+  const [search, setSearch] = useState('')
 
   const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
     let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
@@ -52,9 +57,11 @@ export default function Search(
       setResults(data)
       setLoadState(false)
       setError(false)
+      setHasMore(true)
     }).catch(err => {
       setError(true)
       setLoadState(false)
+      setHasMore(false)
     })
   }
 
@@ -77,18 +84,54 @@ export default function Search(
               <Spinner size='lg' />
             </Flex>
           ) : (
-              <Masonry
-                breakpointCols={breakpointColumnsObj}
-                className={styles.grid}
-                columnClassName={styles.gridColumn}
+              <InfiniteScroll
+                dataLength={results.length} //This is important field to render the next data
+                next={() => {
+                  let url = `${api.products}?limit=${pageLimit}&page=${page + 1}&min_price=${minPrice}&max_price=${maxPrice}`
+                  setPage(page + 1)
+                  if (search !== '' || search.length > 2)
+                    url += `&search=${search}`
+
+                  axios.get(url, {
+                    headers: {
+                      "Authorization": "Beare " + accessToken
+                    }
+                  }).then(({ data }: { data: IProduct[] }) => {
+                    if (data.length === 0) {
+                      setHasMore(false)
+                      return
+                    }
+
+                    setResults(data)
+                    setError(false)
+                    setResults([...results, ...data])
+                    setHasMore(true)
+                  }).catch(err => {
+                    setError(true)
+                    setHasMore(false)
+                  })
+                }}
+                hasMore={hasMore}
+                loader={<h4>Loading...</h4>}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <b>No more results</b>
+                  </p>
+                }
               >
-                {results.map((result: IProduct, i) => (
-                  <ProductSm
-                    product={result}
-                    key={`sp#${i}`}
-                  />
-                ))}
-              </Masonry>
+                <Masonry
+                  breakpointCols={breakpointColumnsObj}
+                  className={styles.grid}
+                  columnClassName={styles.gridColumn}
+                >
+                  {results.map((result: IProduct, i) => (
+                    <ProductSm
+                      product={result}
+                      key={`sp#${i}`}
+                    />
+                  ))}
+                </Masonry>
+              </InfiniteScroll>
           )
         }
       </>
@@ -119,7 +162,13 @@ export default function Search(
             bg='white'
             placeholder="Search for products"
             autoFocus={true}
-            onKeyUp={(event: any) => getProducts(setSearchLoading, 1, event.target.value.trim())}
+            onKeyUp={(event: any) => {
+              setSearch(event.target.value.trim())
+              if (search.length > 2) {
+                setPage(1)
+                getProducts(setSearchLoading, 1, search)
+              }
+            }}
             shadow='sm'
           />
           <InputRightElement
