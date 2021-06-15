@@ -1,10 +1,13 @@
 import { Button, Container, Link, Image, Flex, Heading, Text, Box, Spinner } from '@chakra-ui/react';
 import axios from 'axios'
 import { useRouter } from 'next/dist/client/router';
+import { DocumentContext } from 'next/document';
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import { authStore } from '../store/auth-store';
 import styles from '../styles/landing-page.module.css'
+import cookie, { serialize } from "cookie"
+import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -68,3 +71,5 @@ export default function LandingPage() {
     </>
   )
 }
+
+export const getServerSideProps = async (ctx: DocumentContext) => await redirectHomeIfLoggedIn(ctx);
