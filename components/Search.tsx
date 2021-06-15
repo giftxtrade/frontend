@@ -50,7 +50,10 @@ export default function Search(
       setResults(data)
       setLoadState(false)
       setError(false)
-    }).catch(err => setError(true))
+    }).catch(err => {
+      setError(true)
+      setLoadState(false)
+    })
   }
 
   useEffect(() => {
@@ -67,9 +70,10 @@ export default function Search(
             </Flex>
           ) : (
             <SimpleGrid columns={3} spacing={4}>
-              {results.map((result: IProduct) => (
+                {results.map((result: IProduct, i) => (
                 <ProductSm
                   product={result}
+                    key={`sp#${i}`}
                 />
               ))}
             </SimpleGrid>
@@ -112,9 +116,9 @@ export default function Search(
 
       {
         error ? (
-          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
+          <Flex direction='column' maxW='full' alignItems="center" justifyContent="center" p='20'>
             <Icon as={FcHighPriority} boxSize='20' mb='7' />
-            <Heading textAlign='center'>Park not found</Heading>
+            <Heading textAlign='center'>Could not reach the server</Heading>
           </Flex>
         ) : renderResults()
       }
