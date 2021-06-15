@@ -18,7 +18,7 @@ import axios from 'axios';
 import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import ProductSm from './ProductSm';
-import { FcHighPriority } from 'react-icons/fc'
+import { FcClearFilters } from 'react-icons/fc'
 import Masonry from 'react-masonry-css'
 import styles from '../styles/masonary.module.css'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -54,6 +54,12 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
         "Authorization": "Beare " + accessToken
       }
     }).then(({ data }: { data: IProduct[] }) => {
+      if (data.length === 0) {
+        setError(true)
+        setLoadState(false)
+        return
+      }
+
       setResults(data)
       setLoadState(false)
       setError(false)
@@ -185,9 +191,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
 
       {
         error ? (
-          <Flex direction='column' maxW='full' alignItems="center" justifyContent="center" p='20'>
-            <Icon as={FcHighPriority} boxSize='20' mb='7' />
-            <Heading textAlign='center'>Could not reach the server</Heading>
+          <Flex direction='column' maxW='full' alignItems="center" justifyContent="center" p='14'>
+            <Icon as={FcClearFilters} boxSize='20' mb='7' />
+            <Heading size='md' textAlign='center'>No results found</Heading>
           </Flex>
         ) : renderResults()
       }
