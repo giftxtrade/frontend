@@ -152,7 +152,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
       <Box position='relative' maxW='inherit'>
         <Box mt='3' mb='5'>
           {search === '' ? (
-            <Text>Popular items</Text>
+            <Text>🔥 Popular items</Text>
           ) : (
             <Text>Search results for <b><i>{search}</i></b></Text>
           )}
