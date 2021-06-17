@@ -19,6 +19,7 @@ export default function ProductSm({ product }: { product: IProduct }) {
             loading='lazy'
             rounded='md'
             mb='3'
+            maxW='180px'
           />
           <Heading
             size='sm'
