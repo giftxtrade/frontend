@@ -8,7 +8,8 @@ import {
   Image,
   Spinner,
   Flex,
-  Icon
+  Icon,
+  Text
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
@@ -123,6 +124,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
             placeholder="Search for products"
             autoFocus={true}
             onKeyUp={(event: any) => {
+              if (event.ctrlKey || event.shiftKey || event.altKey)
+                return
+
               const q: string = event.target.value.trim()
               clearTimeout(timeout);
 
@@ -146,6 +150,14 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
       </Box>
 
       <Box position='relative' maxW='inherit'>
+        <Box mt='3' mb='5'>
+          {search === '' ? (
+            <Text>Popular items</Text>
+          ) : (
+            <Text>Search results for <b><i>{search}</i></b></Text>
+          )}
+        </Box>
+
         {
           error ? (
             <Flex direction='column' maxW='full' alignItems="center" justifyContent="center" p='14'>
