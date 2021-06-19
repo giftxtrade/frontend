@@ -3,6 +3,7 @@ import { User } from '../store/jwt-payload';
 import { authStore, logout } from '../store/auth-store';
 import router from "next/router";
 import { useCookies } from "react-cookie";
+import { useMediaQuery } from 'react-responsive'
 
 export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   loggedIn: boolean,
@@ -11,17 +12,24 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   gToken: string
 }) {
   const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
+  const isMediumScreen = useMediaQuery({ query: '(max-device-width: 650px)' })
+  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 380px)' })
 
   return (
     <Container maxW='4xl' p='5' mb='10'>
       <Flex direction='row' justifyContent='space-between' alignItems='center'>
-        <Image w='40' src='/giftxtrade_logotype_color.svg' />
+        {isMediumScreen ? (
+          <Image w='35px' src='/giftxtrade_profile_rounded.png' />
+        ) : (
+            <Image w='40' src='/giftxtrade_logotype_color.svg' />
+        )}
 
         <Flex
           direction="row"
           alignItems="center"
           justifyContent='start'
           cursor='pointer'
+          ml='2'
           onClick={() => {
             removeCookie('access_token')
             authStore.dispatch(logout())
@@ -31,7 +39,11 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
           <Image src={user.imageUrl} w='35px' mr='3' rounded='md' />
           <Box>
             <Heading size='xs'>{user.name}</Heading>
-            <Text fontSize='10'>{user.email}</Text>
+            {isSmallScreen ? (
+              <></>
+            ) : (
+                <Text fontSize='10'>{user.email}</Text>
+            )}
           </Box>
         </Flex>
       </Flex>
