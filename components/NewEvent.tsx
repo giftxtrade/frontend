@@ -18,9 +18,11 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { User } from '../store/jwt-payload';
 import { ParticipantForm } from './ParticipantForm';
+import { api } from '../util/api';
 
 export interface INewEventProps {
   isOpen: boolean
@@ -83,17 +85,29 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
       }
     })
 
+    const drawDateF = new Date(drawDate)
+    const closeDateF = new Date(drawDate)
+    closeDateF.setMonth(closeDateF.getMonth() + 2)
+
     const data = {
       name: name,
       description: description,
       budget: budget,
       invitationMessage: "",
-      drawAt: drawDate,
-      closeAt: "",
+      drawAt: drawDateF.toString(),
+      closeAt: closeDateF.toString(),
       participants: participants
     }
 
-    console.log(data);
+    axios.post(api.events, data, {
+      headers: {
+        "Authorization": "Bearer " + accessToken
+      }
+    })
+      .then(({ data }) => {
+        console.log(data)
+      })
+      .catch(err => console.log(err))
   }
 
   return (
