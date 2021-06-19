@@ -33,6 +33,8 @@ export interface IParticipantForm {
   creator: boolean
   name: string
   email: string
+  organizer: boolean
+  participates: boolean
 }
 
 export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps) {
@@ -48,20 +50,51 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
       {
         name: user.name,
         email: user.email,
-        creator: true
+        creator: true,
+        organizer: true,
+        participates: true,
       },
       {
         name: '',
         email: '',
-        creator: false
+        creator: false,
+        organizer: false,
+        participates: true,
       },
       {
         name: '',
         email: '',
-        creator: false
+        creator: false,
+        organizer: false,
+        participates: true,
       },
     ])
   }, [])
+
+  const handleCreateEvent = () => {
+    const participants: any[] = forms.map(f => {
+      return {
+        name: f.name,
+        email: f.email,
+        address: "",
+        organizer: f.creator ? true : f.organizer,
+        participates: f.participates,
+        accepted: f.creator ? true : false
+      }
+    })
+
+    const data = {
+      name: name,
+      description: description,
+      budget: budget,
+      invitationMessage: "",
+      drawAt: drawDate,
+      closeAt: "",
+      participants: participants
+    }
+
+    console.log(data);
+  }
 
   return (
     <Modal size='xl' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
@@ -155,7 +188,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
               <ModalHeader>{name}</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                  <Stack spacing='9' mb='7'>
+                  <Stack spacing='9' mb='10'>
                     {
                       forms.map((form, i) => (
                         <ParticipantForm
@@ -179,7 +212,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
                         {
                           name: '',
                           email: '',
-                          creator: false
+                          creator: false,
+                          organizer: false,
+                          participates: true
                         }
                       ])
                     }}
@@ -192,7 +227,13 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
                 <Button variant='ghost' mr={3} onClick={() => setMain(true)}>
                   Back
                 </Button>
-                <Button colorScheme="blue">Create Event</Button>
+                  <Button
+                    colorScheme="blue"
+                    isDisabled={forms.length < 3 || forms.find(f => f.name === '' || f.email === '') !== undefined}
+                    onClick={handleCreateEvent}
+                  >
+                    Create Event
+                  </Button>
               </ModalFooter>
             </form>
           </ModalContent>

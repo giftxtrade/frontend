@@ -2,9 +2,6 @@ import React, { Dispatch, SetStateAction } from 'react';
 import {
   Input,
   Stack,
-  Textarea,
-  InputGroup,
-  InputLeftElement,
   Checkbox,
   FormControl,
   Box,
@@ -84,8 +81,29 @@ export function ParticipantForm({ id, form, forms, setForms }: IParticipantFormP
       </Stack>
 
       <Stack mt='3' spacing={6} direction="row">
-        <Checkbox isDisabled={form.creator} defaultIsChecked={form.creator}>Organizer</Checkbox>
-        <Checkbox defaultIsChecked>
+        <Checkbox
+          isDisabled={form.creator}
+          defaultIsChecked={form.organizer}
+          onChange={(e) => {
+            setForms(forms.map((f, i) => {
+              if (i === idOffset)
+                f.organizer = e.target.checked
+              return f
+            }))
+          }}
+        >
+          Organizer
+        </Checkbox>
+        <Checkbox
+          defaultIsChecked={form.participates}
+          onChange={(e) => {
+            setForms(forms.map((f, i) => {
+              if (i === idOffset)
+                f.participates = e.target.checked
+              return f
+            }))
+          }}
+        >
           Participant
         </Checkbox>
       </Stack>
