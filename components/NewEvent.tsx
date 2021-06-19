@@ -17,6 +17,11 @@ import {
   Textarea,
   InputGroup,
   InputLeftElement,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  CloseButton
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -261,6 +266,15 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
                   Add Participant
                 </Button>
               </ModalBody>
+
+                {error ? (
+                  <Alert status="error">
+                    <AlertIcon />
+                    <AlertTitle mr={2}>Error!</AlertTitle>
+                    <AlertDescription>Could not create your event</AlertDescription>
+                    <CloseButton position="absolute" right="8px" top="8px" />
+                  </Alert>
+                ) : <></>}
 
               <ModalFooter>
                 <Button variant='ghost' mr={3} onClick={() => setMain(true)}>
