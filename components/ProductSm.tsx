@@ -2,10 +2,11 @@ import Product, { IProduct } from "../types/Product";
 import { Box, Image, Heading, Text, Button, Link } from '@chakra-ui/react';
 import { generateAmazonAffiliateLink } from "../util/links";
 import StarRatings from 'react-star-ratings';
+import numberToCurrency from "../util/currency";
 
 export default function ProductSm({ product }: { product: IProduct }) {
   const link = generateAmazonAffiliateLink(product.productKey)
-  const price = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.price)
+  const price = numberToCurrency(product.price)
 
   return (
     <Box mb='10'>
