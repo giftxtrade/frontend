@@ -23,6 +23,7 @@ import { useState, useEffect } from 'react';
 import { User } from '../store/jwt-payload';
 import { ParticipantForm } from './ParticipantForm';
 import { api } from '../util/api';
+import { unstable_batchedUpdates } from 'react-dom';
 
 export interface INewEventProps {
   isOpen: boolean
@@ -46,6 +47,10 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
   const [budget, setBudget] = useState(0.0)
   const [drawDate, setDrawDate] = useState("")
   const [forms, setForms] = useState(Array<IParticipantForm>())
+  const [error, setError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [reset, setReset] = useState(false)
 
   useEffect(() => {
     setForms([
@@ -71,9 +76,12 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
         participates: true,
       },
     ])
-  }, [])
+  }, [reset])
 
   const handleCreateEvent = () => {
+    setLoading(true)
+    setError(false)
+
     const participants: any[] = forms.map(f => {
       return {
         name: f.name,
@@ -105,9 +113,26 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
       }
     })
       .then(({ data }) => {
+        unstable_batchedUpdates(() => {
+          setMain(true)
+          setName('')
+          setDescription('')
+          setBudget(0)
+          setDrawDate('')
+          setReset(true)
+          setLoading(false)
+          onClose()
+        })
         console.log(data)
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        unstable_batchedUpdates(() => {
+          setError(true)
+          setErrorMessage(err)
+          setLoading(false)
+        })
+        console.log(err)
+      })
   }
 
   return (
@@ -245,6 +270,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
                     colorScheme="blue"
                     isDisabled={forms.length < 3 || forms.find(f => f.name === '' || f.email === '') !== undefined}
                     onClick={handleCreateEvent}
+                    isLoading={loading}
                   >
                     Create Event
                   </Button>
