@@ -24,6 +24,7 @@
     "react-icons": "^4.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-masonry-css": "^1.0.16",
+    "react-responsive": "^8.2.0",
     "react-star-ratings": "^2.3.0"
   },
   "devDependencies": {
