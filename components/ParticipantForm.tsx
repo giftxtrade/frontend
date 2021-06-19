@@ -1,3 +1,4 @@
+import React, { Dispatch, SetStateAction } from 'react';
 import {
   Input,
   Stack,
@@ -8,43 +9,82 @@ import {
   FormControl,
   Box,
   Text,
+  Button,
+  Flex,
+  Icon
 } from '@chakra-ui/react'
+import { IParticipantForm } from './NewEvent';
+import { DeleteIcon } from '@chakra-ui/icons';
 
-interface IParticipantFormProps {
+export interface IParticipantFormProps {
   id: number
-  disabled: boolean
-  name: string
-  email: string
+  form: IParticipantForm
+  forms: IParticipantForm[]
+  setForms: Dispatch<SetStateAction<IParticipantForm[]>>
 }
 
-export function ParticipantForm({ id, disabled, name, email }: IParticipantFormProps) {
+export function ParticipantForm({ id, form, forms, setForms }: IParticipantFormProps) {
+  const idOffset = id - 1;
   return (
     <Box>
       <Text mb='2'>
-        Participant #{id}
+        <Flex direction="row" justifyContent='space-between' alignItems='center'>
+          <b>Participant #{id}</b>
+
+          {!form.creator ? (
+            <Button
+              variant='ghost'
+              size='sm'
+              colorScheme='red'
+              onClick={() => setForms(forms.filter((f, i) => {
+                return i !== idOffset
+              }))}
+            >
+              <Icon as={DeleteIcon} />
+            </Button>
+          ) : <></>}
+        </Flex>
       </Text>
       <Stack direction="row" spacing={2}>
-        <FormControl id="budget" isDisabled={disabled}>
+        <FormControl id={`nameForm${id}`} isDisabled={form.creator}>
           <Input
             placeholder="Name"
             type='text'
-            name='name'
-            value={name}
+            value={form.name}
+            onChange={(e) => {
+              const input = e.target.value;
+              setForms(forms.map((f, i) => {
+                if (i === idOffset)
+                  f.name = input
+                return f
+              }))
+            }}
+            variant={form.creator ? 'filled' : 'outline'}
+            name={`nameInput${id}`}
           />
         </FormControl>
 
-        <FormControl id="budget" isDisabled={disabled}>
+        <FormControl id={`emailForm${id}`} isDisabled={form.creator}>
           <Input
             placeholder="Email"
             type='email'
-            name='email'
-            value={email}
+            value={form.email}
+            onChange={(e) => {
+              const input = e.target.value;
+              setForms(forms.map((f, i) => {
+                if (i === idOffset)
+                  f.email = input
+                return f
+              }))
+            }}
+            variant={form.creator ? 'filled' : 'outline'}
+            name={`emailInput${id}`}
           />
         </FormControl>
       </Stack>
 
       <Stack mt='3' spacing={6} direction="row">
-        <Checkbox isDisabled={disabled} defaultIsChecked={disabled}>Organizer</Checkbox>
+        <Checkbox isDisabled={form.creator} defaultIsChecked={form.creator}>Organizer</Checkbox>
         <Checkbox defaultIsChecked>
           Participant
         </Checkbox>

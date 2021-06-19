@@ -1,15 +1,7 @@
 import { AddIcon } from '@chakra-ui/icons';
 import {
-  Flex,
-  Spinner,
-  Image,
-  Heading,
   Text,
   Button,
-  Link,
-  Box,
-  Container,
-  Icon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -19,24 +11,28 @@ import {
   ModalCloseButton,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   FormHelperText,
   Input,
   Stack,
   Textarea,
   InputGroup,
   InputLeftElement,
-  Checkbox,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '../store/jwt-payload';
 import { ParticipantForm } from './ParticipantForm';
 
-interface INewEventProps {
+export interface INewEventProps {
   isOpen: boolean
   onClose: () => void
   accessToken: string
   user: User
+}
+
+export interface IParticipantForm {
+  creator: boolean
+  name: string
+  email: string
 }
 
 export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps) {
@@ -45,9 +41,30 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
   const [description, setDescription] = useState("")
   const [budget, setBudget] = useState(0.0)
   const [drawDate, setDrawDate] = useState("")
+  const [forms, setForms] = useState(Array<IParticipantForm>())
+
+  useEffect(() => {
+    setForms([
+      {
+        name: user.name,
+        email: user.email,
+        creator: true
+      },
+      {
+        name: '',
+        email: '',
+        creator: false
+      },
+      {
+        name: '',
+        email: '',
+        creator: false
+      },
+    ])
+  }, [])
 
   return (
-    <Modal size='lg' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+    <Modal size='xl' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       {
         main ? (
@@ -125,6 +142,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
                     setMain(false)
                     e.preventDefault();
                   }}
+                  isDisabled={!name || !budget || budget === 0 || !drawDate}
                 >
                   Next: Invitations
                 </Button>
@@ -137,23 +155,35 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
               <ModalHeader>{name}</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <Stack spacing='7' mb='7'>
-                  <ParticipantForm
-                    id={1}
-                    name={user.name}
-                    email={user.email}
-                    disabled={true}
-                  />
+                  <Stack spacing='9' mb='7'>
+                    {
+                      forms.map((form, i) => (
+                        <ParticipantForm
+                          id={i + 1}
+                          form={form}
+                          forms={forms}
+                          setForms={setForms}
+                          key={`form${i}`}
+                        />
+                      ))
+                    }
+                  </Stack>
 
-                  <ParticipantForm
-                    id={2}
-                    name=''
-                    email=''
-                    disabled={false}
-                  />
-                </Stack>
-
-                <Button leftIcon={<AddIcon />} variant="solid" size='sm'>
+                  <Button
+                    leftIcon={<AddIcon />}
+                    variant="solid"
+                    size='sm'
+                    onClick={() => {
+                      setForms([
+                        ...forms,
+                        {
+                          name: '',
+                          email: '',
+                          creator: false
+                        }
+                      ])
+                    }}
+                  >
                   Add Participant
                 </Button>
               </ModalBody>
