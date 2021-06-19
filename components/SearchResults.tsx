@@ -7,6 +7,7 @@ import { IProduct } from '../types/Product';
 import styles from '../styles/masonary.module.css'
 import { useState, Dispatch, SetStateAction } from 'react';
 import { Flex, Spinner, Heading } from '@chakra-ui/react';
+import { unstable_batchedUpdates } from "react-dom";
 
 export interface ISearchResultsProps {
   results: IProduct[]
@@ -63,13 +64,17 @@ export default function SearchResults({
         return
       }
 
-      setError(false)
-      setResults([...results, ...data])
-      setHasMore(true)
-      setPage(page + 1)
+      unstable_batchedUpdates(() => {
+        setError(false)
+        setResults([...results, ...data])
+        setHasMore(true)
+        setPage(page + 1)
+      })
     }).catch(err => {
-      setError(true)
-      setHasMore(false)
+      unstable_batchedUpdates(() => {
+        setError(true)
+        setHasMore(false)
+      })
     })
   }
 

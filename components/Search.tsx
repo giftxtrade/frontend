@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
+import { unstable_batchedUpdates } from "react-dom";
 import { useEffect } from 'react';
 import axios from 'axios';
 import { api } from '../util/api';
@@ -48,19 +49,25 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
       }
     }).then(({ data }: { data: IProduct[] }) => {
       if (data.length === 0) {
-        setError(true)
-        setLoadState(false)
+        unstable_batchedUpdates(() => {
+          setError(true)
+          setLoadState(false)
+        })
         return
       }
 
-      setResults(data)
-      setLoadState(false)
-      setError(false)
-      setHasMore(true)
+      unstable_batchedUpdates(() => {
+        setResults(data)
+        setLoadState(false)
+        setError(false)
+        setHasMore(true)
+      })
     }).catch(err => {
-      setError(true)
-      setLoadState(false)
-      setHasMore(false)
+      unstable_batchedUpdates(() => {
+        setError(true)
+        setLoadState(false)
+        setHasMore(false)
+      })
     })
   }
 
