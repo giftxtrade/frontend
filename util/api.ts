@@ -4,7 +4,8 @@ export const api = {
   home: base,
   google: base + 'auth/google',
   google_redirect: base + 'auth/google/redirect',
-  profile: base + 'auth/profile',
+  profile: base + 'auth/profile', // Auth required
   products: base + 'products', // GET -> Params: limit, page, min_price, max_price, search
-  events: base + 'events'
+  events: base + 'events', // Auth required [POST], [GET]
+  invites: base + 'events/invites', // Auth required, [GET]
 };
