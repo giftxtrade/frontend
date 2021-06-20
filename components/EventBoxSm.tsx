@@ -24,6 +24,7 @@ export default function EventBoxSm({ event, isInvite }: IEventBoxSmProps) {
       borderWidth="1px" borderRadius="lg"
       overflow="hidden"
       p='5'
+      backgroundColor={isInvite ? '#f9f9f9' : 'white'}
     >
       {
         isInvite ? (
@@ -38,7 +39,8 @@ export default function EventBoxSm({ event, isInvite }: IEventBoxSmProps) {
       </Heading>
 
       <Text color='gray.500' fontSize='xs'>
-        <b>Created on:</b> {moment(event.createdAt).format('LL')}
+        <b style={{ marginRight: '8px' }}>Created on</b>
+        <span>{moment(event.createdAt).format('LL')}</span>
       </Text>
 
       {

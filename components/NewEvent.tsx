@@ -29,13 +29,7 @@ import { User } from '../store/jwt-payload';
 import { ParticipantForm } from './ParticipantForm';
 import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
-
-export interface INewEventProps {
-  isOpen: boolean
-  onClose: () => void
-  accessToken: string
-  user: User
-}
+import { IEvent } from '../types/Event';
 
 export interface IParticipantForm {
   creator: boolean
@@ -45,7 +39,15 @@ export interface IParticipantForm {
   participates: boolean
 }
 
-export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps) {
+export interface INewEventProps {
+  isOpen: boolean
+  onClose: () => void
+  accessToken: string
+  user: User
+  addEvent: (e: IEvent) => void
+}
+
+export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewEventProps) {
   const [main, setMain] = useState(true)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -126,6 +128,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user }: INewEventProps)
           setDrawDate('')
           setReset(true)
           setLoading(false)
+          addEvent(data)
           onClose()
         })
         console.log(data)

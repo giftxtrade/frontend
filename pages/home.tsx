@@ -161,6 +161,7 @@ export default function Home(props: IHopeProps) {
         onClose={onClose}
         accessToken={accessToken}
         user={user}
+        addEvent={(e: IEvent) => setEvents([e, ...events])}
       />
     </>
   )
