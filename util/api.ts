@@ -8,4 +8,6 @@ export const api = {
   products: base + 'products', // GET -> Params: limit, page, min_price, max_price, search
   events: base + 'events', // Auth required [POST], [GET]
   invites: base + 'events/invites', // Auth required, [GET]
+  accept_invite: base + 'events/invites/accept', // Auth required, [GET], param required eventID
+  decline_invite: base + 'events/invites/decline', // Auth required, [GET], param required eventID
 };
