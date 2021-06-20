@@ -26,6 +26,7 @@ import Invites from "../components/Invites";
 import { unstable_batchedUpdates } from 'react-dom';
 import EventBoxSm from '../components/EventBoxSm';
 import { FcClearFilters } from 'react-icons/fc';
+import { useMediaQuery } from 'react-responsive';
 
 export interface IHopeProps {
   accessToken: string,
@@ -48,6 +49,9 @@ export default function Home(props: IHopeProps) {
 
   // Modal
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  // Responsive
+  const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
 
   useEffect(() => {
     axios.get(api.events, {
@@ -139,12 +143,16 @@ export default function Home(props: IHopeProps) {
             </Box>
           </Container>
 
-          <Container
-            flex='1'
-            pl='2'
-            pr='0'
-          >
-          </Container>
+          {isMediumScreen ? (
+            <></>
+          ) : (
+              <Container
+                flex='1'
+                pl='2'
+                pr='0'
+              >
+              </Container>
+          )}
         </Flex>
       </Container>
 

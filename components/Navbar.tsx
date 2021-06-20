@@ -13,7 +13,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
 }) {
   const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 650px)' })
-  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 380px)' })
+  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 370px)' })
 
   return (
     <Container maxW='4xl' p='5' mb='10'>
