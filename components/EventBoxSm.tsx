@@ -29,14 +29,6 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       p='5'
       backgroundColor={isInvite ? '#f9f9f9' : 'white'}
     >
-      {
-        isInvite ? (
-          <Box mb='1'>
-            <Text fontSize='sm' color='gray.400'>Pending invite</Text>
-          </Box>
-        ) : <></>
-      }
-
       <Heading size='md'>
         {event.name}
       </Heading>
