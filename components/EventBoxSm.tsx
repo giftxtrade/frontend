@@ -13,11 +13,14 @@ import moment from 'moment'
 import { BsCheck, BsX } from 'react-icons/bs'
 
 export interface IEventBoxSmProps {
-  event: IEvent,
-  isInvite: boolean,
+  event: IEvent
+  isInvite: boolean
+  index: number
+  handleAccept: (eventId: number, index: number) => void
+  handleDecline: (eventId: number, index: number) => void
 }
 
-export default function EventBoxSm({ event, isInvite }: IEventBoxSmProps) {
+export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index }: IEventBoxSmProps) {
   return (
     <Box
       maxW="full"
@@ -80,6 +83,7 @@ export default function EventBoxSm({ event, isInvite }: IEventBoxSmProps) {
             colorScheme='green'
             variant='ghost'
             title='Accept this event invite'
+            onClick={() => handleAccept(event.id, index)}
           >
             <Icon as={BsCheck} boxSize='5' />
           </Button>
@@ -90,6 +94,7 @@ export default function EventBoxSm({ event, isInvite }: IEventBoxSmProps) {
             variant='ghost'
             ml='4'
             title='Decline this event invite'
+            onClick={() => handleDecline(event.id, index)}
           >
             <Icon as={BsX} boxSize='5' />
           </Button>

@@ -12,9 +12,11 @@ import EventBoxSm from './EventBoxSm'
 
 export interface IInvitesProps {
   invites: IEvent[]
+  handleAccept: (eventId: number, index: number) => void
+  handleDecline: (eventId: number, index: number) => void
 }
 
-export default function Invites({ invites }: IInvitesProps) {
+export default function Invites({ invites, handleAccept, handleDecline }: IInvitesProps) {
   return (
     <Box mb='10'>
 
@@ -36,6 +38,9 @@ export default function Invites({ invites }: IInvitesProps) {
             event={e}
             isInvite={true}
             key={`invite#${i}`}
+            handleAccept={handleAccept}
+            handleDecline={handleDecline}
+            index={i}
           />
         ))}
       </Stack>

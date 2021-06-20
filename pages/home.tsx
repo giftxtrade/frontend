@@ -70,6 +70,27 @@ export default function Home(props: IHopeProps) {
       })
   }, []);
 
+  const handleAccept = (eventId: number, index: number) => {
+    setEvents([invites[index], ...events])
+    setInvites(invites.filter((_, i) => i !== index))
+
+    axios.get(`${api.accept_invite}/${eventId}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }) => { })
+      .catch(err => console.log(err))
+  }
+
+  const handleDecline = (eventId: number, index: number) => {
+    setInvites(invites.filter((_, i) => i !== index))
+
+    axios.get(`${api.decline_invite}/${eventId}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }) => { })
+      .catch(err => console.log(err))
+  }
+
   return (
     <>
       <Head>
@@ -92,6 +113,8 @@ export default function Home(props: IHopeProps) {
             {invites.length > 0 ? (
               <Invites
                 invites={invites}
+                handleAccept={handleAccept}
+                handleDecline={handleDecline}
               />
             ) : <></>}
 
@@ -135,6 +158,9 @@ export default function Home(props: IHopeProps) {
                         event={e}
                         isInvite={false}
                         key={`event#${i}`}
+                        handleAccept={handleAccept}
+                        handleDecline={handleDecline}
+                        index={i}
                       />
                     ))}
                   </Stack>
