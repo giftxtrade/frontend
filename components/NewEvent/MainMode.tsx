@@ -111,7 +111,7 @@ export default function MainMode({ name, setName, description, setDescription, b
               setMain(false)
               e.preventDefault();
             }}
-            isDisabled={!name || !budget || budget === 0 || !drawDate}
+            isDisabled={!name || !budget || budget === 0 || !drawDate || new Date(drawDate) <= new Date(Date.now())}
           >
             Next: Invitations
           </Button>
