@@ -64,5 +64,3 @@ export default function Google() {
     </>
   )
 }
-
-export const getServerSideProps = async (ctx: DocumentContext) => await redirectHomeIfLoggedIn(ctx);
