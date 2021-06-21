@@ -11,6 +11,8 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { BsCheck, BsX } from 'react-icons/bs'
+import NextLink from 'next/link';
+import { Link } from '@chakra-ui/react';
 
 export interface IEventBoxSmProps {
   event: IEvent
@@ -29,9 +31,13 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       p='5'
       backgroundColor={isInvite ? '#f9f9f9' : 'white'}
     >
-      <Heading size='md'>
-        {event.name}
-      </Heading>
+      <NextLink href={`/events/${event.id}`} passHref>
+        <Link>
+          <Heading size='md'>
+            {event.name}
+          </Heading>
+        </Link>
+      </NextLink>
 
       <Text color='gray.500' fontSize='xs'>
         <b style={{ marginRight: '8px' }}>Created on</b>
