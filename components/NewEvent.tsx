@@ -1,4 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, LinkIcon } from '@chakra-ui/icons';
 import {
   Text,
   Button,
@@ -21,7 +21,8 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
-  CloseButton
+  CloseButton,
+  Flex
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -60,29 +61,13 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [reset, setReset] = useState(false)
 
   useEffect(() => {
-    setForms([
-      {
+    setForms([{
         name: user.name,
         email: user.email,
         creator: true,
         organizer: true,
         participates: true,
-      },
-      {
-        name: '',
-        email: '',
-        creator: false,
-        organizer: false,
-        participates: true,
-      },
-      {
-        name: '',
-        email: '',
-        creator: false,
-        organizer: false,
-        participates: true,
-      },
-    ])
+    }])
   }, [reset])
 
   const handleCreateEvent = () => {
@@ -249,25 +234,39 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                     }
                   </Stack>
 
-                  <Button
-                    leftIcon={<AddIcon />}
-                    variant="solid"
-                    size='sm'
-                    onClick={() => {
-                      setForms([
-                        ...forms,
-                        {
-                          name: '',
-                          email: '',
-                          creator: false,
-                          organizer: false,
-                          participates: true
-                        }
-                      ])
-                    }}
-                  >
-                  Add Participant
-                </Button>
+                  <Flex direction='row' alignItems='center' justifyContent='start'>
+                    <Button
+                      leftIcon={<AddIcon />}
+                      variant="solid"
+                      size='sm'
+                      mr='3'
+                      onClick={() => {
+                        setForms([
+                          ...forms,
+                          {
+                            name: '',
+                            email: '',
+                            creator: false,
+                            organizer: false,
+                            participates: true
+                          }
+                        ])
+                      }}
+                    >
+                      Add Participant
+                    </Button>
+
+                    <Text mr='3'>or</Text>
+
+                    <Button
+                      leftIcon={<LinkIcon />}
+                      variant="solid"
+                      size='sm'
+                      colorScheme='teal'
+                    >
+                      Create Link
+                    </Button>
+                  </Flex>
               </ModalBody>
 
                 {error ? (
@@ -279,13 +278,13 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                   </Alert>
                 ) : <></>}
 
-              <ModalFooter>
+                <ModalFooter mt='7'>
                 <Button variant='ghost' mr={3} onClick={() => setMain(true)}>
                   Back
                 </Button>
                   <Button
                     colorScheme="blue"
-                    isDisabled={forms.length < 3 || forms.find(f => f.name === '' || f.email === '') !== undefined}
+                    isDisabled={forms.find(f => f.name === '' || f.email === '') !== undefined}
                     onClick={handleCreateEvent}
                     isLoading={loading}
                   >
