@@ -59,6 +59,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [reset, setReset] = useState(false)
+  const [getLink, setGetLink] = useState(false)
 
   useEffect(() => {
     setForms([{
@@ -215,11 +216,11 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
             </form>
           </ModalContent>
         ) : (
-          <ModalContent>
-            <form method='POST'>
-              <ModalHeader>{name}</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
+            !getLink ? (
+              <ModalContent>
+                <ModalHeader>{name}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
                   <Stack spacing='9' mb='10'>
                     {
                       forms.map((form, i) => (
@@ -263,25 +264,25 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                       variant="solid"
                       size='sm'
                       colorScheme='teal'
+                      onClick={() => setGetLink(true)}
                     >
                       Create Link
                     </Button>
                   </Flex>
-              </ModalBody>
 
-                {error ? (
-                  <Alert status="error">
-                    <AlertIcon />
-                    <AlertTitle mr={2}>Error!</AlertTitle>
-                    <AlertDescription>Could not create your event</AlertDescription>
-                    <CloseButton position="absolute" right="8px" top="8px" />
-                  </Alert>
-                ) : <></>}
+                  {error ? (
+                    <Alert status="error" mt='7' rounded='md'>
+                      <AlertIcon />
+                      <AlertTitle mr={2}>Error!</AlertTitle>
+                      <AlertDescription>Could not create your event</AlertDescription>
+                    </Alert>
+                  ) : <></>}
+                </ModalBody>
 
                 <ModalFooter mt='7'>
-                <Button variant='ghost' mr={3} onClick={() => setMain(true)}>
-                  Back
-                </Button>
+                  <Button variant='ghost' mr={3} onClick={() => setMain(true)}>
+                    Back
+                  </Button>
                   <Button
                     colorScheme="blue"
                     isDisabled={forms.find(f => f.name === '' || f.email === '') !== undefined}
@@ -290,10 +291,34 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                   >
                     Create Event
                   </Button>
-              </ModalFooter>
-            </form>
-          </ModalContent>
-        )
+                </ModalFooter>
+              </ModalContent>
+            ) : (
+              <ModalContent>
+                <ModalHeader>Get Link: {name}</ModalHeader>
+                <ModalCloseButton />
+
+                <ModalBody>
+
+                </ModalBody>
+
+                <ModalFooter mt='7'>
+                  <Button colorScheme='blue' mr={3} onClick={() => {
+                    setMain(true)
+                    setGetLink(false)
+                    setBudget(0)
+                    setName('')
+                    setDrawDate('')
+                    setDescription('')
+                    setReset(false)
+                    onClose()
+                  }}>
+                    Done
+                  </Button>
+                </ModalFooter>
+              </ModalContent>
+            )
+          )
       }
     </Modal>
   )
