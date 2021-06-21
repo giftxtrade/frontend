@@ -10,4 +10,5 @@ export const api = {
   invites: base + 'events/invites', // Auth required, [GET]
   accept_invite: base + 'events/invites/accept', // Auth required, [GET], param required eventID
   decline_invite: base + 'events/invites/decline', // Auth required, [GET], param required eventID
+  get_link: base + 'events/get-link', // Auth required, [POST], param required eventId
 };

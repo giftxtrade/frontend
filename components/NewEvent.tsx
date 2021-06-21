@@ -1,4 +1,4 @@
-import { AddIcon, LinkIcon } from '@chakra-ui/icons';
+import { AddIcon, LinkIcon, InfoIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Text,
   Button,
@@ -21,6 +21,7 @@ import {
   AlertIcon,
   AlertTitle,
   AlertDescription,
+  Spinner,
   CloseButton,
   Flex
 } from '@chakra-ui/react';
@@ -31,6 +32,7 @@ import { ParticipantForm } from './ParticipantForm';
 import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { IEvent } from '../types/Event';
+import { base } from '../util/site';
 
 export interface IParticipantForm {
   creator: boolean
@@ -60,6 +62,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [loading, setLoading] = useState(false)
   const [reset, setReset] = useState(false)
   const [getLink, setGetLink] = useState(false)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [link, setLink] = useState('')
+  const [copy, setCopy] = useState(false)
 
   useEffect(() => {
     setForms([{
@@ -71,10 +76,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
     }])
   }, [reset])
 
-  const handleCreateEvent = () => {
-    setLoading(true)
-    setError(false)
-
+  const getData = () => {
     const participants: any[] = forms.map(f => {
       return {
         name: f.name,
@@ -90,7 +92,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
     const closeDateF = new Date(drawDate)
     closeDateF.setMonth(closeDateF.getMonth() + 2)
 
-    const data = {
+    return {
       name: name,
       description: description,
       budget: budget,
@@ -99,8 +101,13 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
       closeAt: closeDateF.toString(),
       participants: participants
     }
+  }
 
-    axios.post(api.events, data, {
+  const handleCreateEvent = () => {
+    setLoading(true)
+    setError(false)
+
+    axios.post(api.events, getData(), {
       headers: {
         "Authorization": "Bearer " + accessToken
       }
@@ -117,7 +124,6 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
           addEvent(data)
           onClose()
         })
-        console.log(data)
       })
       .catch(err => {
         unstable_batchedUpdates(() => {
@@ -125,7 +131,49 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
           setErrorMessage(err)
           setLoading(false)
         })
-        console.log(err)
+      })
+  }
+
+  const handleGenerateLink = () => {
+    setGetLink(true)
+    setLinkLoading(true)
+
+    axios.post(api.events, getData(), {
+      headers: {
+        "Authorization": "Bearer " + accessToken
+      }
+    })
+      .then(({ data }) => {
+        addEvent(data)
+
+        axios.post(
+          `${api.get_link}/${data.id}`,
+          {
+            expirationDate: new Date(drawDate).toString()
+          },
+          {
+            headers: { "Authorization": "Bearer " + accessToken }
+          })
+          .then(({ data }) => {
+            unstable_batchedUpdates(() => {
+              setError(false)
+              setLinkLoading(false)
+              setLink(data.code)
+            })
+          })
+          .catch(err => {
+            unstable_batchedUpdates(() => {
+              setLinkLoading(false)
+              setError(true)
+            })
+          })
+      })
+      .catch(err => {
+        unstable_batchedUpdates(() => {
+          setError(true)
+          setErrorMessage(err)
+          setLoading(false)
+        })
       })
   }
 
@@ -264,9 +312,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                       variant="solid"
                       size='sm'
                       colorScheme='teal'
-                      onClick={() => setGetLink(true)}
+                      onClick={handleGenerateLink}
                     >
-                      Create Link
+                      Share Link
                     </Button>
                   </Flex>
 
@@ -294,28 +342,76 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                 </ModalFooter>
               </ModalContent>
             ) : (
-              <ModalContent>
-                <ModalHeader>Get Link: {name}</ModalHeader>
-                <ModalCloseButton />
+                <ModalContent>
 
-                <ModalBody>
+                  {linkLoading ? (
+                    <Flex
+                      maxW='full'
+                      direction='column'
+                      alignItems='center'
+                      justifyContent='center'
+                      mt='5' mb='5'
+                      p='5'
+                    >
+                      <Spinner mb='5' />
+                      <Text textAlign='center'>Generating sharable link. Please wait.</Text>
+                    </Flex>
+                  ) : (
+                    <>
+                      <ModalHeader>Get Link</ModalHeader>
+                        <ModalBody>
+                          {error ? (
+                            <Alert status="error" mt='7' rounded='md'>
+                              <AlertIcon />
+                              <AlertTitle mr={2}>Error!</AlertTitle>
+                              <AlertDescription>Could not generate your link</AlertDescription>
+                            </Alert>
+                          ) : (
+                            <>
+                              <Flex>
+                                <Input
+                                  value={`${base}i/${link}`}
+                                  variant='filled'
+                                />
+                                <Button
+                                  leftIcon={<CopyIcon />}
+                                  ml='3'
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(`${base}i/${link}`)
+                                    setCopy(true)
+                                  }}
+                                  colorScheme='teal'
+                                >
+                                  {copy ? 'Copied!' : 'Copy'}
+                                </Button>
+                              </Flex>
 
-                </ModalBody>
+                              <Text mt='5' fontSize='sm' color='gray.600'>
+                                <InfoIcon mr='2' />
+                                You can use the generated link to share with anyone that you want to have in your event. This link is set to deactivate on <i>{new Date(drawDate).toDateString()}</i>.
+                              </Text>
+                            </>
+                          )}
+                        </ModalBody>
 
-                <ModalFooter mt='7'>
-                  <Button colorScheme='blue' mr={3} onClick={() => {
-                    setMain(true)
-                    setGetLink(false)
-                    setBudget(0)
-                    setName('')
-                    setDrawDate('')
-                    setDescription('')
-                    setReset(false)
-                    onClose()
-                  }}>
-                    Done
-                  </Button>
-                </ModalFooter>
+                        <ModalFooter mt='7'>
+                          <Button colorScheme='blue' mr={3} onClick={() => {
+                            setMain(true)
+                            setGetLink(false)
+                            setBudget(0)
+                            setName('')
+                            setDrawDate('')
+                            setDescription('')
+                            setReset(false)
+                            setCopy(false)
+                            onClose()
+                          }}>
+                            Done
+                          </Button>
+                        </ModalFooter>
+                    </>
+                  )}
+
               </ModalContent>
             )
           )
