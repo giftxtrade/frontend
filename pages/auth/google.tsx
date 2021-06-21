@@ -27,7 +27,18 @@ export default function Google() {
             sameSite: 'lax',
             path: '/'
           })
-          router.push('/home')
+
+          const inviteCode = localStorage.getItem('invite_code')
+          if (inviteCode) {
+            axios.get(`${api.invite_code}/${inviteCode}`, { headers: { "Authorization": "Bearer " + data.accessToken } })
+              .then(({ data }) => {
+                localStorage.removeItem('invite_code')
+                router.push('/home')
+              })
+              .catch(_ => setError(true))
+          } else {
+            router.push('/home')
+          }
         })
         .catch(err => {
           setError(true)
