@@ -2,6 +2,7 @@ import { DocumentContext } from "next/document";
 import axios from 'axios';
 import cookie, { serialize } from 'cookie';
 import { api } from './api';
+import { User } from "../store/jwt-payload";
 
 export async function serverSideAuth(ctx: DocumentContext) {
   const myCookie = ctx?.req?.headers?.cookie ? ctx.req.headers.cookie : '';
@@ -13,7 +14,7 @@ export async function serverSideAuth(ctx: DocumentContext) {
     return { props: {} }
   }
 
-  let user: any = {}
+  let user: User | undefined
   let gToken: string = ''
   await axios.get(api.profile, {
     headers: {
