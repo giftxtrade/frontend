@@ -12,7 +12,15 @@ import {
   Icon,
   Badge,
   Stack,
-  SimpleGrid
+  SimpleGrid,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../components/Navbar';
@@ -25,10 +33,11 @@ import { useMediaQuery } from 'react-responsive';
 import { IParticipant, IParticipantUser } from '../../types/Participant';
 import moment from "moment";
 import numberToCurrency from "../../util/currency";
-import { BsClock, BsFillPeopleFill } from "react-icons/bs";
+import { BsClock, BsFillPeopleFill, BsGearWideConnected, BsLink45Deg } from "react-icons/bs";
 import { User } from "../../store/jwt-payload";
 import { ILink } from '../../types/Link';
 import ParticipantUser from '../../components/ParticipantUser';
+import GetLink from '../../components/GetLink';
 
 export interface IEventProps {
   accessToken: string
@@ -54,6 +63,8 @@ export default function Event(props: IEventProps) {
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
   const pendingParticipants = totalParticipants - activeParticipants
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
@@ -140,6 +151,27 @@ export default function Event(props: IEventProps) {
                   <Text mt='4'>{event.description}</Text>
                 ) : <></>
               }
+
+              <Box mt='5'>
+                <Flex direction='row' alignItems='center' justifyContent='flex-end'>
+                  <Button
+                    leftIcon={<Icon as={BsGearWideConnected} />}
+                    size='sm'
+                  >
+                    Settings
+                  </Button>
+
+                  <Button
+                    leftIcon={<Icon as={BsLink45Deg} />}
+                    ml='2'
+                    size='sm'
+                    colorScheme='teal'
+                    onClick={onOpen}
+                  >
+                    Share Link
+                  </Button>
+                </Flex>
+              </Box>
             </Box>
 
             <SimpleGrid columns={isSmallScreen ? 1 : 2} spacing={10} mt='14'>
@@ -197,6 +229,28 @@ export default function Event(props: IEventProps) {
           )}
         </Flex>
       </Container>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Get Link</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {link ? (
+              <GetLink
+                link={link.code}
+                drawDate={event.drawAt}
+              />
+            ) : <></>}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </>
   )
 }
