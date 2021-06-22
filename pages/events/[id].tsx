@@ -11,7 +11,8 @@ import {
   Container,
   Icon,
   Badge,
-  Stack
+  Stack,
+  SimpleGrid
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../components/Navbar';
@@ -21,12 +22,13 @@ import axios from 'axios';
 import { api } from '../../util/api';
 import { IEvent } from '../../types/Event';
 import { useMediaQuery } from 'react-responsive';
-import EventBoxSm from "../../components/EventBoxSm";
-import { IParticipant } from '../../types/Participant';
+import { IParticipant, IParticipantUser } from '../../types/Participant';
 import moment from "moment";
 import numberToCurrency from "../../util/currency";
 import { BsClock, BsFillPeopleFill } from "react-icons/bs";
 import { User } from "../../store/jwt-payload";
+import { ILink } from '../../types/Link';
+import ParticipantUser from '../../components/ParticipantUser';
 
 export interface IEventProps {
   accessToken: string
@@ -34,6 +36,8 @@ export interface IEventProps {
   gToken: string
   loggedIn: boolean
   event: IEvent
+  participants: IParticipantUser[],
+  link: ILink | null
   meParticipant: IParticipant
 }
 
@@ -44,13 +48,16 @@ export default function Event(props: IEventProps) {
   const [user, setUser] = useState(props.user)
   const [event, setEvent] = useState(props.event)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
+  const [link, setLink] = useState(props.link)
+  const [participants, setParticipants] = useState(props.participants)
 
-  const totalParticipants = event.participants.filter(p => p.participates).length
-  const activeParticipants = event.participants.filter(p => p.participates && p.accepted).length
+  const totalParticipants = participants.filter(p => p.participates).length
+  const activeParticipants = participants.filter(p => p.participates && p.accepted).length
   const pendingParticipants = totalParticipants - activeParticipants
 
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
+  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 565px)' })
 
   return (
     <>
@@ -65,7 +72,7 @@ export default function Event(props: IEventProps) {
         gToken={gToken}
       />
 
-      <Container maxW='4xl'>
+      <Container maxW='4xl' mb='20'>
         <Flex direction='row'>
           <Container
             flex='2'
@@ -134,6 +141,47 @@ export default function Event(props: IEventProps) {
                 ) : <></>
               }
             </Box>
+
+            <SimpleGrid columns={isSmallScreen ? 1 : 2} spacing={10} mt='14'>
+              <Box>
+                <Heading size='md' mb='5'>Organizers</Heading>
+
+                <Stack direction='column' spacing={5}>
+                  {participants.filter(p => p.organizer).map((p, i) => (
+                    <ParticipantUser
+                      user={p.user}
+                      name={p.name}
+                      email={p.email}
+                      participates={p.participates}
+                      accepted={p.accepted}
+                      organizer={p.organizer}
+                      address={p.address}
+                      id={p.id}
+                      key={`participant#${i}`}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+
+              <Box>
+                <Heading size='md' mb='5'>Participants</Heading>
+                <Stack direction='column' spacing={5}>
+                  {participants.filter(p => p.participates).map((p, i) => (
+                    <ParticipantUser
+                      user={p.user}
+                      name={p.name}
+                      email={p.email}
+                      participates={p.participates}
+                      accepted={p.accepted}
+                      organizer={p.organizer}
+                      address={p.address}
+                      id={p.id}
+                      key={`participant#${i}`}
+                    />
+                  ))}
+                </Stack>
+              </Box>
+            </SimpleGrid>
           </Container>
 
           {isMediumScreen ? (
@@ -159,12 +207,16 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
   const { props } = await serverSideAuth(ctx)
 
   let event: IEvent | undefined;
+  let participants: IParticipantUser[] = [];
+  let link: ILink | undefined;
   if (props.loggedIn) {
     await axios.get(`${api.events}/${idRaw}`, {
       headers: { "Authorization": "Bearer " + props.accessToken }
     })
-      .then(({ data }: { data: IEvent }) => {
-        event = data
+      .then(({ data }: { data: { event: IEvent, participants: IParticipantUser[], link: ILink } }) => {
+        event = data.event
+        participants = data.participants
+        link = data.link
       })
       .catch(_ => { })
   }
@@ -177,7 +229,6 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
 
   let meParticipant: IParticipant | undefined;
   for (const p of event.participants) {
-    console.log(p)
     if (p.email === props.user?.email) {
       meParticipant = p
       break;
@@ -191,6 +242,8 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
       gToken: props.gToken,
       loggedIn: props.loggedIn,
       event: event,
+      participants: participants,
+      link: link,
       meParticipant: meParticipant
     }
   }
