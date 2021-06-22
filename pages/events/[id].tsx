@@ -153,18 +153,18 @@ export default function Event(props: IEventProps) {
                     <span>{moment(event.createdAt).format('ll')}</span>
                   </Text>
 
-                  <Badge
-                    borderRadius="full"
-                    px="2"
-                    colorScheme="teal"
-                    title='Event budget'
-                    ml='4'
-                  >
-                    <span>{numberToCurrency(event.budget)}</span>
-                  </Badge>
+                  <Box>
+                    <Badge
+                      borderRadius="full"
+                      px="2"
+                      colorScheme="teal"
+                      title='Event budget'
+                    >
+                      {numberToCurrency(event.budget)}
+                    </Badge>
+                  </Box>
 
                   <Box
-                    ml='5'
                     d='flext'
                     alignContent='center'
                     justifyContent='center'
