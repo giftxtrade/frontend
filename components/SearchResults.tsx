@@ -38,8 +38,8 @@ export default function SearchResults({
 }: ISearchResultsProps) {
   const breakpointColumnsObj = {
     default: 3,
-    800: 2,
-    300: 1
+    535: 2,
+    450: 1
   };
 
   const [page, setPage] = useState(2)
