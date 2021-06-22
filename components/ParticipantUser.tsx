@@ -9,14 +9,15 @@ import {
 } from "@chakra-ui/react"
 
 export default function ParticipantUser({ user, name, email, accepted, participates, organizer }: IParticipantUser) {
+  const avatarSize = '50px';
   return (
     <Box>
       <Stack direction='row' spacing={2}>
         <Box>
           {user ? (
-            <Image src={user.imageUrl} minW='70px' maxW='70px' rounded='md' />
+            <Image src={user.imageUrl} w={avatarSize} rounded='md' />
           ) : (
-            <Box w='70px' h='70px' bg='gray.300' rounded='md'></Box>
+              <Box w={avatarSize} h={avatarSize} bg='gray.300' rounded='md'></Box>
           )}
         </Box>
 
@@ -26,7 +27,7 @@ export default function ParticipantUser({ user, name, email, accepted, participa
               borderRadius="full"
               colorScheme="red"
               title="User hasn't accepted the invite yet"
-              mb='1'
+              mb='0.5'
               fontSize='.6em'
             >
               Pending
