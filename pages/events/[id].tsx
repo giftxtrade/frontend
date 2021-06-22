@@ -21,6 +21,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertIcon
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../components/Navbar';
@@ -37,7 +41,8 @@ import { BsClock, BsFillPeopleFill, BsGearWideConnected, BsLink45Deg } from "rea
 import { User } from "../../store/jwt-payload";
 import { ILink } from '../../types/Link';
 import ParticipantUser from '../../components/ParticipantUser';
-import GetLink from '../../components/GetLink';
+import GetLinkEvent from '../../components/GetLinkEvent';
+import { unstable_batchedUpdates } from "react-dom";
 
 export interface IEventProps {
   accessToken: string
@@ -59,16 +64,41 @@ export default function Event(props: IEventProps) {
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
   const [link, setLink] = useState(props.link)
   const [participants, setParticipants] = useState(props.participants)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkError, setLinkError] = useState(false)
 
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
   const pendingParticipants = totalParticipants - activeParticipants
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [linkModal, setLinkModal] = useState(false)
 
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
   const isSmallScreen = useMediaQuery({ query: '(max-device-width: 565px)' })
+
+  const generateLink = () => {
+    setLinkLoading(true);
+    setLinkError(false)
+
+    axios.post(`${api.get_link}/${event.id}`,
+      { expirationDate: new Date(event.drawAt).toString() },
+      { headers: { "Authorization": "Bearer " + accessToken } })
+      .then(({ data }: { data: ILink }) => {
+        unstable_batchedUpdates(() => {
+          setLinkError(false)
+          setLinkLoading(false)
+          setLink(data)
+        })
+      })
+      .catch(_ => {
+        unstable_batchedUpdates(() => {
+          setLinkError(true)
+          setLinkLoading(false)
+        })
+      })
+  }
 
   return (
     <>
@@ -166,7 +196,12 @@ export default function Event(props: IEventProps) {
                     ml='2'
                     size='sm'
                     colorScheme='teal'
-                    onClick={onOpen}
+                    onClick={() => {
+                      setLinkModal(true)
+                      onOpen()
+                      if (!link)
+                        generateLink()
+                    }}
                   >
                     Share Link
                   </Button>
@@ -232,24 +267,17 @@ export default function Event(props: IEventProps) {
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Get Link</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            {link ? (
-              <GetLink
-                link={link.code}
-                drawDate={event.drawAt}
-              />
-            ) : <></>}
-          </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
+        {linkModal ? (
+          <GetLinkEvent
+            link={link}
+            drawDate={event.drawAt}
+            linkLoading={linkLoading}
+            linkError={linkError}
+            onClose={onClose}
+            setLinkModal={setLinkModal}
+          />
+        ) : <></>}
       </Modal>
     </>
   )
