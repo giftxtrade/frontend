@@ -41,7 +41,6 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [getLink, setGetLink] = useState(false)
   const [linkLoading, setLinkLoading] = useState(false)
   const [link, setLink] = useState('')
-  const [copy, setCopy] = useState(false)
 
   useEffect(() => {
     setForms([{
@@ -186,9 +185,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                   linkLoading={linkLoading}
                   error={error}
                   link={link}
-                  copy={copy}
                   drawDate={drawDate}
-                  setCopy={setCopy}
                   setMain={setMain}
                   setGetLink={setGetLink}
                   setBudget={setBudget}

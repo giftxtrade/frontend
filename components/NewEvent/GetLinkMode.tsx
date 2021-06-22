@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction } from 'react';
 import { base } from '../../util/site';
+import GetLink from '../GetLink';
 import { IParticipantForm } from '../NewEvent';
 
 export interface IGetLinkMode {
@@ -30,12 +31,10 @@ export interface IGetLinkMode {
   setGetLink: Dispatch<SetStateAction<boolean>>
   linkLoading: boolean
   link: string
-  copy: boolean
-  setCopy: Dispatch<SetStateAction<boolean>>
   onClose: () => void
 }
 
-export default function GetLinkMode({ linkLoading, error, link, copy, drawDate, setCopy, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose }: IGetLinkMode) {
+export default function GetLinkMode({ linkLoading, error, link, drawDate, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose }: IGetLinkMode) {
   return (
     <ModalContent>
       {linkLoading ? (
@@ -61,30 +60,10 @@ export default function GetLinkMode({ linkLoading, error, link, copy, drawDate, 
                 <AlertDescription>Could not generate your link</AlertDescription>
               </Alert>
             ) : (
-              <>
-                <Flex>
-                  <Input
-                    value={`${base}i/${link}`}
-                    variant='filled'
+                  <GetLink
+                    link={link}
+                    drawDate={drawDate}
                   />
-                  <Button
-                    leftIcon={<CopyIcon />}
-                    ml='3'
-                    onClick={() => {
-                      navigator.clipboard.writeText(`${base}i/${link}`)
-                      setCopy(true)
-                    }}
-                    colorScheme='teal'
-                  >
-                    {copy ? 'Copied!' : 'Copy'}
-                  </Button>
-                </Flex>
-
-                <Text mt='5' fontSize='sm' color='gray.600'>
-                  <InfoIcon mr='2' />
-                  You can use the generated link to share with anyone that you want to have in your event. This link is set to deactivate on <i>{new Date(drawDate).toDateString()}</i>.
-                </Text>
-              </>
             )}
           </ModalBody>
 
@@ -96,8 +75,7 @@ export default function GetLinkMode({ linkLoading, error, link, copy, drawDate, 
               setName('')
               setDrawDate('')
               setDescription('')
-              setReset(false)
-              setCopy(false)
+                setReset(false)
               onClose()
             }}>
               Done
