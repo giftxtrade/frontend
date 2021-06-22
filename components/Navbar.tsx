@@ -4,6 +4,7 @@ import { authStore, logout } from '../store/auth-store';
 import router from "next/router";
 import { useCookies } from "react-cookie";
 import { useMediaQuery } from 'react-responsive'
+import NextLink from 'next/link';
 
 export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   loggedIn: boolean,
@@ -18,11 +19,15 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   return (
     <Container maxW='4xl' p='5' mb='10'>
       <Flex direction='row' justifyContent='space-between' alignItems='center'>
-        {isMediumScreen ? (
-          <Image w='35px' src='/giftxtrade_profile_rounded.png' />
-        ) : (
-            <Image w='40' src='/giftxtrade_logotype_color.svg' />
-        )}
+        <NextLink href='/' passHref>
+          <Link>
+            {isMediumScreen ? (
+              <Image w='35px' src='/giftxtrade_profile_rounded.png' />
+            ) : (
+              <Image w='40' src='/giftxtrade_logotype_color.svg' />
+            )}
+          </Link>
+        </NextLink>
 
         <Flex
           direction="row"
