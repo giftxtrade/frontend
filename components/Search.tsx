@@ -9,7 +9,9 @@ import {
   Spinner,
   Flex,
   Icon,
-  Text
+  Text,
+  Button,
+  Link
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
@@ -20,15 +22,18 @@ import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import { FcClearFilters } from 'react-icons/fc'
 import SearchResults from './SearchResults';
+import { BsArrowLeft, BsArrowLeftShort, BsChevronLeft } from 'react-icons/bs';
+import NextLink from 'next/link';
 
 export interface ISearchProps {
   accessToken: string
   pageLimit: number
   minPrice: number
   maxPrice: number
+  eventId: number
 }
 
-export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: ISearchProps) {
+export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId }: ISearchProps) {
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
@@ -108,10 +113,23 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, }: 
   return (
     <Box
       flex='2'
-      pl='2' pr='2' pb='2'
+      pl='2' pb='2'
       position='relative'
       maxWidth='600px'
     >
+      <Box mb='5'>
+        <NextLink href={`/events/${eventId}`} passHref>
+          <Link>
+            <Button
+              leftIcon={<Icon as={BsChevronLeft} />}
+              size='sm'
+            >
+              Back to Event
+            </Button>
+          </Link>
+        </NextLink>
+      </Box>
+
       <Box
         pb='2'
         position='sticky'
