@@ -21,6 +21,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Alert,
+  AlertTitle,
+  AlertDescription,
+  AlertIcon
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../components/Navbar';
@@ -38,6 +42,7 @@ import { User } from "../../store/jwt-payload";
 import { ILink } from '../../types/Link';
 import ParticipantUser from '../../components/ParticipantUser';
 import GetLink from '../../components/GetLink';
+import { unstable_batchedUpdates } from "react-dom";
 
 export interface IEventProps {
   accessToken: string
@@ -59,6 +64,8 @@ export default function Event(props: IEventProps) {
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
   const [link, setLink] = useState(props.link)
   const [participants, setParticipants] = useState(props.participants)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkError, setLinkError] = useState(false)
 
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
@@ -69,6 +76,26 @@ export default function Event(props: IEventProps) {
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
   const isSmallScreen = useMediaQuery({ query: '(max-device-width: 565px)' })
+
+  const generateLink = () => {
+    setLinkLoading(true);
+    axios.post(`${api.get_link}/${event.id}`,
+      { expirationDate: new Date(event.drawAt).toString() },
+      { headers: { "Authorization": "Bearer " + accessToken } })
+      .then(({ data }: { data: ILink }) => {
+        unstable_batchedUpdates(() => {
+          setLinkError(false)
+          setLinkLoading(false)
+          setLink(data)
+        })
+      })
+      .catch(_ => {
+        unstable_batchedUpdates(() => {
+          setLinkError(true)
+          setLinkLoading(false)
+        })
+      })
+  }
 
   return (
     <>
@@ -166,7 +193,11 @@ export default function Event(props: IEventProps) {
                     ml='2'
                     size='sm'
                     colorScheme='teal'
-                    onClick={onOpen}
+                    onClick={() => {
+                      onOpen()
+                      if (!link)
+                        generateLink()
+                    }}
                   >
                     Share Link
                   </Button>
@@ -241,7 +272,29 @@ export default function Event(props: IEventProps) {
                 link={link.code}
                 drawDate={event.drawAt}
               />
-            ) : <></>}
+            ) : (
+              linkLoading ? (
+                <Flex
+                  maxW='full'
+                  direction='column'
+                  alignItems='center'
+                  justifyContent='center'
+                  mt='5' mb='5'
+                  p='5'
+                >
+                  <Spinner mb='5' />
+                  <Text textAlign='center'>Generating sharable link. Please wait.</Text>
+                </Flex>
+              ) : (
+                linkError ? (
+                  <Alert status="error" mt='3' rounded='md'>
+                    <AlertIcon />
+                    <AlertTitle mr={2}>Error!</AlertTitle>
+                    <AlertDescription>Could not generate your link</AlertDescription>
+                  </Alert>
+                ) : <></>
+              )
+            )}
           </ModalBody>
 
           <ModalFooter>
