@@ -31,13 +31,19 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       p='5'
       backgroundColor={isInvite ? '#f9f9f9' : 'white'}
     >
-      <NextLink href={`/events/${event.id}`} passHref>
-        <Link>
-          <Heading size='md'>
-            {event.name}
-          </Heading>
-        </Link>
-      </NextLink>
+      {isInvite ? (
+        <Heading size='md'>
+          {event.name}
+        </Heading>
+      ) : (
+          <NextLink href={`/events/${event.id}`} passHref>
+            <Link>
+              <Heading size='md'>
+                {event.name}
+              </Heading>
+            </Link>
+          </NextLink>
+      )}
 
       <Text color='gray.500' fontSize='xs'>
         <b style={{ marginRight: '8px' }}>Created on</b>
@@ -75,7 +81,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       </Stack>
 
       {isInvite ? (
-        <Flex direction='row' alignItems='center' justifyContent='end'>
+        <Flex direction='row' alignItems='center' justifyContent='flex-end'>
           <Button
             size='xs'
             colorScheme='green'
