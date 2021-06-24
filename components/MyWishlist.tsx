@@ -5,19 +5,41 @@ import {
   Button,
   Icon,
   Flex,
-  Stack,
   Link,
-  Box
+  Box,
 } from '@chakra-ui/react'
 import { IEvent } from '../types/Event'
 import { BsPlusCircle } from 'react-icons/bs';
 import NextLink from 'next/link';
+import { IWish } from '../types/Wish';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { api } from '../util/api';
+import { unstable_batchedUpdates } from 'react-dom';
+import { WishlistLoadingItem, WishlistProductItem } from './WishlistItem';
 
 export interface IMyWishlistProps {
-  event: IEvent
+  event: IEvent,
+  accessToken: string
 }
 
-export default function MyWishlist({ event }: any) {
+export default function MyWishlist({ event, accessToken }: IMyWishlistProps) {
+  const [wishes, setWishes] = useState(Array<IWish>())
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    axios.get(`${api.wishes}/${event.id}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }: { data: IWish[] }) => {
+        unstable_batchedUpdates(() => {
+          setWishes(data)
+          setLoading(false)
+        })
+      })
+      .catch()
+  }, [])
+
   return (
     <Container
       flex='1'
@@ -44,9 +66,23 @@ export default function MyWishlist({ event }: any) {
         </NextLink>
       </Flex>
 
-      {[1, 2, 3, 4, 5].map((p, i) => (
-        <Box maxW='full' h='60px' bg='gray.200' mb='5' rounded='md'></Box>
-      ))}
+      {
+        loading ? [1, 2].map((p, i) => (
+          <Box mb='5' key={`loading#${i}`}>
+            <WishlistLoadingItem />
+          </Box>
+        )) : (
+          wishes.length === 0 ? (
+            <Text textAlign='center' color='gray.400'>Your wishlist is empty. Click the "+" button to add products</Text>
+          ) : (
+            wishes.map(({ product }, i) => (
+              <Box mb='10' key={`wishitem#${i}`}>
+                <WishlistProductItem product={product} />
+              </Box>
+            ))
+          )
+        )
+      }
     </Container>
   )
 }
