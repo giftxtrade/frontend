@@ -9,7 +9,7 @@ export default function ProductSm({ product }: { product: IProduct }) {
   const price = numberToCurrency(product.price)
 
   return (
-    <Box mb='10'>
+    <Box mb='10' id={`product#${product.id}`}>
       <Box>
         <Link
           href={link} target='blank'
