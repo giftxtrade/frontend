@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import { Flex, Spinner, Image, Heading, Text, Button, Link, Box, Container } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
 import Search from "../../../components/Search";
-import MyWishlist from "../../../components/MyWishlist";
 import eventFetch from "../../../util/ss-event-fetch";
 import { IEventProps } from "../[id]";
 import { useMediaQuery } from 'react-responsive';
+import { WishlistLoadingItem, WishlistProductItem } from '../../../components/WishlistItem';
+import { IWish } from "../../../types/Wish";
+import axios from 'axios';
+import { api } from '../../../util/api';
+import { unstable_batchedUpdates } from 'react-dom';
+import { IProduct } from '../../../types/Product';
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -16,7 +21,29 @@ export default function Wishlist(props: IEventProps) {
   const [user, setUser] = useState(props.user)
   const [event, setEvent] = useState(props.event)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
-  const [link, setLink] = useState(props.link)
+  const [loadingWishes, setLoadingWishes] = useState(true)
+  const [wishes, setWishes] = useState(Array<IWish>())
+
+  useEffect(() => {
+    axios.get(`${api.wishes}/${event.id}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }: { data: IWish[] }) => {
+        unstable_batchedUpdates(() => {
+          setWishes(data)
+          setLoadingWishes(false)
+        })
+      })
+      .catch()
+  }, [])
+
+  const addWish = (product: IProduct) => {
+    setWishes([{ id: 0, createdAt: '', product: product }, ...wishes])
+  }
+
+  const removeWish = (product: IProduct) => {
+    setWishes(wishes.filter(w => w.product.id !== product.id))
+  }
 
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
@@ -46,15 +73,46 @@ export default function Wishlist(props: IEventProps) {
               maxPrice={event.budget}
               pageLimit={50}
               eventId={event.id}
+
+              addWish={addWish}
+              removeWish={removeWish}
             />
           </Container>
 
           {isMediumScreen ? (
             <></>
           ) : (
-              <MyWishlist
-                event={event}
-              />
+              <Container
+                flex='1'
+                pl='2'
+                pr='0'
+              >
+                <Box position='sticky' top='2'>
+                  <Flex mb='7' direction='row' alignItems='center' justifyContent='start'>
+                    <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
+                  </Flex>
+
+                  <Box h='90vh' overflowY='auto'>
+                    {
+                      loadingWishes ? [1, 2].map((p, i) => (
+                        <Box mb='5' key={`loading#${i}`}>
+                          <WishlistLoadingItem />
+                        </Box>
+                      )) : (
+                        wishes.length === 0 ? (
+                          <Text textAlign='center' color='gray.400'>Your wishlist is empty. Click the "+" button to add products</Text>
+                        ) : (
+                          wishes.map(({ product }, i) => (
+                            <Box mb='10' key={`wishitem#${i}`}>
+                              <WishlistProductItem product={product} />
+                            </Box>
+                          ))
+                        )
+                      )
+                    }
+                  </Box>
+                </Box>
+              </Container>
           )}
         </Flex>
       </Container>

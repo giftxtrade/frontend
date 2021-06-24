@@ -21,6 +21,9 @@ export interface ISearchResultsProps {
   setError: Dispatch<SetStateAction<boolean>>
   setResults: Dispatch<SetStateAction<IProduct[]>>
   setHasMore: Dispatch<SetStateAction<boolean>>
+
+  addWish: (product: IProduct) => void
+  removeWish: (product: IProduct) => void
 }
 
 export default function SearchResults({
@@ -35,6 +38,9 @@ export default function SearchResults({
   setError,
   setResults,
   setHasMore,
+
+  addWish,
+  removeWish
 }: ISearchResultsProps) {
   const breakpointColumnsObj = {
     default: 3,
@@ -103,6 +109,9 @@ export default function SearchResults({
           <ProductSm
             product={result}
             key={`sp#${i}`}
+
+            addWish={addWish}
+            removeWish={removeWish}
           />
         ))}
       </Masonry>

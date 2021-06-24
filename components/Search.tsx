@@ -31,9 +31,12 @@ export interface ISearchProps {
   minPrice: number
   maxPrice: number
   eventId: number
+
+  addWish: (product: IProduct) => void
+  removeWish: (product: IProduct) => void
 }
 
-export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId }: ISearchProps) {
+export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, addWish, removeWish }: ISearchProps) {
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
@@ -101,6 +104,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
                 setError={setError}
                 setResults={setResults}
                 setHasMore={setHasMore}
+
+                addWish={addWish}
+                removeWish={removeWish}
               />
           )
         }

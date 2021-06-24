@@ -27,7 +27,7 @@ export function WishlistLoadingItem() {
 export function WishlistProductItem({ product }: { product: IProduct }) {
   return (
     <Flex maxW='full' direction='row' alignItems='flex-start' justifyContent='flex-start'>
-      <Box flex='1'>
+      <Box flex='1' maxH='100px' overflow='hidden' rounded='md'>
         <Image src={product.imageUrl} />
       </Box>
       <Box flex='2' ml='2'>
