@@ -17,6 +17,7 @@ export interface ISearchResultsProps {
   maxPrice: number
   search: string
   hasMore: boolean
+  productSet: Set<number>
 
   setError: Dispatch<SetStateAction<boolean>>
   setResults: Dispatch<SetStateAction<IProduct[]>>
@@ -34,6 +35,7 @@ export default function SearchResults({
   search,
   accessToken,
   hasMore,
+  productSet,
 
   setError,
   setResults,
@@ -108,6 +110,7 @@ export default function SearchResults({
         {results.map((result: IProduct, i) => (
           <ProductSm
             product={result}
+            productSet={productSet}
             key={`sp#${i}`}
 
             addWish={addWish}

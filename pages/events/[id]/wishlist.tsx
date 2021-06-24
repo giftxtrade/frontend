@@ -23,25 +23,33 @@ export default function Wishlist(props: IEventProps) {
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
   const [loadingWishes, setLoadingWishes] = useState(true)
   const [wishes, setWishes] = useState(Array<IWish>())
+  const [wishProductIds, setWishProductIds] = useState(new Set<number>())
 
   useEffect(() => {
     axios.get(`${api.wishes}/${event.id}`, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }: { data: IWish[] }) => {
+        const productIdSet = new Set<number>()
+        data.forEach(({ product }) => productIdSet.add(product.id))
+
         unstable_batchedUpdates(() => {
           setWishes(data)
           setLoadingWishes(false)
+          setWishProductIds(productIdSet)
         })
       })
       .catch()
   }, [])
 
   const addWish = (product: IProduct) => {
+    setWishProductIds(wishProductIds.add(product.id))
     setWishes([{ id: 0, createdAt: '', product: product }, ...wishes])
   }
 
   const removeWish = (product: IProduct) => {
+    wishProductIds.delete(product.id)
+    setWishProductIds(wishProductIds)
     setWishes(wishes.filter(w => w.product.id !== product.id))
   }
 
@@ -76,6 +84,7 @@ export default function Wishlist(props: IEventProps) {
 
               addWish={addWish}
               removeWish={removeWish}
+              productSet={wishProductIds}
             />
           </Container>
 

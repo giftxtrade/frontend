@@ -7,12 +7,13 @@ import { FaCartPlus } from 'react-icons/fa'
 
 export interface IProductSmProps {
   product: IProduct,
+  productSet: Set<number>
 
   addWish: (product: IProduct) => void
   removeWish: (product: IProduct) => void
 }
 
-export default function ProductSm({ product, addWish, removeWish }: IProductSmProps) {
+export default function ProductSm({ product, productSet, addWish, removeWish }: IProductSmProps) {
   const link = generateAmazonAffiliateLink(product.productKey)
   const price = numberToCurrency(product.price)
 
@@ -55,6 +56,7 @@ export default function ProductSm({ product, addWish, removeWish }: IProductSmPr
           variant='ghost'
           colorScheme='blue'
           onClick={() => addWish(product)}
+          isDisabled={productSet.has(product.id)}
         >
           <Icon as={FaCartPlus} />
         </Button>

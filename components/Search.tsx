@@ -31,12 +31,13 @@ export interface ISearchProps {
   minPrice: number
   maxPrice: number
   eventId: number
+  productSet: Set<number>
 
   addWish: (product: IProduct) => void
   removeWish: (product: IProduct) => void
 }
 
-export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, addWish, removeWish }: ISearchProps) {
+export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
@@ -100,6 +101,8 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
                 accessToken={accessToken}
                 search={search}
                 hasMore={hasMore}
+
+                productSet={productSet}
 
                 setError={setError}
                 setResults={setResults}
