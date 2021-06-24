@@ -8,7 +8,7 @@ import eventFetch from "../../../util/ss-event-fetch";
 import { IEventProps } from "../[id]";
 import { useMediaQuery } from 'react-responsive';
 import { WishlistLoadingItem, WishlistProductItem } from '../../../components/WishlistItem';
-import { IWish } from "../../../types/Wish";
+import { IWish } from '../../../types/Wish';
 import axios from 'axios';
 import { api } from '../../../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
@@ -44,7 +44,19 @@ export default function Wishlist(props: IEventProps) {
 
   const addWish = (product: IProduct) => {
     setWishProductIds(wishProductIds.add(product.id))
-    setWishes([{ id: 0, createdAt: '', product: product }, ...wishes])
+    axios.post(api.wishes,
+      {
+        eventId: event.id,
+        productId: product.id,
+        participantId: meParticipant.id
+      },
+      {
+        headers: { "Authorization": "Bearer " + accessToken }
+      })
+      .then(({ data }: { data: IWish }) => {
+        setWishes([data, ...wishes])
+      })
+      .catch(_ => console.log("Could not add wish"))
   }
 
   const removeWish = (product: IProduct) => {
