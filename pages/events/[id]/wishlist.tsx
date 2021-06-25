@@ -131,7 +131,7 @@ export default function Wishlist(props: IEventProps) {
                         </Box>
                       )) : (
                         wishes.length === 0 ? (
-                          <Text textAlign='center' color='gray.400'>Your wishlist is empty. Click the "+" button to add products</Text>
+                            <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
                         ) : (
                           wishes.map(({ product }, i) => (
                             <Box mb='10' key={`wishitem#${i}`}>
