@@ -38,6 +38,7 @@ export interface ISearchProps {
 }
 
 export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
+  const ignoreKeys = ['Control', 'Alt', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'CapsLock', 'Shift']
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
   const [results, setResults] = useState(Array<IProduct>())
@@ -158,8 +159,10 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             placeholder="Search for products"
             autoFocus={true}
             onKeyUp={(e: any) => {
-              if (e.ctrlKey || e.shiftKey || e.altKey || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'tab')
-                return
+              for (const k of ignoreKeys) {
+                if (e.key === k)
+                  return
+              }
 
               const q: string = e.target.value.trim()
               clearTimeout(timeout);
