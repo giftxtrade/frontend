@@ -63,6 +63,16 @@ export default function Wishlist(props: IEventProps) {
     wishProductIds.delete(product.id)
     setWishProductIds(wishProductIds)
     setWishes(wishes.filter(w => w.product.id !== product.id))
+    axios.delete(api.wishes, {
+      headers: { "Authorization": "Bearer " + accessToken },
+      data: {
+        eventId: event.id,
+        productId: product.id,
+        participantId: meParticipant.id
+      }
+    })
+      .then(({ data }) => { })
+      .catch(_ => { })
   }
 
   // Media queries
@@ -125,7 +135,10 @@ export default function Wishlist(props: IEventProps) {
                         ) : (
                           wishes.map(({ product }, i) => (
                             <Box mb='10' key={`wishitem#${i}`}>
-                              <WishlistProductItem product={product} />
+                              <WishlistProductItem
+                                product={product}
+                                removeWish={removeWish}
+                              />
                             </Box>
                           ))
                         )

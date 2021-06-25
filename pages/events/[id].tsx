@@ -259,6 +259,7 @@ export default function Event(props: IEventProps) {
               <MyWishlist
                 event={event}
                 accessToken={accessToken}
+                meParticipant={meParticipant}
               />
           )}
         </Flex>

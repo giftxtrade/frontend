@@ -17,13 +17,16 @@ import axios from 'axios';
 import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { WishlistLoadingItem, WishlistProductItem } from './WishlistItem';
+import { IProduct } from '../types/Product';
+import { IParticipant } from '../types/Participant';
 
 export interface IMyWishlistProps {
   event: IEvent,
+  meParticipant: IParticipant,
   accessToken: string
 }
 
-export default function MyWishlist({ event, accessToken }: IMyWishlistProps) {
+export default function MyWishlist({ event, meParticipant, accessToken }: IMyWishlistProps) {
   const [wishes, setWishes] = useState(Array<IWish>())
   const [loading, setLoading] = useState(true)
 
@@ -39,6 +42,20 @@ export default function MyWishlist({ event, accessToken }: IMyWishlistProps) {
       })
       .catch()
   }, [])
+
+  const removeWish = (product: IProduct) => {
+    setWishes(wishes.filter(w => w.product.id !== product.id))
+    axios.delete(api.wishes, {
+      headers: { "Authorization": "Bearer " + accessToken },
+      data: {
+        eventId: event.id,
+        productId: product.id,
+        participantId: meParticipant.id
+      }
+    })
+      .then(({ data }) => { })
+      .catch(_ => { })
+  }
 
   return (
     <Container
@@ -77,7 +94,10 @@ export default function MyWishlist({ event, accessToken }: IMyWishlistProps) {
           ) : (
             wishes.map(({ product }, i) => (
               <Box mb='10' key={`wishitem#${i}`}>
-                <WishlistProductItem product={product} />
+                <WishlistProductItem
+                  product={product}
+                  removeWish={removeWish}
+                />
               </Box>
             ))
           )
