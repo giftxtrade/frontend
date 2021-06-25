@@ -3,7 +3,8 @@ import {
   Flex,
   Link,
   Box,
-  Image
+  Image,
+  Button
 } from '@chakra-ui/react'
 import { IProduct } from '../types/Product';
 import { generateAmazonAffiliateLink } from '../util/links';
@@ -24,7 +25,12 @@ export function WishlistLoadingItem() {
   )
 }
 
-export function WishlistProductItem({ product }: { product: IProduct }) {
+export interface IWishlistProductProps {
+  product: IProduct
+  removeWish: (product: IProduct) => void
+}
+
+export function WishlistProductItem({ product, removeWish }: IWishlistProductProps) {
   return (
     <Flex maxW='full' direction='row' alignItems='flex-start' justifyContent='flex-start'>
       <Box flex='1' maxH='100px' overflow='hidden' rounded='md'>
@@ -36,13 +42,24 @@ export function WishlistProductItem({ product }: { product: IProduct }) {
         </Text>
         <Text>
           <b>{numberToCurrency(product.price)}</b>
+
           <span>&nbsp;&nbsp;</span>
+
           <StarRatings
             rating={product.rating}
-            starDimension="15px"
+            starDimension="13px"
             starSpacing="0.5px"
             starRatedColor="rgb(255, 188, 0)"
           />
+
+          <Button
+            float='right'
+            colorScheme='red'
+            size='xs'
+            onClick={() => removeWish(product)}
+          >
+            Remove
+          </Button>
         </Text>
       </Box>
     </Flex>
