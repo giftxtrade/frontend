@@ -157,11 +157,11 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             bg='white'
             placeholder="Search for products"
             autoFocus={true}
-            onKeyUp={(event: any) => {
-              if (event.ctrlKey || event.shiftKey || event.altKey)
+            onKeyUp={(e: any) => {
+              if (e.ctrlKey || e.shiftKey || e.altKey || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'tab')
                 return
 
-              const q: string = event.target.value.trim()
+              const q: string = e.target.value.trim()
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
