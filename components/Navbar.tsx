@@ -3,7 +3,7 @@ import { User } from '../store/jwt-payload';
 import { authStore, logout } from '../store/auth-store';
 import router from "next/router";
 import { useCookies } from "react-cookie";
-import { useMediaQuery } from 'react-responsive'
+import { useMediaQuery } from '@chakra-ui/react'
 import NextLink from 'next/link';
 
 export default function Navbar({ loggedIn, user, accessToken, gToken }: {
@@ -13,8 +13,8 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   gToken: string
 }) {
   const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
-  const isMediumScreen = useMediaQuery({ query: '(max-device-width: 650px)' })
-  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 370px)' })
+  const [isMediumScreen] = useMediaQuery('(max-width: 650px)')
+  const [isSmallScreen] = useMediaQuery('(max-width: 370px)')
 
   return (
     <Container maxW='4xl' p='5' mb='10'>

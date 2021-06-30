@@ -26,7 +26,7 @@ import { DocumentContext } from "next/document";
 import axios from 'axios';
 import { api } from '../../util/api';
 import { IEvent } from '../../types/Event';
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from '@chakra-ui/react';
 import { IParticipant, IParticipantUser } from '../../types/Participant';
 import moment from "moment";
 import numberToCurrency from "../../util/currency";
@@ -76,9 +76,9 @@ export default function Event(props: IEventProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   // Media queries
-  const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
-  const isSmallScreen = useMediaQuery({ query: '(max-device-width: 565px)' })
-  const isXSmallScreen = useMediaQuery({ query: '(max-device-width: 365px)' })
+  const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
+  const [isSmallScreen] = useMediaQuery('(max-width: 565px)')
+  const [isXSmallScreen] = useMediaQuery('(max-width: 365px)')
 
   const generateLink = () => {
     setLinkLoading(true);

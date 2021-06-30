@@ -6,7 +6,7 @@ import { DocumentContext } from "next/document";
 import Search from "../../../components/Search";
 import eventFetch from "../../../util/ss-event-fetch";
 import { IEventProps } from "../[id]";
-import { useMediaQuery } from 'react-responsive';
+import { useMediaQuery } from '@chakra-ui/react';
 import { WishlistLoadingItem, WishlistProductItem } from '../../../components/WishlistItem';
 import { IWish } from '../../../types/Wish';
 import axios from 'axios';
@@ -76,7 +76,7 @@ export default function Wishlist(props: IEventProps) {
   }
 
   // Media queries
-  const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
+  const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
 
   return (
     <>
