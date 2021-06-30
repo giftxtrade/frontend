@@ -19,7 +19,7 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
 
   return (
     <Box mb='10' id={`product#${product.id}`}>
-      <Box>
+      <Box overflow='hidden'>
         <Link
           href={link} target='blank'
           isExternal={true}
@@ -29,7 +29,7 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
             loading='lazy'
             rounded='md'
             mb='3'
-            maxW='155px'
+            overflow='hidden'
           />
           <Heading
             size='sm'

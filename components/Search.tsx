@@ -174,15 +174,14 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             }}
             shadow='sm'
           />
-          <InputRightElement
-            children={
-              searchLoading ? (
-                <Spinner size='sm' color='gray.500' />
+
+          {searchLoading ? (
+            <InputRightElement
+              children={<Spinner size='sm' color='gray.500' />}
+            />
               ) : (
                 <></>
-              )
-            }
-          />
+          )}
         </InputGroup>
       </Box>
 

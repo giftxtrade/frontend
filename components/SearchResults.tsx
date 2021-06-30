@@ -47,7 +47,7 @@ export default function SearchResults({
   const breakpointColumnsObj = {
     default: 3,
     535: 2,
-    450: 1
+    300: 1
   };
 
   const [page, setPage] = useState(2)
