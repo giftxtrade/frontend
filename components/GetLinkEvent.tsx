@@ -30,7 +30,10 @@ export default function GetLinkEvent({ link, drawDate, linkLoading, linkError, o
   return (
     <ModalContent>
       <ModalHeader>Get Link</ModalHeader>
-      <ModalCloseButton />
+      <ModalCloseButton onClick={() => {
+        setLinkModal(false)
+        onClose()
+      }} />
       <ModalBody>
         {link ? (
           <GetLink
@@ -62,14 +65,7 @@ export default function GetLinkEvent({ link, drawDate, linkLoading, linkError, o
         )}
       </ModalBody>
 
-      <ModalFooter>
-        <Button colorScheme="blue" mr={3} onClick={() => {
-          onClose()
-          setLinkModal(false)
-        }}>
-          Close
-        </Button>
-      </ModalFooter>
+      <ModalFooter></ModalFooter>
     </ModalContent>
   )
 }

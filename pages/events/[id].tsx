@@ -2,11 +2,9 @@ import { useState } from "react";
 import {
   Flex,
   Spinner,
-  Image,
   Heading,
   Text,
   Button,
-  Link,
   Box,
   Container,
   Icon,
@@ -21,15 +19,10 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Alert,
-  AlertTitle,
-  AlertDescription,
-  AlertIcon
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../components/Navbar';
 import { DocumentContext } from "next/document";
-import { serverSideAuth } from "../../util/server-side-auth";
 import axios from 'axios';
 import { api } from '../../util/api';
 import { IEvent } from '../../types/Event';
@@ -69,13 +62,14 @@ export default function Event(props: IEventProps) {
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState(false)
   const [wishlist, setWishlist] = useState(false)
+  const [showDraw, setShowDraw] = useState(false)
+  const [linkModal, setLinkModal] = useState(false)
 
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
   const pendingParticipants = totalParticipants - activeParticipants
 
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [linkModal, setLinkModal] = useState(false)
 
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
@@ -116,10 +110,30 @@ export default function Event(props: IEventProps) {
       />
     }
 
+    if (showDraw) {
+      return (
+        <ModalContent>
+          <ModalHeader>Draws</ModalHeader>
+          <ModalCloseButton onClick={() => {
+            setShowDraw(false)
+            onClose()
+          }} />
+          <ModalBody>
+
+          </ModalBody>
+
+          <ModalFooter></ModalFooter>
+        </ModalContent>
+      )
+    }
+
     if (wishlist) {
       return (
         <ModalContent>
-          <ModalCloseButton />
+          <ModalCloseButton onClick={() => {
+            setWishlist(false)
+            onClose()
+          }} />
           <ModalBody>
             <MyWishlist
               event={event}
@@ -230,6 +244,10 @@ export default function Event(props: IEventProps) {
                     leftIcon={<Icon as={BsShuffle} />}
                     size={isXSmallScreen ? 'xs' : 'sm'}
                     colorScheme='blue'
+                    onClick={() => {
+                      setShowDraw(true)
+                      onOpen()
+                    }}
                   >
                     Draw
                   </Button>
@@ -319,7 +337,12 @@ export default function Event(props: IEventProps) {
         </Flex>
       </Container>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={() => {
+        setLinkModal(false)
+        setShowDraw(false)
+        setWishlist(false)
+        onClose()
+      }}>
         <ModalOverlay />
 
         {renderModal()}
