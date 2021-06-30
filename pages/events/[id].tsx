@@ -38,6 +38,7 @@ import GetLinkEvent from '../../components/GetLinkEvent';
 import { unstable_batchedUpdates } from "react-dom";
 import MyWishlist from "../../components/MyWishlist";
 import eventFetch from "../../util/ss-event-fetch";
+import Draws from "../../components/Draws";
 
 export interface IEventProps {
   accessToken: string
@@ -112,18 +113,12 @@ export default function Event(props: IEventProps) {
 
     if (showDraw) {
       return (
-        <ModalContent>
-          <ModalHeader>Draws</ModalHeader>
-          <ModalCloseButton onClick={() => {
-            setShowDraw(false)
-            onClose()
-          }} />
-          <ModalBody>
-
-          </ModalBody>
-
-          <ModalFooter></ModalFooter>
-        </ModalContent>
+        <Draws
+          setShowDraw={setShowDraw}
+          onClose={onClose}
+          accessToken={accessToken}
+          event={event}
+        />
       )
     }
 
@@ -240,17 +235,20 @@ export default function Event(props: IEventProps) {
 
               <Box mt='5'>
                 <Stack direction='row' spacing='2' justifyContent='flex-end'>
-                  <Button
-                    leftIcon={<Icon as={BsShuffle} />}
-                    size={isXSmallScreen ? 'xs' : 'sm'}
-                    colorScheme='blue'
-                    onClick={() => {
-                      setShowDraw(true)
-                      onOpen()
-                    }}
-                  >
-                    Draw
-                  </Button>
+                  {meParticipant.organizer ? (
+                    <Button
+                      leftIcon={<Icon as={BsShuffle} />}
+                      size={isXSmallScreen ? 'xs' : 'sm'}
+                      colorScheme='blue'
+                      onClick={() => {
+                        setShowDraw(true)
+                        onOpen()
+                      }}
+                      disabled={!participants.map(v => v.accepted).reduce((prev, cur) => prev && cur)}
+                    >
+                      Draw
+                    </Button>
+                  ) : <></>}
 
                   <Button
                     leftIcon={<Icon as={BsLink45Deg} />}
@@ -337,12 +335,16 @@ export default function Event(props: IEventProps) {
         </Flex>
       </Container>
 
-      <Modal isOpen={isOpen} onClose={() => {
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
         setLinkModal(false)
         setShowDraw(false)
         setWishlist(false)
         onClose()
-      }}>
+        }}
+        size={showDraw ? 'xl' : 'md'}
+      >
         <ModalOverlay />
 
         {renderModal()}
