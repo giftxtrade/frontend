@@ -66,6 +66,9 @@ export default function Event(props: IEventProps) {
   const [showDraw, setShowDraw] = useState(false)
   const [linkModal, setLinkModal] = useState(false)
 
+  const emailToImageMap = new Map<string, User | null>()
+  participants.forEach(p => emailToImageMap.set(p.email, p.user?.imageUrl ? p.user : null))
+
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
   const pendingParticipants = totalParticipants - activeParticipants
@@ -118,6 +121,7 @@ export default function Event(props: IEventProps) {
           onClose={onClose}
           accessToken={accessToken}
           event={event}
+          emailToImageMap={emailToImageMap}
         />
       )
     }
@@ -244,7 +248,7 @@ export default function Event(props: IEventProps) {
                         setShowDraw(true)
                         onOpen()
                       }}
-                      disabled={!participants.map(v => v.accepted).reduce((prev, cur) => prev && cur)}
+                      disabled={!participants.map(v => v.accepted).reduce((prev, cur) => prev && cur) || participants.length < 2}
                     >
                       Draw
                     </Button>

@@ -25,15 +25,17 @@ import { api } from '../util/api';
 import { IDraw } from '../types/Draw';
 import { unstable_batchedUpdates } from 'react-dom';
 import ParticipantUser from './ParticipantUser';
+import { User } from '../store/jwt-payload';
 
 export interface IDrawsProps {
   setShowDraw: Dispatch<SetStateAction<boolean>>
   onClose: () => void
   accessToken: string
   event: IEvent
+  emailToImageMap: Map<string, User | null>
 }
 
-export default function Draws({ setShowDraw, onClose, accessToken, event }: IDrawsProps) {
+export default function Draws({ setShowDraw, onClose, accessToken, event, emailToImageMap }: IDrawsProps) {
   const [loading, setLoading] = useState(true)
   const [draws, setDraws] = useState(Array<IDraw>())
 
@@ -106,34 +108,40 @@ export default function Draws({ setShowDraw, onClose, accessToken, event }: IDra
                 </Tr>
               </Thead>
               <Tbody>
-                {draws.map(({ drawer, drawee }, i) => (
-                  <Tr>
-                    <Td>
-                      <ParticipantUser
-                        user={null}
-                        name={drawer.name}
-                        email={drawer.email}
-                        participates={drawer.participates}
-                        accepted={drawer.accepted}
-                        organizer={drawer.organizer}
-                        address={drawer.address}
-                        id={drawer.id}
-                      />
-                    </Td>
-                    <Td>
-                      <ParticipantUser
-                        user={null}
-                        name={drawee.name}
-                        email={drawee.email}
-                        participates={drawee.participates}
-                        accepted={drawee.accepted}
-                        organizer={drawee.organizer}
-                        address={drawee.address}
-                        id={drawee.id}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
+                    {draws.map(({ drawer, drawee }, i) => {
+                      const drawerUser = emailToImageMap.get(drawer.email);
+                      const draweeUser = emailToImageMap.get(drawee.email);
+                      return (
+                        (
+                          <Tr>
+                            <Td>
+                              <ParticipantUser
+                            user={drawerUser ? drawerUser : null}
+                            name={drawer.name}
+                            email={drawer.email}
+                            participates={drawer.participates}
+                            accepted={drawer.accepted}
+                            organizer={drawer.organizer}
+                            address={drawer.address}
+                            id={drawer.id}
+                          />
+                        </Td>
+                        <Td>
+                          <ParticipantUser
+                            user={draweeUser ? draweeUser : null}
+                            name={drawee.name}
+                            email={drawee.email}
+                            participates={drawee.participates}
+                            accepted={drawee.accepted}
+                            organizer={drawee.organizer}
+                            address={drawee.address}
+                            id={drawee.id}
+                          />
+                        </Td>
+                      </Tr>
+                    )
+                  )
+                })}
               </Tbody>
             </Table>
 
