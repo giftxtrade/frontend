@@ -1,5 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Flex, Spinner, Image, Heading, Text, Button, Link, Box, Container } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
+import {
+  Flex,
+  Heading,
+  Text,
+  Button,
+  Box,
+  Container,
+  useDisclosure,
+  Icon,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalHeader,
+  Badge
+} from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
@@ -13,6 +30,7 @@ import axios from 'axios';
 import { api } from '../../../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { IProduct } from '../../../types/Product';
+import { BsBagFill } from 'react-icons/bs';
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -24,6 +42,9 @@ export default function Wishlist(props: IEventProps) {
   const [loadingWishes, setLoadingWishes] = useState(true)
   const [wishes, setWishes] = useState(Array<IWish>())
   const [wishProductIds, setWishProductIds] = useState(new Set<number>())
+  const [showWishlist, setShowWishlist] = useState(false)
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     axios.get(`${api.wishes}/${event.id}`, {
@@ -150,6 +171,84 @@ export default function Wishlist(props: IEventProps) {
           )}
         </Flex>
       </Container>
+
+      {isMediumScreen ? (
+        <>
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size={'md'}
+          >
+            <ModalOverlay />
+
+            <ModalContent>
+              <ModalHeader>My Wishlist</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                {
+                  loadingWishes ? [1, 2].map((p, i) => (
+                    <Box mb='5' key={`loading#${i}`}>
+                      <WishlistLoadingItem />
+                    </Box>
+                  )) : (
+                    wishes.length === 0 ? (
+                      <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
+                    ) : (
+                      wishes.map(({ product }, i) => (
+                        <Box mb='10' key={`wishitem#${i}`}>
+                          <WishlistProductItem
+                            product={product}
+                            removeWish={removeWish}
+                          />
+                        </Box>
+                      ))
+                    )
+                  )
+                }
+              </ModalBody>
+
+              <ModalFooter>
+                <Button colorScheme="blue" mr={3} onClick={onClose}>
+                  Close
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </Modal>
+
+          <Flex
+            w='full' maxW='full'
+            p='2' pb='5'
+            position='fixed'
+            bottom='0' left='0' z-index='4'
+            alignItems='center'
+            justifyContent='center'
+          >
+            <Button
+              boxShadow='dark-lg'
+              colorScheme='red'
+              size='lg'
+              rounded='full'
+              p='1'
+              onClick={() => {
+                setShowWishlist(true)
+                onOpen()
+              }}
+              position='relative'
+            >
+              <Icon as={BsBagFill} />
+              <Box
+                position='absolute'
+                top='-1'
+                right='-1'
+              >
+                <Badge fontSize="0.8em" colorScheme='red' borderRadius='full'>
+                  {wishes.length}
+                </Badge>
+              </Box>
+            </Button>
+          </Flex>
+        </>
+      ) : <></>}
     </>
   )
 }

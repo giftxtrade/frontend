@@ -68,7 +68,7 @@ export default function Draws({ setShowDraw, onClose, accessToken, event, emailT
 
   return (
     <ModalContent>
-      <ModalHeader>Draws</ModalHeader >
+      <ModalHeader>Draws</ModalHeader>
       <ModalCloseButton onClick={() => {
         setShowDraw(false)
         onClose()
