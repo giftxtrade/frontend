@@ -1,5 +1,4 @@
 import {
-  Container,
   Heading,
   Text,
   Button,
@@ -58,11 +57,7 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
   }
 
   return (
-    <Container
-      flex='1'
-      pl='2'
-      pr='0'
-    >
+    <>
       <Flex mb='5' direction='row' alignItems='center' justifyContent='start'>
         <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
 
@@ -103,6 +98,6 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
           )
         )
       }
-    </Container>
+    </>
   )
 }

@@ -37,7 +37,7 @@ import { useMediaQuery } from 'react-responsive';
 import { IParticipant, IParticipantUser } from '../../types/Participant';
 import moment from "moment";
 import numberToCurrency from "../../util/currency";
-import { BsClock, BsFillPeopleFill, BsGearWideConnected, BsLink45Deg } from "react-icons/bs";
+import { BsBagFill, BsClock, BsFillPeopleFill, BsGearWideConnected, BsLink45Deg, BsShuffle } from "react-icons/bs";
 import { User } from "../../store/jwt-payload";
 import { ILink } from '../../types/Link';
 import ParticipantUser from '../../components/ParticipantUser';
@@ -68,6 +68,7 @@ export default function Event(props: IEventProps) {
   const [participants, setParticipants] = useState(props.participants)
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState(false)
+  const [wishlist, setWishlist] = useState(false)
 
   const totalParticipants = participants.filter(p => p.participates).length
   const activeParticipants = participants.filter(p => p.participates && p.accepted).length
@@ -79,6 +80,7 @@ export default function Event(props: IEventProps) {
   // Media queries
   const isMediumScreen = useMediaQuery({ query: '(max-device-width: 900px)' })
   const isSmallScreen = useMediaQuery({ query: '(max-device-width: 565px)' })
+  const isXSmallScreen = useMediaQuery({ query: '(max-device-width: 365px)' })
 
   const generateLink = () => {
     setLinkLoading(true);
@@ -100,6 +102,44 @@ export default function Event(props: IEventProps) {
           setLinkLoading(false)
         })
       })
+  }
+
+  const renderModal = () => {
+    if (linkModal) {
+      return <GetLinkEvent
+        link={link}
+        drawDate={event.drawAt}
+        linkLoading={linkLoading}
+        linkError={linkError}
+        onClose={onClose}
+        setLinkModal={setLinkModal}
+      />
+    }
+
+    if (wishlist) {
+      return (
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalBody>
+            <MyWishlist
+              event={event}
+              accessToken={accessToken}
+              meParticipant={meParticipant}
+            />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={() => {
+              onClose()
+              setLinkModal(false)
+            }}>
+              Close
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      )
+    }
+    return <></>
   }
 
   return (
@@ -185,18 +225,18 @@ export default function Event(props: IEventProps) {
               }
 
               <Box mt='5'>
-                <Flex direction='row' alignItems='center' justifyContent='flex-end'>
+                <Stack direction='row' spacing='2' justifyContent='flex-end'>
                   <Button
-                    leftIcon={<Icon as={BsGearWideConnected} />}
-                    size='sm'
+                    leftIcon={<Icon as={BsShuffle} />}
+                    size={isXSmallScreen ? 'xs' : 'sm'}
+                    colorScheme='blue'
                   >
-                    Settings
+                    Draw
                   </Button>
 
                   <Button
                     leftIcon={<Icon as={BsLink45Deg} />}
-                    ml='2'
-                    size='sm'
+                    size={isXSmallScreen ? 'xs' : 'sm'}
                     colorScheme='teal'
                     onClick={() => {
                       setLinkModal(true)
@@ -207,7 +247,15 @@ export default function Event(props: IEventProps) {
                   >
                     Share Link
                   </Button>
-                </Flex>
+
+                  <Button
+                    leftIcon={<Icon as={BsGearWideConnected} />}
+                    size={isXSmallScreen ? 'xs' : 'sm'}
+                    colorScheme='blackAlpha'
+                  >
+                    Settings
+                  </Button>
+                </Stack>
               </Box>
             </Box>
 
@@ -256,11 +304,17 @@ export default function Event(props: IEventProps) {
           {isMediumScreen ? (
             <></>
           ) : (
-              <MyWishlist
-                event={event}
-                accessToken={accessToken}
-                meParticipant={meParticipant}
-              />
+              <Container
+                flex='1'
+                pl='2'
+                pr='0'
+              >
+                <MyWishlist
+                  event={event}
+                  accessToken={accessToken}
+                  meParticipant={meParticipant}
+                />
+              </Container>
           )}
         </Flex>
       </Container>
@@ -268,17 +322,27 @@ export default function Event(props: IEventProps) {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
 
-        {linkModal ? (
-          <GetLinkEvent
-            link={link}
-            drawDate={event.drawAt}
-            linkLoading={linkLoading}
-            linkError={linkError}
-            onClose={onClose}
-            setLinkModal={setLinkModal}
-          />
-        ) : <></>}
+        {renderModal()}
       </Modal>
+
+      {isMediumScreen ? (
+        <Flex
+          w='full' maxW='full'
+          p='2' pb='5'
+          position='fixed'
+          bottom='0' left='0' z-index='4'
+          alignItems='center'
+          justifyContent='center'
+          onClick={() => {
+            setWishlist(true)
+            onOpen()
+          }}
+        >
+          <Button boxShadow='dark-lg' colorScheme='red' size='lg' rounded='full' p='1'>
+            <Icon as={BsBagFill} />
+          </Button>
+        </Flex>
+      ) : <></>}
     </>
   )
 }
