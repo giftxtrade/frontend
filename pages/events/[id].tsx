@@ -362,12 +362,18 @@ export default function Event(props: IEventProps) {
           bottom='0' left='0' z-index='4'
           alignItems='center'
           justifyContent='center'
-          onClick={() => {
-            setWishlist(true)
-            onOpen()
-          }}
         >
-          <Button boxShadow='dark-lg' colorScheme='red' size='lg' rounded='full' p='1'>
+          <Button
+            boxShadow='dark-lg'
+            colorScheme='red'
+            size='lg'
+            rounded='full'
+            p='1'
+            onClick={() => {
+              setWishlist(true)
+              onOpen()
+            }}
+          >
             <Icon as={BsBagFill} />
           </Button>
         </Flex>
