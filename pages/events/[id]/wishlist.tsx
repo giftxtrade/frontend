@@ -215,13 +215,11 @@ export default function Wishlist(props: IEventProps) {
             </ModalContent>
           </Modal>
 
-          <Flex
-            w='full' maxW='full'
+          <Box
             p='2' pb='5'
             position='fixed'
-            bottom='0' left='0' z-index='4'
-            alignItems='center'
-            justifyContent='center'
+            bottom='0' left='50%' zIndex='4'
+            transform='translate(-50%, 0)'
           >
             <Button
               boxShadow='dark-lg'
@@ -246,7 +244,7 @@ export default function Wishlist(props: IEventProps) {
                 </Badge>
               </Box>
             </Button>
-          </Flex>
+          </Box>
         </>
       ) : <></>}
     </>
