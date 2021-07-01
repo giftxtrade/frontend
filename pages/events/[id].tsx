@@ -39,6 +39,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import MyWishlist from "../../components/MyWishlist";
 import eventFetch from "../../util/ss-event-fetch";
 import Draws from "../../components/Draws";
+import { IDraw } from "../../types/Draw";
 
 export interface IEventProps {
   accessToken: string
@@ -46,9 +47,10 @@ export interface IEventProps {
   gToken: string
   loggedIn: boolean
   event: IEvent
-  participants: IParticipantUser[],
+  participants: IParticipantUser[]
   link: ILink | null
   meParticipant: IParticipant
+  myDraw: IParticipant | null
 }
 
 export default function Event(props: IEventProps) {
@@ -65,6 +67,7 @@ export default function Event(props: IEventProps) {
   const [wishlist, setWishlist] = useState(false)
   const [showDraw, setShowDraw] = useState(false)
   const [linkModal, setLinkModal] = useState(false)
+  const [myDraw, setMyDraw] = useState(props.myDraw)
 
   const emailToImageMap = new Map<string, User | null>()
   participants.forEach(p => emailToImageMap.set(p.email, p.user?.imageUrl ? p.user : null))
@@ -150,6 +153,28 @@ export default function Event(props: IEventProps) {
             </Button>
           </ModalFooter>
         </ModalContent>
+      )
+    }
+    return <></>
+  }
+
+  const renderMyDraw = () => {
+    if (myDraw) {
+      const myDrawUser = emailToImageMap.get(myDraw.email)
+      return (
+        <Box mt='10'>
+          <Heading size='md' mb='5'>My Draw</Heading>
+          <ParticipantUser
+            user={myDrawUser ? myDrawUser : null}
+            name={myDraw.name}
+            email={myDraw.email}
+            participates={myDraw.participates}
+            accepted={myDraw.accepted}
+            organizer={myDraw.organizer}
+            address={myDraw.address}
+            id={myDraw.id}
+          />
+        </Box>
       )
     }
     return <></>
@@ -279,6 +304,8 @@ export default function Event(props: IEventProps) {
               </Box>
             </Box>
 
+            {renderMyDraw()}
+
             <SimpleGrid columns={isSmallScreen ? 1 : 2} spacing={10} mt='14'>
               <Box>
                 <Heading size='md' mb='5'>Organizers</Heading>
@@ -381,4 +408,18 @@ export default function Event(props: IEventProps) {
   )
 }
 
-export const getServerSideProps = async (ctx: DocumentContext) => eventFetch(ctx);
+export const getServerSideProps = async (ctx: DocumentContext) => {
+  const { props } = await eventFetch(ctx)
+
+  let myDraw: IParticipant | null = null
+  await axios.get(`${api.draws}/me/${props?.event.id}`, {
+    headers: { "Authorization": "Bearer " + props?.accessToken }
+  })
+    .then(({ data }: { data: IDraw }) => {
+      myDraw = data.drawee
+    })
+    .catch(err => {
+      myDraw = null
+    })
+  return { props: { ...props, myDraw } }
+};
