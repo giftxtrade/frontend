@@ -2,3 +2,21 @@
     /* background: -webkit-linear-gradient(rgba(88,88,88,.9),rgba(12,12,12,.9)),url(/_next/static/media/mountain_snow.7960cbac31786dad4b2052ae463bc029.jpg); */
     background: rgba(255, 240, 218, 0.9);
 }
+
+.landingContent {
+    margin-top: 7vh;
+}
+
+.landingNav {
+    padding: 5em 10px;
+}
+
+@media screen and (max-width: 900px) {
+    .landingContent {
+        margin-top: 0vh;
+    }
+
+    .landingNav {
+        padding: 2em 10px;
+    }
+}
