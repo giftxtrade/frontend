@@ -7,7 +7,7 @@ import axios from 'axios';
 import { api } from './api';
 
 export default async function eventFetch(ctx: DocumentContext) {
-  const idRaw = ctx.query.id;
+  const idRaw = ctx.query.eventId;
 
   const { props } = await serverSideAuth(ctx)
 

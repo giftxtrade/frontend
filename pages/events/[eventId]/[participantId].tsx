@@ -13,7 +13,7 @@ import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
 import Search from "../../../components/Search";
 import eventFetch from "../../../util/ss-event-fetch";
-import { IEventProps } from "../[id]";
+import { IEventProps } from "../[eventId]";
 import { useMediaQuery } from '@chakra-ui/react';
 import { IWish } from '../../../types/Wish';
 

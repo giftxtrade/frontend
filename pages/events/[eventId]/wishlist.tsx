@@ -22,7 +22,7 @@ import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
 import Search from "../../../components/Search";
 import eventFetch from "../../../util/ss-event-fetch";
-import { IEventProps } from "../[id]";
+import { IEventProps } from "../[eventId]";
 import { useMediaQuery } from '@chakra-ui/react';
 import { WishlistLoadingItem, WishlistProductItem } from '../../../components/WishlistItem';
 import { IWish } from '../../../types/Wish';
@@ -134,40 +134,40 @@ export default function Wishlist(props: IEventProps) {
           {isMediumScreen ? (
             <></>
           ) : (
-              <Container
-                flex='1'
-                pl='2'
-                pr='0'
-              >
-                <Box position='sticky' top='2'>
-                  <Flex mb='7' direction='row' alignItems='center' justifyContent='start'>
-                    <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
-                  </Flex>
+            <Container
+              flex='1'
+              pl='2'
+              pr='0'
+            >
+              <Box position='sticky' top='2'>
+                <Flex mb='7' direction='row' alignItems='center' justifyContent='start'>
+                  <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
+                </Flex>
 
-                  <Box h='90vh' overflowY='auto'>
-                    {
-                      loadingWishes ? [1, 2].map((p, i) => (
-                        <Box mb='5' key={`loading#${i}`}>
-                          <WishlistLoadingItem />
-                        </Box>
-                      )) : (
-                        wishes.length === 0 ? (
-                            <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
-                        ) : (
-                          wishes.map(({ product }, i) => (
-                            <Box mb='10' key={`wishitem#${i}`}>
-                              <WishlistProductItem
-                                product={product}
-                                removeWish={removeWish}
-                              />
-                            </Box>
-                          ))
-                        )
+                <Box h='90vh' overflowY='auto'>
+                  {
+                    loadingWishes ? [1, 2].map((p, i) => (
+                      <Box mb='5' key={`loading#${i}`}>
+                        <WishlistLoadingItem />
+                      </Box>
+                    )) : (
+                      wishes.length === 0 ? (
+                        <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
+                      ) : (
+                        wishes.map(({ product }, i) => (
+                          <Box mb='10' key={`wishitem#${i}`}>
+                            <WishlistProductItem
+                              product={product}
+                              removeWish={removeWish}
+                            />
+                          </Box>
+                        ))
                       )
-                    }
-                  </Box>
+                    )
+                  }
                 </Box>
-              </Container>
+              </Box>
+            </Container>
           )}
         </Flex>
       </Container>
