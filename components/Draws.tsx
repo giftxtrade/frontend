@@ -112,19 +112,19 @@ export default function Draws({ setShowDraw, onClose, accessToken, event, emailT
                       const drawerUser = emailToImageMap.get(drawer.email);
                       const draweeUser = emailToImageMap.get(drawee.email);
                       return (
-                        (
                           <Tr>
                             <Td>
                               <ParticipantUser
-                            user={drawerUser ? drawerUser : null}
-                            name={drawer.name}
-                            email={drawer.email}
-                            participates={drawer.participates}
-                            accepted={drawer.accepted}
-                            organizer={drawer.organizer}
-                            address={drawer.address}
-                            id={drawer.id}
-                          />
+                              user={drawerUser ? drawerUser : null}
+                              name={drawer.name}
+                              email={drawer.email}
+                              participates={drawer.participates}
+                              accepted={drawer.accepted}
+                              organizer={drawer.organizer}
+                              address={drawer.address}
+                              id={drawer.id}
+                              event={event}
+                            />
                         </Td>
                         <Td>
                           <ParticipantUser
@@ -136,11 +136,11 @@ export default function Draws({ setShowDraw, onClose, accessToken, event, emailT
                             organizer={drawee.organizer}
                             address={drawee.address}
                             id={drawee.id}
+                              event={event}
                           />
                         </Td>
                       </Tr>
-                    )
-                  )
+                      )
                 })}
               </Tbody>
             </Table>
