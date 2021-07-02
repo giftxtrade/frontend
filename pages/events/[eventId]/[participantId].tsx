@@ -69,4 +69,14 @@ export default function ParticipantPage(props: IEventProps) {
   )
 }
 
-export const getServerSideProps = async (ctx: DocumentContext) => eventFetch(ctx);
+export const getServerSideProps = async (ctx: DocumentContext) => {
+  const participantIdRaw = ctx.query.participantId;
+
+  const { props, notFound } = await eventFetch(ctx)
+
+  if (notFound) {
+    return { notFound: true }
+  }
+
+  return { props: { ...props } }
+};
