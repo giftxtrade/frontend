@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Flex,
   Spinner,
@@ -409,7 +409,11 @@ export default function Event(props: IEventProps) {
 }
 
 export const getServerSideProps = async (ctx: DocumentContext) => {
-  const { props } = await eventFetch(ctx)
+  const { props, notFound } = await eventFetch(ctx)
+
+  if (notFound) {
+    return { notFound: true }
+  }
 
   let myDraw: IParticipant | null = null
   await axios.get(`${api.draws}/me/${props?.event.id}`, {
