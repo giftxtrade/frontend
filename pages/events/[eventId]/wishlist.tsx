@@ -102,7 +102,7 @@ export default function Wishlist(props: IEventProps) {
   return (
     <>
       <Head>
-        <title>{event.name} | Wishlist - GiftTrade</title>
+        <title>My Wishlist | {event.name} - GiftTrade</title>
       </Head>
 
       <Navbar
