@@ -5,13 +5,10 @@ import {
   InputGroup,
   InputLeftElement,
   InputRightElement,
-  Image,
   Spinner,
   Flex,
   Icon,
   Text,
-  Button,
-  Link
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
@@ -22,8 +19,7 @@ import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import { FcClearFilters } from 'react-icons/fc'
 import SearchResults from './SearchResults';
-import { BsArrowLeft, BsArrowLeftShort, BsChevronLeft } from 'react-icons/bs';
-import NextLink from 'next/link';
+import BackToEvent from './BackToEvent';
 
 export interface ISearchProps {
   accessToken: string
@@ -127,18 +123,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       position='relative'
       maxWidth='600px'
     >
-      <Box mb='5'>
-        <NextLink href={`/events/${eventId}`} passHref>
-          <Link>
-            <Button
-              leftIcon={<Icon as={BsChevronLeft} />}
-              size='sm'
-            >
-              Back to Event
-            </Button>
-          </Link>
-        </NextLink>
-      </Box>
+      <BackToEvent eventId={eventId} />
 
       <Box
         pb='2'

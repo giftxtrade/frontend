@@ -173,6 +173,7 @@ export default function Event(props: IEventProps) {
             organizer={myDraw.organizer}
             address={myDraw.address}
             id={myDraw.id}
+            event={event}
           />
         </Box>
       )
@@ -321,6 +322,7 @@ export default function Event(props: IEventProps) {
                       organizer={p.organizer}
                       address={p.address}
                       id={p.id}
+                      event={event}
                       key={`participant#${i}`}
                     />
                   ))}
@@ -340,6 +342,7 @@ export default function Event(props: IEventProps) {
                       organizer={p.organizer}
                       address={p.address}
                       id={p.id}
+                      event={event}
                       key={`participant#${i}`}
                     />
                   ))}
