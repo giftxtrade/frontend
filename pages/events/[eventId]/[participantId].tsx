@@ -8,22 +8,20 @@ import {
   Stack,
   Container,
   Link,
-  Icon
+  Icon,
+  Badge,
+  Image
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
-import Search from "../../../components/Search";
 import eventFetch from "../../../util/ss-event-fetch";
-import { IEventProps } from "../[eventId]";
 import { useMediaQuery } from '@chakra-ui/react';
 import { IWish } from '../../../types/Wish';
 import { User } from '../../../store/jwt-payload';
 import { IEvent } from '../../../types/Event';
 import { IParticipantUser, IParticipant } from '../../../types/Participant';
 import { ILink } from '../../../types/Link';
-import NextLink from 'next/link';
-import { BsChevronLeft } from 'react-icons/bs';
 import BackToEvent from '../../../components/BackToEvent';
 
 export interface IParticipantPageProps {
@@ -54,6 +52,8 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
 
+  const avatarSize = '100px'
+
   return (
     <>
       <Head>
@@ -75,7 +75,48 @@ export default function ParticipantPage(props: IParticipantPageProps) {
           >
             <BackToEvent eventId={event.id} />
 
-            <Heading>Participant</Heading>
+            <Box mt='5'>
+              <Stack spacing='4' mt='5' direction='row'>
+                <Box>
+                  <Image src={participant.user?.imageUrl} w={avatarSize} maxW={avatarSize} rounded='xl' />
+                </Box>
+
+                <Box>
+                  <Heading size='lg'>
+                    {participant.user ? (
+                      participant.user.name === participant.name ?
+                        participant.name
+                        : `${participant.name} (${participant.user.name})`
+                    ) : `${name}`}
+                  </Heading>
+                  <Text>{participant.user?.email}</Text>
+
+                  <Stack direction='row' spacing='1' mt='2'>
+                    {participant.organizer ? (
+                      <Badge
+                        borderRadius="full"
+                        px="2"
+                        colorScheme="teal"
+                        title={'You are one of the organizers for this event'}
+                      >
+                        Organizer
+                      </Badge>
+                    ) : <></>}
+
+                    {participant.participates ? (
+                      <Badge
+                        borderRadius="full"
+                        px="2"
+                        colorScheme="blue"
+                        title={'You are a participant for this event'}
+                      >
+                        Participant
+                      </Badge>
+                    ) : <></>}
+                  </Stack>
+                </Box>
+              </Stack>
+            </Box>
           </Container>
 
           {isMediumScreen ? (
@@ -109,7 +150,7 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
   }
 
   const participant = props?.participants.find(p => p.id == pId)
-  if (!participant) {
+  if (!participant || !participant.accepted) {
     return { notFound: true }
   }
 
