@@ -30,7 +30,7 @@ import { useMediaQuery } from '@chakra-ui/react';
 import { IParticipant, IParticipantUser } from '../../types/Participant';
 import moment from "moment";
 import numberToCurrency from "../../util/currency";
-import { BsBagFill, BsClock, BsFillPeopleFill, BsGearWideConnected, BsLink45Deg, BsShuffle } from "react-icons/bs";
+import { BsBagFill, BsClock, BsFillPeopleFill, BsFillPersonDashFill, BsGearWideConnected, BsLink45Deg, BsShuffle } from "react-icons/bs";
 import { User } from "../../store/jwt-payload";
 import { ILink } from '../../types/Link';
 import ParticipantUser from '../../components/ParticipantUser';
@@ -40,6 +40,8 @@ import MyWishlist from "../../components/MyWishlist";
 import eventFetch from "../../util/ss-event-fetch";
 import Draws from "../../components/Draws";
 import { IDraw } from "../../types/Draw";
+import Settings from "../../components/Settings";
+import LeaveGroup from "../../components/LeaveGroup";
 
 export interface IEventProps {
   accessToken: string
@@ -67,6 +69,8 @@ export default function Event(props: IEventProps) {
   const [wishlist, setWishlist] = useState(false)
   const [showDraw, setShowDraw] = useState(false)
   const [linkModal, setLinkModal] = useState(false)
+  const [settingsModal, setSettingsModal] = useState(false)
+  const [leaveGroupModal, setLeaveGroupModal] = useState(true)
   const [myDraw, setMyDraw] = useState(props.myDraw)
 
   const emailToImageMap = new Map<string, User | null>()
@@ -115,9 +119,7 @@ export default function Event(props: IEventProps) {
         onClose={onClose}
         setLinkModal={setLinkModal}
       />
-    }
-
-    if (showDraw) {
+    } else if (showDraw) {
       return (
         <Draws
           setShowDraw={setShowDraw}
@@ -127,9 +129,7 @@ export default function Event(props: IEventProps) {
           emailToImageMap={emailToImageMap}
         />
       )
-    }
-
-    if (wishlist) {
+    } else if (wishlist) {
       return (
         <ModalContent>
           <ModalCloseButton onClick={() => {
@@ -153,6 +153,27 @@ export default function Event(props: IEventProps) {
             </Button>
           </ModalFooter>
         </ModalContent>
+      )
+    } else if (settingsModal) {
+      return (
+        <Settings
+          accessToken={accessToken}
+          event={event}
+          onClose={onClose}
+          setSettingsModal={setSettingsModal}
+          meParticipant={meParticipant}
+          participants={participants}
+        />
+      )
+    } else if (leaveGroupModal) {
+      return (
+        <LeaveGroup
+          accessToken={accessToken}
+          event={event}
+          onClose={onClose}
+          setLeaveGroupModal={setLeaveGroupModal}
+          meParticipant={meParticipant}
+        />
       )
     }
     return <></>
@@ -296,13 +317,32 @@ export default function Event(props: IEventProps) {
                     Share Link
                   </Button>
 
-                  <Button
-                    leftIcon={<Icon as={BsGearWideConnected} />}
-                    size={isXSmallScreen ? 'xs' : 'sm'}
-                    colorScheme='blackAlpha'
-                  >
-                    Settings
-                  </Button>
+                  {meParticipant.organizer ? (
+                    <Button
+                      leftIcon={<Icon as={BsGearWideConnected} />}
+                      size={isXSmallScreen ? 'xs' : 'sm'}
+                      colorScheme='blackAlpha'
+                      onClick={() => {
+                        setSettingsModal(true)
+                        onOpen()
+                      }}
+                    >
+                      Settings
+                    </Button>
+                  ) : (
+                    <Button
+                      leftIcon={<Icon as={BsFillPersonDashFill} />}
+                      size={isXSmallScreen ? 'xs' : 'sm'}
+                      colorScheme='red'
+                      onClick={() => {
+                        setLeaveGroupModal(true)
+                        onOpen()
+                      }}
+                      variant='ghost'
+                    >
+                      Leave Group
+                    </Button>
+                  )}
                 </Stack>
               </Box>
             </Box>

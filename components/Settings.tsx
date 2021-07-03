@@ -12,12 +12,6 @@ import {
   Spinner,
   Heading,
   Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
