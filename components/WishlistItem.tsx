@@ -31,14 +31,18 @@ export interface IWishlistProductProps {
 }
 
 export function WishlistProductItem({ product, removeWish }: IWishlistProductProps) {
+  const link = generateAmazonAffiliateLink(product.productKey)
+
   return (
     <Flex maxW='full' direction='row' alignItems='flex-start' justifyContent='flex-start'>
       <Box flex='1' maxH='100px' overflow='hidden' rounded='md'>
-        <Image src={product.imageUrl} />
+        <Link href={link} isExternal={true}>
+          <Image src={product.imageUrl} />
+        </Link>
       </Box>
       <Box flex='2' ml='2'>
         <Text noOfLines={2} size='xs' mb='1'>
-          <Link href={generateAmazonAffiliateLink(product.productKey)} isExternal={true}>{product.title}</Link>
+          <Link href={link} isExternal={true}>{product.title}</Link>
         </Text>
         <Text>
           <b>{numberToCurrency(product.price)}</b>
