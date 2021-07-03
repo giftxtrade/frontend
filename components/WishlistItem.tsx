@@ -27,7 +27,7 @@ export function WishlistLoadingItem() {
 
 export interface IWishlistProductProps {
   product: IProduct
-  removeWish: (product: IProduct) => void
+  removeWish: ((product: IProduct) => void) | null
 }
 
 export function WishlistProductItem({ product, removeWish }: IWishlistProductProps) {
@@ -52,14 +52,16 @@ export function WishlistProductItem({ product, removeWish }: IWishlistProductPro
             starRatedColor="rgb(255, 188, 0)"
           />
 
-          <Button
-            float='right'
-            colorScheme='red'
-            size='xs'
-            onClick={() => removeWish(product)}
-          >
-            Remove
-          </Button>
+          {removeWish ? (
+            <Button
+              float='right'
+              colorScheme='red'
+              size='xs'
+              onClick={() => removeWish(product)}
+            >
+              Remove
+            </Button>
+          ) : <></>}
         </Text>
       </Box>
     </Flex>

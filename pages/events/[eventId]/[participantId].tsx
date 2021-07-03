@@ -23,6 +23,9 @@ import { IEvent } from '../../../types/Event';
 import { IParticipantUser, IParticipant } from '../../../types/Participant';
 import { ILink } from '../../../types/Link';
 import BackToEvent from '../../../components/BackToEvent';
+import { api } from '../../../util/api';
+import axios from 'axios';
+import { WishlistProductItem } from '../../../components/WishlistItem';
 
 export interface IParticipantPageProps {
   accessToken: string
@@ -35,6 +38,7 @@ export interface IParticipantPageProps {
   meParticipant: IParticipant
   myDraw: IParticipant | null
   participant: IParticipantUser
+  wishlist: IWish[]
 }
 
 export default function ParticipantPage(props: IParticipantPageProps) {
@@ -44,10 +48,8 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   const [user, setUser] = useState(props.user)
   const [event, setEvent] = useState(props.event)
   const [participant, setParticipant] = useState(props.participant)
+  const [wishlist, setWishlist] = useState(props.wishlist)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
-  const [loadingWishes, setLoadingWishes] = useState(true)
-  const [wishes, setWishes] = useState(Array<IWish>())
-  const [wishProductIds, setWishProductIds] = useState(new Set<number>())
 
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
@@ -68,10 +70,11 @@ export default function ParticipantPage(props: IParticipantPageProps) {
       />
 
       <Container maxW='4xl' mb='20'>
-        <Flex direction='row'>
+        <Stack direction={isMediumScreen ? 'column' : 'row'} spacing='2'>
           <Container
             flex='2'
             pl='0'
+            pr='0'
           >
             <BackToEvent eventId={event.id} />
 
@@ -119,17 +122,25 @@ export default function ParticipantPage(props: IParticipantPageProps) {
             </Box>
           </Container>
 
-          {isMediumScreen ? (
-            <></>
-          ) : (
-            <Container
-              flex='1'
-              pl='2'
-              pr='0'
-            >
-            </Container>
-          )}
-        </Flex>
+          <Container
+            mt={isMediumScreen ? '10' : '0'}
+            flex='1'
+            pl='0' pr='0'
+          >
+            {wishlist.length === 0 ? (
+              <Text textAlign='center' color='gray.400'>Wishlist is empty</Text>
+            ) : (
+              wishlist.map(({ product }, i) => (
+                <Box mb='10' key={`wishitem#${i}`}>
+                  <WishlistProductItem
+                    product={product}
+                    removeWish={null}
+                  />
+                </Box>
+              ))
+            )}
+          </Container>
+        </Stack>
       </Container>
     </>
   )
@@ -154,5 +165,20 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
     return { notFound: true }
   }
 
-  return { props: { ...props, participant } }
+  let wishlist: IWish[] | null = null;
+  await axios.get(`${api.wishes}/${props?.event.id}/${participant.id}`, {
+    headers: { "Authorization": "Bearer " + props?.accessToken }
+  })
+    .then(({ data }: { data: IWish[] }) => {
+      wishlist = data
+    })
+    .catch(err => {
+      wishlist = null
+    })
+
+  if (!wishlist) {
+    return { notFound: true }
+  }
+
+  return { props: { ...props, participant, wishlist } }
 };
