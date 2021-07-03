@@ -70,11 +70,13 @@ export default function ParticipantPage(props: IParticipantPageProps) {
       />
 
       <Container maxW='4xl' mb='20'>
-        <Stack direction={isMediumScreen ? 'column' : 'row'} spacing='2'>
+        <Stack
+          direction={isMediumScreen ? 'column' : 'row'}
+          spacing={isMediumScreen ? '20' : '2'}
+        >
           <Container
             flex='2'
-            pl='0'
-            pr='0'
+            p='0'
           >
             <BackToEvent eventId={event.id} />
 
@@ -122,10 +124,10 @@ export default function ParticipantPage(props: IParticipantPageProps) {
             </Box>
           </Container>
 
-          <Container
-            mt={isMediumScreen ? '10' : '0'}
+          <Box
             flex='1'
-            pl='0' pr='0'
+            maxW='lg'
+            ml='auto' mr='auto'
           >
             {wishlist.length === 0 ? (
               <Text textAlign='center' color='gray.400'>Wishlist is empty</Text>
@@ -139,7 +141,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                 </Box>
               ))
             )}
-          </Container>
+          </Box>
         </Stack>
       </Container>
     </>
