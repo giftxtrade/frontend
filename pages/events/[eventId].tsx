@@ -164,17 +164,19 @@ export default function Event(props: IEventProps) {
       return (
         <Box mt='10'>
           <Heading size='md' mb='5'>My Draw</Heading>
-          <ParticipantUser
-            user={myDrawUser ? myDrawUser : null}
-            name={myDraw.name}
-            email={myDraw.email}
-            participates={myDraw.participates}
-            accepted={myDraw.accepted}
-            organizer={myDraw.organizer}
-            address={myDraw.address}
-            id={myDraw.id}
-            event={event}
-          />
+          <Box maxW='72'>
+            <ParticipantUser
+              user={myDrawUser ? myDrawUser : null}
+              name={myDraw.name}
+              email={myDraw.email}
+              participates={myDraw.participates}
+              accepted={myDraw.accepted}
+              organizer={myDraw.organizer}
+              address={myDraw.address}
+              id={myDraw.id}
+              event={event}
+            />
+          </Box>
         </Box>
       )
     }
