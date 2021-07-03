@@ -88,11 +88,10 @@ export default function ParticipantPage(props: IParticipantPageProps) {
 
                 <Box>
                   <Heading size='lg'>
-                    {participant.user ? (
-                      participant.user.name === participant.name ?
+                    {participant.user?.name === participant.name ?
                         participant.name
-                        : `${participant.name} (${participant.user.name})`
-                    ) : `${name}`}
+                      : `${participant.name} (${participant.user?.name})`
+                    }
                   </Heading>
                   <Text>{participant.user?.email}</Text>
 
