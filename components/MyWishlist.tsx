@@ -6,6 +6,7 @@ import {
   Flex,
   Link,
   Box,
+  Stack
 } from '@chakra-ui/react'
 import { IEvent } from '../types/Event'
 import { BsPlusCircle } from 'react-icons/bs';
@@ -18,6 +19,7 @@ import { unstable_batchedUpdates } from 'react-dom';
 import { WishlistLoadingItem, WishlistProductItem } from './WishlistItem';
 import { IProduct } from '../types/Product';
 import { IParticipant } from '../types/Participant';
+import AddAddress from './AddAddress';
 
 export interface IMyWishlistProps {
   event: IEvent,
@@ -77,6 +79,13 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
           </Link>
         </NextLink>
       </Flex>
+
+      <Stack mb='10' direction='column' spacing='2'>
+        <AddAddress
+          meParticipant={meParticipant}
+          accessToken={accessToken}
+        />
+      </Stack>
 
       {
         loading ? [1, 2].map((p, i) => (
