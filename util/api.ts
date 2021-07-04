@@ -15,4 +15,5 @@ export const api = {
   invite_code: base + 'events/invite-code', // Auth required, [GET], param required invite code
   wishes: base + 'wishes', // Auth required, [POST] with {eventId, participantId, productId}, [GET] :eventId, [DELETE] with {eventId, participantId, productId}
   draws: base + 'draws', // Auth-required [POST] with {eventId}, [GET] :eventId, [GET] /me/eventId
+  participants: base + 'participants', // [DELETE] :participantId, [PATCH] :participantId with {address}
 };

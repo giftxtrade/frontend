@@ -19,7 +19,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   return (
     <Container maxW='4xl' p='5' mb='10'>
       <Flex direction='row' justifyContent='space-between' alignItems='center'>
-        <NextLink href='/' passHref>
+        <NextLink href='/home' passHref>
           <Link>
             {isMediumScreen ? (
               <Image w='35px' src='/giftxtrade_profile_rounded.png' />

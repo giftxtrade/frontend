@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import {
   ModalContent,
   ModalHeader,
@@ -12,10 +12,8 @@ import axios from 'axios';
 import { IEvent } from '../types/Event';
 import { api } from '../util/api';
 import { IDraw } from '../types/Draw';
-import { unstable_batchedUpdates } from 'react-dom';
-import ParticipantUser from './ParticipantUser';
-import { User } from '../store/jwt-payload';
-import { IParticipantUser, IParticipant } from '../types/Participant';
+import { IParticipant } from '../types/Participant';
+import { useRouter } from 'next/router';
 
 export interface ILeaveGroupProps {
   setLeaveGroupModal: Dispatch<SetStateAction<boolean>>
@@ -26,8 +24,25 @@ export interface ILeaveGroupProps {
 }
 
 export default function LeaveGroup({ setLeaveGroupModal, onClose, accessToken, event, meParticipant }: ILeaveGroupProps) {
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [draws, setDraws] = useState(Array<IDraw>())
+  const router = useRouter()
+
+  const leaveGroup = () => {
+    setLoading(true)
+
+    axios.delete(`${api.participants}/${meParticipant.id}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }) => {
+        setLoading(false);
+        router.push('/home')
+      })
+      .catch(err => {
+        console.log(err);
+        setLoading(false);
+      })
+  }
 
   return (
     <ModalContent>
@@ -43,16 +58,20 @@ export default function LeaveGroup({ setLeaveGroupModal, onClose, accessToken, e
       </ModalBody>
 
       <ModalFooter>
-        <Button colorScheme='blackAlpha' variant='ghost' mr={3} onClick={onClose}>
+        <Button
+          colorScheme='blackAlpha'
+          variant='ghost'
+          mr={3}
+          onClick={onClose}
+          disabled={loading}
+        >
           No
         </Button>
 
         <Button
-          type='submit'
           colorScheme="red"
-          onClick={(e: any) => {
-            e.preventDefault();
-          }}
+          onClick={leaveGroup}
+          isLoading={loading}
         >
           Yes
         </Button>
