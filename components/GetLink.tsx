@@ -27,7 +27,7 @@ export default function GetLink({ link, drawDate }: { link: string, drawDate: st
           }}
           colorScheme='teal'
         >
-          {copy ? 'Copied!' : 'Copy'}
+          {copy ? 'Copied' : 'Copy'}
         </Button>
       </Flex>
 
