@@ -24,6 +24,7 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  Divider,
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -58,8 +59,8 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
         onClose()
       }} />
 
-      <ModalBody>
-        <Tabs /* variant="soft-rounded" */>
+      <ModalBody pl='0' pr='0'>
+        <Tabs>
           <TabList>
             <Tab>Details</Tab>
             <Tab>Participants</Tab>
@@ -110,7 +111,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     </InputGroup>
                   </FormControl>
 
-                  <FormControl id="budget">
+                  <FormControl id="drawDate">
                     <FormLabel>Draw Date</FormLabel>
                     <Input
                       placeholder="Date"
@@ -123,22 +124,37 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                 </Stack>
               </Stack>
 
-              <Box mt='8' float='right'>
-                <Button
-                  type='submit'
-                  colorScheme="blue"
-                  onClick={(e: any) => {
-                    e.preventDefault();
-                  }}
-                >
-                  Update Event
-                </Button>
+              <Box>
+                <Flex mt='8' justifyContent='flex-end'>
+                  <Button
+                    type='submit'
+                    colorScheme="blue"
+                    onClick={(e: any) => {
+                      e.preventDefault();
+                    }}
+                  >
+                    Update Event
+                  </Button>
+                </Flex>
+              </Box>
+
+              <Divider mt='7' mb='10' />
+
+              <Box>
+                <Stack direction='row' justifyContent='space-between' spacing='2'>
+                  <Box>
+                    <Heading size='sm'>Delete this event</Heading>
+                    <Text fontSize='.8em'>Once you delete an event, there is no going back. Please be certain. </Text>
+                  </Box>
+
+                  <Button colorScheme='red' size='sm' pl='5' pr='5'>Delete Event</Button>
+                </Stack>
               </Box>
             </TabPanel>
 
             <TabPanel>
               {participants.filter(p => p.id !== meParticipant.id || (p.participates && !p.organizer)).map((p, i) => (
-                <Stack direction='row' justifyContent='space-between' mb='7'>
+                <Stack direction='row' justifyContent='space-between' spacing='2' mb='7'>
                   <ParticipantUser
                     id={p.id}
                     name={p.name}
@@ -152,7 +168,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                   />
 
                   <Box>
-                    <Button colorScheme='red' size='sm'>
+                    <Button colorScheme='red' size='xs'>
                       Remove
                     </Button>
                   </Box>
