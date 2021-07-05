@@ -127,6 +127,8 @@ export default function Event(props: IEventProps) {
           accessToken={accessToken}
           event={event}
           emailToImageMap={emailToImageMap}
+          setMyDraw={setMyDraw}
+          meParticipant={meParticipant}
         />
       )
     } else if (wishlist) {

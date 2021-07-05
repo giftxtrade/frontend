@@ -26,16 +26,19 @@ import { IDraw } from '../types/Draw';
 import { unstable_batchedUpdates } from 'react-dom';
 import ParticipantUser from './ParticipantUser';
 import { User } from '../store/jwt-payload';
+import { IParticipant } from '../types/Participant';
 
 export interface IDrawsProps {
   setShowDraw: Dispatch<SetStateAction<boolean>>
+  setMyDraw: Dispatch<SetStateAction<IParticipant | null>>
   onClose: () => void
   accessToken: string
   event: IEvent
   emailToImageMap: Map<string, User | null>
+  meParticipant: IParticipant
 }
 
-export default function Draws({ setShowDraw, onClose, accessToken, event, emailToImageMap }: IDrawsProps) {
+export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, event, emailToImageMap, meParticipant }: IDrawsProps) {
   const [loading, setLoading] = useState(true)
   const [draws, setDraws] = useState(Array<IDraw>())
 
@@ -61,6 +64,9 @@ export default function Draws({ setShowDraw, onClose, accessToken, event, emailT
         unstable_batchedUpdates(() => {
           setLoading(false)
           setDraws(data)
+          const myDraw = data.find(({ drawer }) => drawer.email === meParticipant.email)
+          if (myDraw)
+            setMyDraw(myDraw.drawee)
         })
       })
       .catch(err => console.log(err))
