@@ -34,6 +34,7 @@ import { unstable_batchedUpdates } from 'react-dom';
 import ParticipantUser from './ParticipantUser';
 import { User } from '../store/jwt-payload';
 import { IParticipantUser, IParticipant } from '../types/Participant';
+import { useRouter } from 'next/router';
 
 export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>
@@ -42,14 +43,53 @@ export interface ISettingsProps {
   event: IEvent
   participants: IParticipantUser[]
   meParticipant: IParticipant
+  setEvent: Dispatch<SetStateAction<IEvent>>
 }
 
-export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant }: ISettingsProps) {
+export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent }: ISettingsProps) {
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState(event.name)
   const [description, setDescription] = useState(event.description)
   const [budget, setBudget] = useState(event.budget)
   const [drawDate, setDrawDate] = useState(new Date(event.drawAt).toISOString().substr(0, 10))
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
+  const [errorUpdate, setErrorUpdate] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
+
+  const router = useRouter()
+
+  const updateEvent = (e: any) => {
+    setLoadingUpdate(true)
+    axios.patch(`${api.events}/${event.id}`, { name, description, budget, drawDate: new Date(drawDate) }, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }: { data: IEvent }) => {
+        unstable_batchedUpdates(() => {
+          setLoadingUpdate(false)
+          setEvent(data)
+        })
+        onClose()
+      })
+      .catch(err => {
+        setLoadingUpdate(false)
+      })
+    e.preventDefault();
+  }
+
+  const deleteEvent = () => {
+    setLoadingDelete(true)
+    axios.delete(`${api.events}/${event.id}`, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }: { data: IEvent }) => {
+        setLoadingDelete(false)
+        onClose()
+        router.push('/home')
+      })
+      .catch(err => {
+        setLoadingDelete(false)
+      })
+  }
 
   return (
     <ModalContent>
@@ -129,9 +169,8 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                   <Button
                     type='submit'
                     colorScheme="blue"
-                    onClick={(e: any) => {
-                      e.preventDefault();
-                    }}
+                    onClick={updateEvent}
+                    isLoading={loadingUpdate}
                   >
                     Update Event
                   </Button>
@@ -147,7 +186,15 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     <Text fontSize='.8em'>Once you delete an event, there is no going back. Please be certain. </Text>
                   </Box>
 
-                  <Button colorScheme='red' size='sm' pl='5' pr='5'>Delete Event</Button>
+                  <Button
+                    colorScheme='red'
+                    size='sm'
+                    pl='5' pr='5'
+                    isLoading={loadingDelete}
+                    onClick={deleteEvent}
+                  >
+                    Delete Event
+                  </Button>
                 </Stack>
               </Box>
             </TabPanel>

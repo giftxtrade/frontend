@@ -163,6 +163,7 @@ export default function Event(props: IEventProps) {
           setSettingsModal={setSettingsModal}
           meParticipant={meParticipant}
           participants={participants}
+          setEvent={setEvent}
         />
       )
     } else if (leaveGroupModal) {
