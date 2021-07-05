@@ -12,6 +12,18 @@ import {
   Spinner,
   Heading,
   Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  InputGroup,
+  InputLeftElement,
+  FormHelperText,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -33,7 +45,10 @@ export interface ISettingsProps {
 
 export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant }: ISettingsProps) {
   const [loading, setLoading] = useState(true)
-  const [draws, setDraws] = useState(Array<IDraw>())
+  const [name, setName] = useState(event.name)
+  const [description, setDescription] = useState(event.description)
+  const [budget, setBudget] = useState(event.budget)
+  const [drawDate, setDrawDate] = useState(new Date(event.drawAt).toISOString().substr(0, 10))
 
   return (
     <ModalContent>
@@ -44,24 +59,111 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
       }} />
 
       <ModalBody>
+        <Tabs /* variant="soft-rounded" */>
+          <TabList>
+            <Tab>Details</Tab>
+            <Tab>Participants</Tab>
+          </TabList>
 
+          <TabPanels>
+            <TabPanel>
+              <Stack spacing='5'>
+                <FormControl id="name">
+                  <FormLabel>Event Name</FormLabel>
+                  <Input
+                    placeholder='Ex. Eid 2021 Gift Exchange'
+                    type='text'
+                    name='name'
+                    autoFocus={true}
+                    value={name}
+                    onChange={(e: any) => setName(e.target.value)}
+                  />
+                </FormControl>
+
+                <FormControl id="description">
+                  <FormLabel>Description</FormLabel>
+                  <Textarea
+                    placeholder="Describe your event"
+                    name='description'
+                    value={description}
+                    onChange={(e: any) => setDescription(e.target.value)}
+                  />
+                </FormControl>
+
+                <Stack direction="row" spacing={2}>
+                  <FormControl id="budget">
+                    <FormLabel>Budget</FormLabel>
+                    <InputGroup>
+                      <InputLeftElement
+                        pointerEvents="none"
+                        color="gray.300"
+                        fontSize="1.2em"
+                        children="$"
+                      />
+                      <Input
+                        placeholder="Enter amount"
+                        type='number'
+                        value={budget}
+                        name='budget'
+                        onChange={(e: any) => setBudget(parseFloat(e.target.value))}
+                      />
+                    </InputGroup>
+                  </FormControl>
+
+                  <FormControl id="budget">
+                    <FormLabel>Draw Date</FormLabel>
+                    <Input
+                      placeholder="Date"
+                      type='date'
+                      value={drawDate}
+                      name='drawDate'
+                      onChange={(e: any) => setDrawDate(e.target.value)}
+                    />
+                  </FormControl>
+                </Stack>
+              </Stack>
+
+              <Box mt='8' float='right'>
+                <Button
+                  type='submit'
+                  colorScheme="blue"
+                  onClick={(e: any) => {
+                    e.preventDefault();
+                  }}
+                >
+                  Update Event
+                </Button>
+              </Box>
+            </TabPanel>
+
+            <TabPanel>
+              {participants.filter(p => p.id !== meParticipant.id || (p.participates && !p.organizer)).map((p, i) => (
+                <Stack direction='row' justifyContent='space-between' mb='7'>
+                  <ParticipantUser
+                    id={p.id}
+                    name={p.name}
+                    email={p.email}
+                    address={p.address}
+                    organizer={p.organizer}
+                    participates={p.participates}
+                    accepted={p.accepted}
+                    user={p.user}
+                    event={event}
+                  />
+
+                  <Box>
+                    <Button colorScheme='red' size='sm'>
+                      Remove
+                    </Button>
+                  </Box>
+                </Stack>
+              ))}
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
       </ModalBody>
 
-      <ModalFooter>
-        <Button colorScheme="red" variant='ghost' mr={3} onClick={onClose}>
-          Cancel
-        </Button>
-
-        <Button
-          type='submit'
-          colorScheme="blue"
-          onClick={(e: any) => {
-            e.preventDefault();
-          }}
-        >
-          Save
-        </Button>
-      </ModalFooter>
+      <ModalFooter></ModalFooter>
     </ModalContent>
   );
 }
