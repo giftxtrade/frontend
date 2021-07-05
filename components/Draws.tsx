@@ -108,7 +108,15 @@ export default function Draws({ setShowDraw, onClose, accessToken, event, emailT
                 </Tr>
               </Thead>
               <Tbody>
-                    {draws.map(({ drawer, drawee }, i) => {
+                    {draws.sort((a, b) => {
+                      if (a.drawer.email < b.drawer.email) {
+                        return -1;
+                      }
+                      if (a.drawer.email > b.drawer.email) {
+                        return 1;
+                      }
+                      return 0;
+                    }).map(({ drawer, drawee }, i) => {
                       const drawerUser = emailToImageMap.get(drawer.email);
                       const draweeUser = emailToImageMap.get(drawee.email);
                       return (
