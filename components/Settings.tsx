@@ -60,7 +60,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
 
   const updateEvent = (e: any) => {
     setLoadingUpdate(true)
-    axios.patch(`${api.events}/${event.id}`, { name, description, budget, drawDate: new Date(drawDate) }, {
+    axios.patch(`${api.events}/${event.id}`, { name, description, budget, drawAt: new Date(drawDate) }, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }: { data: IEvent }) => {
