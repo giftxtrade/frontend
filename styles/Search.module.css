@@ -1,0 +1,17 @@
+.searchContainerBoxReveal {
+    -webkit-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+	   -moz-box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+	        box-shadow: 0 8px 6px -6px rgba(0,0,0,0.2);
+    
+    padding: 15px 0px!important;
+
+    transition: all 0.2s ease-in-out;
+}
+
+.searchContainerBoxHide {
+    -webkit-box-shadow: 0 0px 0px 0px rgba(0,0,0,0);
+	   -moz-box-shadow: 0 0px 0px 0px rgba(0,0,0,0);
+	        box-shadow: 0 0px 0px 0px rgba(0,0,0,0);
+    padding: 10px 0px!important;
+    transition: all 0.2s ease-in-out;
+}

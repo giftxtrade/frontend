@@ -9,6 +9,9 @@ import {
   Flex,
   Icon,
   Text,
+  Tag,
+  TagLabel,
+  TagCloseButton,
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
@@ -20,6 +23,8 @@ import { IProduct } from '../types/Product';
 import { FcClearFilters } from 'react-icons/fc'
 import SearchResults from './SearchResults';
 import BackToEvent from './BackToEvent';
+import numberToCurrency from '../util/currency';
+import styles from '../styles/Search.module.css';
 
 export interface ISearchProps {
   accessToken: string
@@ -41,6 +46,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   const [error, setError] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   const [search, setSearch] = useState('')
+  const [scroll, setScroll] = useState(false)
 
   const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
     let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
@@ -70,6 +76,15 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   }
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.addEventListener("scroll", () => {
+        if (window.pageYOffset > 200)
+          setScroll(true)
+        else
+          setScroll(false)
+      });
+    }
+
     getProducts(setInitLoading, 1)
   }, [])
 
@@ -118,11 +133,13 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       <BackToEvent eventId={eventId} />
 
       <Box
-        pb='2'
+        pt='2' pb='2'
         position='sticky'
-        top='2'
+        top='0'
         mb='1'
         zIndex='1'
+        bg='white'
+        className={scroll ? styles.searchContainerBoxReveal : styles.searchContainerBoxHide}
       >
         <InputGroup>
           <InputLeftElement
@@ -160,6 +177,18 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
                 <></>
           )}
         </InputGroup>
+
+        <Box mt='4'>
+          <Tag
+            size='md'
+            borderRadius="full"
+            variant="solid"
+            colorScheme='gray'
+          >
+            <TagLabel>Budget <b>{numberToCurrency(maxPrice)}</b></TagLabel>
+            <TagCloseButton />
+          </Tag>
+        </Box>
       </Box>
 
       <Box position='relative' maxW='inherit'>
