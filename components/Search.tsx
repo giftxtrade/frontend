@@ -54,19 +54,11 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
         "Authorization": "Beare " + accessToken
       }
     }).then(({ data }: { data: IProduct[] }) => {
-      if (data.length === 0) {
-        unstable_batchedUpdates(() => {
-          setError(true)
-          setLoadState(false)
-        })
-        return
-      }
-
       unstable_batchedUpdates(() => {
         setResults(data)
         setLoadState(false)
         setError(false)
-        setHasMore(true)
+        setHasMore(data.length < pageLimit ? false : true)
       })
     }).catch(err => {
       unstable_batchedUpdates(() => {

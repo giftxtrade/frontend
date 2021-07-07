@@ -67,20 +67,15 @@ export default function SearchResults({
         "Authorization": "Beare " + accessToken
       }
     }).then(({ data }: { data: IProduct[] }) => {
-      if (data.length === 0) {
-        setHasMore(false)
-        return
-      }
-
+      console.log(data.length)
       unstable_batchedUpdates(() => {
         setError(false)
         setResults([...results, ...data])
-        setHasMore(true)
+        setHasMore(data.length < pageLimit ? false : true)
         setPage(page + 1)
       })
     }).catch(err => {
       unstable_batchedUpdates(() => {
-        setError(true)
         setHasMore(false)
       })
     })
