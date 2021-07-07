@@ -61,7 +61,7 @@ export interface ISettingsProps {
   setMyDraw: Dispatch<SetStateAction<IParticipant | null>>
 }
 
-export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants }: ISettingsProps) {
+export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants, myDraw, setMyDraw }: ISettingsProps) {
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState(event.name)
   const [description, setDescription] = useState(event.description)
@@ -125,6 +125,9 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
 
   const removeParticipant = (i: number, participant: IParticipantUser) => {
     setParticipants(participants.filter(p => p.id !== participant.id))
+    if (myDraw?.id === participant.id)
+      setMyDraw(null)
+
     axios.delete(
       `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
       { headers: { "Authorization": "Bearer " + accessToken } }
@@ -157,7 +160,8 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
     setParticipants([
       ...updatedParticipants.slice(0, i),
       newParticipant,
-      ...updatedParticipants.slice(i)])
+      ...updatedParticipants.slice(i)
+    ])
 
     axios.patch(
       `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
