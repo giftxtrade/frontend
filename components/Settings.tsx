@@ -46,6 +46,7 @@ import ParticipantUser from './ParticipantUser';
 import { User } from '../store/jwt-payload';
 import { IParticipantUser, IParticipant } from '../types/Participant';
 import { useRouter } from 'next/router';
+import { ManageParticipant } from './ManageParticipant';
 
 export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>
@@ -260,39 +261,16 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
             </TabPanel>
 
             <TabPanel>
-              {participants.map((p, i) => (
-                <Stack direction='row' justifyContent='space-between' spacing='2' mb='7'>
-                  <ParticipantUser
-                    id={p.id}
-                    name={p.name}
-                    email={p.email}
-                    address={p.address}
-                    organizer={p.organizer}
-                    participates={p.participates}
-                    accepted={p.accepted}
-                    user={p.user}
-                    event={event}
+              <Stack direction='column' spacing='10'>
+                {participants.map((p, i) => (
+                  <ManageParticipant
+                    id={i + 1}
+                    p={p}
+                    meParticipant={meParticipant}
+                    key={`manageParticipant#${i}`}
                   />
-
-                  <Stack direction='column'>
-                    <Button
-                      colorScheme='red'
-                      size='xs'
-                      disabled={p.id === meParticipant.id}
-                    >
-                      Remove
-                    </Button>
-
-                    <Button
-                      colorScheme='teal'
-                      size='xs'
-                      disabled={p.organizer}
-                    >
-                      Make Organizer
-                    </Button>
-                  </Stack>
-                </Stack>
-              ))}
+                ))}
+              </Stack>
             </TabPanel>
           </TabPanels>
         </Tabs>
