@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useCookies } from 'react-cookie';
 import { DocumentContext } from "next/document";
 import { redirectHomeIfLoggedIn } from "../../util/server-side-auth";
+import Head from 'next/head';
 
 export default function Google() {
   const router = useRouter()
@@ -50,6 +51,10 @@ export default function Google() {
 
   return (
     <>
+      <Head>
+        <title>Logging in... - GiftTrade</title>
+      </Head>
+
       {
         error ? (
           <Flex alignItems="center" justifyContent='center' p='20' >
