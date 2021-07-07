@@ -25,6 +25,7 @@ import {
   TabPanels,
   TabPanel,
   Divider,
+  useToast,
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -55,6 +56,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
   const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [errorUpdate, setErrorUpdate] = useState(false)
   const [loadingDelete, setLoadingDelete] = useState(false)
+  const toast = useToast()
 
   const router = useRouter()
 
@@ -67,6 +69,13 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
         unstable_batchedUpdates(() => {
           setLoadingUpdate(false)
           setEvent(data)
+        })
+        toast({
+          title: "Event updated!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
         })
         onClose()
       })
@@ -83,6 +92,13 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
     })
       .then(({ data }: { data: IEvent }) => {
         setLoadingDelete(false)
+        toast({
+          title: "Event deleted!",
+          status: "info",
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
         onClose()
         router.push('/home')
       })
@@ -200,7 +216,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
             </TabPanel>
 
             <TabPanel>
-              {participants.filter(p => p.id !== meParticipant.id || (p.participates && !p.organizer)).map((p, i) => (
+              {participants.filter(p => !p.organizer).map((p, i) => (
                 <Stack direction='row' justifyContent='space-between' spacing='2' mb='7'>
                   <ParticipantUser
                     id={p.id}

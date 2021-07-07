@@ -10,7 +10,8 @@ import {
   Container,
   Icon,
   useDisclosure,
-  Stack
+  Stack,
+  useToast
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
@@ -27,6 +28,7 @@ import { unstable_batchedUpdates } from 'react-dom';
 import EventBoxSm from '../components/EventBoxSm';
 import { FcClearFilters } from 'react-icons/fc';
 import { useMediaQuery } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 export interface IHopeProps {
   accessToken: string,
@@ -46,6 +48,9 @@ export default function Home(props: IHopeProps) {
   const [events, setEvents] = useState(Array<IEvent>())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+
+  const router = useRouter()
+  const toast = useToast()
 
   // Modal
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -73,11 +78,20 @@ export default function Home(props: IHopeProps) {
   const handleAccept = (eventId: number, index: number) => {
     setEvents([invites[index], ...events])
     setInvites(invites.filter((_, i) => i !== index))
+    toast({
+      title: "Invite accepted!",
+      status: "info",
+      duration: 2000,
+      isClosable: true,
+      variant: 'subtle'
+    })
 
     axios.get(`${api.accept_invite}/${eventId}`, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
-      .then(({ data }) => { })
+      .then(({ data }) => {
+        router.push(`/events/${data.id}`)
+      })
       .catch(err => console.log(err))
   }
 
