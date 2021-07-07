@@ -123,7 +123,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
       })
   }
 
-  const removeParticipant = (i: number, participant: IParticipant) => {
+  const removeParticipant = (i: number, participant: IParticipantUser) => {
     setParticipants(participants.filter(p => p.id !== participant.id))
     axios.delete(
       `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
@@ -142,6 +142,41 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
         toast({
           title: "Could not remove participant",
           description: 'Something went wrong while trying to delete the participant. Please reload and try again.',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
+      })
+  }
+
+  const updateOrganizerStatus = (i: number, participant: IParticipantUser, status: boolean) => {
+    const newParticipant = participant
+    newParticipant.organizer = status
+    const updatedParticipants = participants.filter(p => p.id !== participant.id)
+    setParticipants([
+      ...updatedParticipants.slice(0, i),
+      newParticipant,
+      ...updatedParticipants.slice(i)])
+
+    axios.patch(
+      `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+      { organizer: status },
+      { headers: { "Authorization": "Bearer " + accessToken } }
+    )
+      .then(data => {
+        toast({
+          title: status ? "Participant promoted as an organizer!" : "Participant is no longer an organizer",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
+      })
+      .catch(err => {
+        toast({
+          title: "Could not update participant",
+          description: 'Something went wrong while trying to update the participant. Please reload and try again.',
           status: 'error',
           duration: 2000,
           isClosable: true,
@@ -299,6 +334,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     meParticipant={meParticipant}
                     key={`manageParticipant#${i}`}
                     removeParticipant={removeParticipant}
+                    updateOrganizerStatus={updateOrganizerStatus}
                   />
                 ))}
               </Stack>

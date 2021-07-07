@@ -17,10 +17,11 @@ export interface IManageParticipantProps {
   id: number
   p: IParticipantUser
   meParticipant: IParticipant
-  removeParticipant: (i: number, p: IParticipant) => void
+  removeParticipant: (i: number, p: IParticipantUser) => void
+  updateOrganizerStatus: (i: number, participant: IParticipantUser, status: boolean) => void
 }
 
-export function ManageParticipant({ id, p, meParticipant, removeParticipant }: IManageParticipantProps) {
+export function ManageParticipant({ id, p, meParticipant, removeParticipant, updateOrganizerStatus }: IManageParticipantProps) {
   const idOffset = id - 1;
   return (
     <Box>
@@ -53,9 +54,7 @@ export function ManageParticipant({ id, p, meParticipant, removeParticipant }: I
           <Checkbox
             isDisabled={p.id === meParticipant.id}
             defaultIsChecked={p.organizer}
-            onChange={(e) => {
-              console.log(e.target.checked)
-            }}
+            onChange={(e) => updateOrganizerStatus(idOffset, p, e.target.checked)}
           >
             Organizer
           </Checkbox>
