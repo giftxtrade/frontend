@@ -36,9 +36,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
           cursor='pointer'
           ml='2'
           onClick={() => {
-            removeCookie('access_token')
-            authStore.dispatch(logout())
-            router.push('/')
+            router.push('/logout')
           }}
         >
           <Image src={user.imageUrl} w='35px' mr='3' rounded='md' />
