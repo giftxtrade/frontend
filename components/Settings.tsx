@@ -26,6 +26,16 @@ import {
   TabPanel,
   Divider,
   useToast,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  ButtonGroup,
+  useDisclosure,
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -58,6 +68,8 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
   const [loadingDelete, setLoadingDelete] = useState(false)
   const toast = useToast()
 
+  const popover = useDisclosure()
+
   const router = useRouter()
 
   const updateEvent = (e: any) => {
@@ -66,10 +78,6 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }: { data: IEvent }) => {
-        unstable_batchedUpdates(() => {
-          setLoadingUpdate(false)
-          setEvent(data)
-        })
         toast({
           title: "Event updated!",
           status: "success",
@@ -78,6 +86,10 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
           variant: 'subtle'
         })
         onClose()
+        unstable_batchedUpdates(() => {
+          setLoadingUpdate(false)
+          setEvent(data)
+        })
       })
       .catch(err => {
         setLoadingUpdate(false)
@@ -202,21 +214,53 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     <Text fontSize='.8em'>Once you delete an event, there is no going back. Please be certain. </Text>
                   </Box>
 
-                  <Button
-                    colorScheme='red'
-                    size='sm'
-                    pl='5' pr='5'
-                    isLoading={loadingDelete}
-                    onClick={deleteEvent}
+                  <Popover
+                    isOpen={popover.isOpen}
+                    onOpen={popover.onOpen}
+                    onClose={popover.onClose}
+                    closeOnBlur={false}
                   >
-                    Delete Event
-                  </Button>
+                    <PopoverTrigger>
+                      <Button
+                        colorScheme='red'
+                        size='sm'
+                        pl='5' pr='5'
+                        isLoading={loadingDelete}
+                      >
+                        Delete Event
+                      </Button>
+                    </PopoverTrigger>
+
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverCloseButton />
+                      <PopoverHeader>Confirmation</PopoverHeader>
+                      <PopoverBody>Are you sure you want to <i>permanently delete</i> this event?</PopoverBody>
+                      <PopoverFooter d="flex" justifyContent="flex-end">
+                        <ButtonGroup size="sm">
+                          <Button variant="outline" onClick={popover.onClose}>Cancel</Button>
+
+                          <Button
+                            colorScheme="red"
+                            isLoading={loadingDelete}
+                            onClick={() => {
+                              popover.onClose();
+                              deleteEvent();
+                            }}
+                          >
+                            Delete Event
+                          </Button>
+                        </ButtonGroup>
+                      </PopoverFooter>
+                    </PopoverContent>
+                  </Popover>
                 </Stack>
+
               </Box>
             </TabPanel>
 
             <TabPanel>
-              {participants.filter(p => !p.organizer).map((p, i) => (
+              {participants.map((p, i) => (
                 <Stack direction='row' justifyContent='space-between' spacing='2' mb='7'>
                   <ParticipantUser
                     id={p.id}
@@ -230,11 +274,23 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     event={event}
                   />
 
-                  <Box>
-                    <Button colorScheme='red' size='xs'>
+                  <Stack direction='column'>
+                    <Button
+                      colorScheme='red'
+                      size='xs'
+                      disabled={p.id === meParticipant.id}
+                    >
                       Remove
                     </Button>
-                  </Box>
+
+                    <Button
+                      colorScheme='teal'
+                      size='xs'
+                      disabled={p.organizer}
+                    >
+                      Make Organizer
+                    </Button>
+                  </Stack>
                 </Stack>
               ))}
             </TabPanel>
