@@ -17,9 +17,10 @@ export interface IManageParticipantProps {
   id: number
   p: IParticipantUser
   meParticipant: IParticipant
+  removeParticipant: (i: number, p: IParticipant) => void
 }
 
-export function ManageParticipant({ id, p, meParticipant }: IManageParticipantProps) {
+export function ManageParticipant({ id, p, meParticipant, removeParticipant }: IManageParticipantProps) {
   const idOffset = id - 1;
   return (
     <Box>
@@ -72,9 +73,7 @@ export function ManageParticipant({ id, p, meParticipant }: IManageParticipantPr
           variant='ghost'
           size='sm'
           colorScheme='red'
-          onClick={() => {
-            console.log(`Delete participant #${id}`)
-          }}
+          onClick={() => removeParticipant(idOffset, p)}
           isDisabled={p.id === meParticipant.id}
         >
           <Icon as={DeleteIcon} />

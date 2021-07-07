@@ -56,9 +56,12 @@ export interface ISettingsProps {
   participants: IParticipantUser[]
   meParticipant: IParticipant
   setEvent: Dispatch<SetStateAction<IEvent>>
+  setParticipants: Dispatch<SetStateAction<IParticipantUser[]>>
+  myDraw: IParticipant | null
+  setMyDraw: Dispatch<SetStateAction<IParticipant | null>>
 }
 
-export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent }: ISettingsProps) {
+export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants }: ISettingsProps) {
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState(event.name)
   const [description, setDescription] = useState(event.description)
@@ -117,6 +120,33 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
       })
       .catch(err => {
         setLoadingDelete(false)
+      })
+  }
+
+  const removeParticipant = (i: number, participant: IParticipant) => {
+    setParticipants(participants.filter(p => p.id !== participant.id))
+    axios.delete(
+      `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+      { headers: { "Authorization": "Bearer " + accessToken } }
+    )
+      .then(data => {
+        toast({
+          title: "Participant removed successully!",
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
+      })
+      .catch(err => {
+        toast({
+          title: "Could not remove participant",
+          description: 'Something went wrong while trying to delete the participant. Please reload and try again.',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
       })
   }
 
@@ -268,6 +298,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     p={p}
                     meParticipant={meParticipant}
                     key={`manageParticipant#${i}`}
+                    removeParticipant={removeParticipant}
                   />
                 ))}
               </Stack>

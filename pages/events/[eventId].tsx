@@ -166,6 +166,9 @@ export default function Event(props: IEventProps) {
           meParticipant={meParticipant}
           participants={participants}
           setEvent={setEvent}
+          setParticipants={setParticipants}
+          myDraw={myDraw}
+          setMyDraw={setMyDraw}
         />
       )
     } else if (leaveGroupModal) {
