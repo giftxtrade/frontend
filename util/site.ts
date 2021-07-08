@@ -1,1 +1,1 @@
-export const base = 'http://localhost:3000/'
+export const base = process.env.NEXT_PUBLIC_BASE
