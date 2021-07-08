@@ -60,7 +60,7 @@ export default function LandingPage() {
                     </Text>
 
                     <Container maxW='full' p='0' mt='5vh'>
-                      <Link href={`${api.google}`} isExternal={true}>
+                      <Link href={`${api.google}`}>
                         <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
                       </Link>
                     </Container>

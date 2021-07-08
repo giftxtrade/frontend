@@ -1,4 +1,8 @@
-export const base = process.env.API_BASE
+const make_base = () => {
+  return process.env.NEXT_PUBLIC_API_BASE;
+}
+
+export const base = make_base()
 
 export const api = {
   home: base,
