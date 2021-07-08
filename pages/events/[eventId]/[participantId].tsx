@@ -26,6 +26,8 @@ import BackToEvent from '../../../components/BackToEvent';
 import { api } from '../../../util/api';
 import axios from 'axios';
 import { WishlistProductItem } from '../../../components/WishlistItem';
+import { MdLocationCity } from 'react-icons/md'
+import ParticipantWishlist from '../../../components/ParticipantWishlist';
 
 export interface IParticipantPageProps {
   accessToken: string
@@ -51,10 +53,10 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   const [wishlist, setWishlist] = useState(props.wishlist)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
 
+  const name = participant.user?.name
+  const avatarSize = '100px'
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
-
-  const avatarSize = '100px'
 
   return (
     <>
@@ -70,13 +72,10 @@ export default function ParticipantPage(props: IParticipantPageProps) {
       />
 
       <Container maxW='4xl' mb='20'>
-        <Stack
-          direction={isMediumScreen ? 'column' : 'row'}
-          spacing={isMediumScreen ? '20' : '2'}
-        >
+        <Flex direction='row'>
           <Container
             flex='2'
-            p='0'
+            pl='0'
           >
             <BackToEvent eventId={event.id} />
 
@@ -88,10 +87,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
 
                 <Box>
                   <Heading size='lg'>
-                    {participant.user?.name === participant.name ?
-                        participant.name
-                      : `${participant.name} (${participant.user?.name})`
-                    }
+                    {name}
                   </Heading>
                   <Text>{participant.user?.email}</Text>
 
@@ -118,30 +114,41 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                       </Badge>
                     ) : <></>}
                   </Stack>
+
+                  <Stack mt='3' direction='row' spacing='2' color='gray.600' fontSize='sm'>
+                    <Icon as={MdLocationCity} boxSize='5' />
+                    <Text>{participant.address && participant.address !== '' ? participant.address : <i>No address provided</i>}</Text>
+                  </Stack>
                 </Box>
               </Stack>
+
+              {isMediumScreen ? (
+                <Box mt='14'>
+                  <ParticipantWishlist
+                    name={name}
+                    wishlist={wishlist}
+                  />
+                </Box>
+              ) : <></>}
             </Box>
           </Container>
 
-          <Box
-            flex='1'
-            maxW='lg'
-            ml='auto' mr='auto'
-          >
-            {wishlist.length === 0 ? (
-              <Text textAlign='center' color='gray.400'>Wishlist is empty</Text>
-            ) : (
-              wishlist.map(({ product }, i) => (
-                <Box mb='10' key={`wishitem#${i}`}>
-                  <WishlistProductItem
-                    product={product}
-                    removeWish={null}
-                  />
-                </Box>
-              ))
-            )}
-          </Box>
-        </Stack>
+          {isMediumScreen ? (
+            <></>
+          ) : (
+            <Container
+              flex='1'
+                pl='2'
+                pr='0'
+              >
+              {!isMediumScreen ? (
+                <ParticipantWishlist
+                  name={name}
+                  wishlist={wishlist}
+                />) : <></>}
+            </Container>
+          )}
+        </Flex>
       </Container>
     </>
   )
