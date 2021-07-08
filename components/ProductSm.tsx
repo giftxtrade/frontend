@@ -1,9 +1,10 @@
 import Product, { IProduct } from "../types/Product";
-import { Box, Image, Heading, Text, Button, Link, Icon } from '@chakra-ui/react';
+import { Box, Image, Heading, Text, Button, Link, Icon, Stack } from '@chakra-ui/react';
 import { generateAmazonAffiliateLink } from "../util/links";
 import StarRatings from 'react-star-ratings';
 import numberToCurrency from "../util/currency";
 import { FaCartPlus } from 'react-icons/fa'
+import { IoMdAddCircle } from 'react-icons/io'
 
 export interface IProductSmProps {
   product: IProduct,
@@ -48,19 +49,26 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
         />
       </Box>
 
-      <Text textDecoration='none'>
-        {price}
+      <Stack
+        textDecoration='none'
+        direction='row'
+        justifyContent='space-between'
+        alignItems='center'
+      >
+        <Text>
+          {price}
+        </Text>
 
         <Button
-          ml='2'
           variant='ghost'
           colorScheme='blue'
           onClick={() => addWish(product)}
           isDisabled={productSet.has(product.id)}
+          leftIcon={<Icon as={IoMdAddCircle} />}
         >
-          <Icon as={FaCartPlus} />
+          Add
         </Button>
-      </Text>
+      </Stack>
     </Box>
   )
 }
