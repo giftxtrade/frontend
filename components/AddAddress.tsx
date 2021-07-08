@@ -30,15 +30,15 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
 
   const toast = useToast()
 
-  const updateAddress = () => {
+  const updateAddress = (myAddress: string) => {
     setLoading(true)
-    axios.patch(`${api.participants}/${meParticipant.id}`, { address: address }, {
+    axios.patch(`${api.participants}/${meParticipant.id}`, { address: myAddress }, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }) => {
         toast({
           title: "Address updated!",
-          description: address,
+          description: myAddress,
           status: "success",
           duration: 2000,
           isClosable: true,
@@ -73,11 +73,12 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
                 const { latitude, longitude } = pos.coords
                 axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDf_L_C6EXCZlD4XNhZOdF0aENCzRASmhI`)
                   .then(({ data }: any) => {
+                    const myAddress = data.results[0].formatted_address
                     unstable_batchedUpdates(() => {
-                      setAddress(data.results[0].formatted_address)
+                      setAddress(myAddress)
                       setLoadingLocation(false)
                     })
-                    updateAddress()
+                    updateAddress(myAddress)
                   })
                   .catch(err => {
                     toast({
@@ -98,7 +99,7 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
 
           <Button
             isLoading={loading}
-            onClick={updateAddress}
+            onClick={() => updateAddress(address)}
             colorScheme='blue'
             title='Update address'
             disabled={address.length === 0}
