@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 import { api } from '../util/api';
 import { BsArrowRightShort, BsBullseye, BsGeo } from 'react-icons/bs';
+import { unstable_batchedUpdates } from 'react-dom';
 
 export interface IAddAddressProps {
   meParticipant: IParticipant
@@ -28,6 +29,28 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
   const [error, setError] = useState(false)
 
   const toast = useToast()
+
+  const updateAddress = () => {
+    setLoading(true)
+    axios.patch(`${api.participants}/${meParticipant.id}`, { address: address }, {
+      headers: { "Authorization": "Bearer " + accessToken }
+    })
+      .then(({ data }) => {
+        toast({
+          title: "Address updated!",
+          description: address,
+          status: "success",
+          duration: 2000,
+          isClosable: true,
+          variant: 'subtle'
+        })
+        setLoading(false)
+      })
+      .catch(err => {
+        console.log(err)
+        setLoading(false)
+      })
+  }
 
   return (
     <>
@@ -48,14 +71,23 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
               setLoadingLocation(true)
               navigator.geolocation.getCurrentPosition(pos => {
                 const { latitude, longitude } = pos.coords
-                axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false&key=AIzaSyDaP-HFqwdZij4p6FuJOn63NDEzVXNO6sk`)
-                  .then((data: any) => {
-                    console.log(data)
-                    setLoadingLocation(false)
+                axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDf_L_C6EXCZlD4XNhZOdF0aENCzRASmhI`)
+                  .then(({ data }: any) => {
+                    unstable_batchedUpdates(() => {
+                      setAddress(data.results[0].formatted_address)
+                      setLoadingLocation(false)
+                    })
+                    updateAddress()
                   })
                   .catch(err => {
-                    setLoadingLocation(false)
-                    console.log(err)
+                    toast({
+                      title: "Could not fetch address",
+                      description: address,
+                      status: "error",
+                      duration: 2000,
+                      isClosable: true,
+                      variant: 'subtle'
+                    })
                   })
               });
             }}
@@ -66,27 +98,7 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
 
           <Button
             isLoading={loading}
-            onClick={() => {
-              setLoading(true)
-              axios.patch(`${api.participants}/${meParticipant.id}`, { address: address }, {
-                headers: { "Authorization": "Bearer " + accessToken }
-              })
-                .then(({ data }) => {
-                  toast({
-                    title: "Address updated!",
-                    description: address,
-                    status: "success",
-                    duration: 2000,
-                    isClosable: true,
-                    variant: 'subtle'
-                  })
-                  setLoading(false)
-                })
-                .catch(err => {
-                  console.log(err)
-                  setLoading(false)
-                })
-            }}
+            onClick={updateAddress}
             colorScheme='blue'
             title='Update address'
             disabled={address.length === 0}
