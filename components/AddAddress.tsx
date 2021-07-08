@@ -1,6 +1,6 @@
 import { IParticipant } from '../types/Participant';
 import { useState } from 'react';
-import { Heading } from '@chakra-ui/react';
+import { Heading, useToast } from '@chakra-ui/react';
 import {
   Box,
   Stack,
@@ -27,6 +27,8 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
   const [loadingLocation, setLoadingLocation] = useState(false)
   const [error, setError] = useState(false)
 
+  const toast = useToast()
+
   return (
     <>
       <FormControl id="email">
@@ -49,7 +51,6 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
                 axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false&key=AIzaSyDaP-HFqwdZij4p6FuJOn63NDEzVXNO6sk`)
                   .then((data: any) => {
                     console.log(data)
-                    // setAddress(data.results[0].formatted_address)
                     setLoadingLocation(false)
                   })
                   .catch(err => {
@@ -71,6 +72,14 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
                 headers: { "Authorization": "Bearer " + accessToken }
               })
                 .then(({ data }) => {
+                  toast({
+                    title: "Address updated!",
+                    description: address,
+                    status: "success",
+                    duration: 2000,
+                    isClosable: true,
+                    variant: 'subtle'
+                  })
                   setLoading(false)
                 })
                 .catch(err => {

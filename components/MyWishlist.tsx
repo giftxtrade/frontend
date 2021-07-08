@@ -20,6 +20,7 @@ import { WishlistLoadingItem, WishlistProductItem } from './WishlistItem';
 import { IProduct } from '../types/Product';
 import { IParticipant } from '../types/Participant';
 import AddAddress from './AddAddress';
+import { RiShoppingBag3Fill } from 'react-icons/ri'
 
 export interface IMyWishlistProps {
   event: IEvent,
@@ -94,7 +95,10 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
           </Box>
         )) : (
           wishes.length === 0 ? (
-            <Text textAlign='center' color='gray.400'>Your wishlist is empty. Click the "+" button to add products</Text>
+              <Stack justifyContent='center' alignItems='center' spacing='4'>
+                <Icon as={RiShoppingBag3Fill} color='gray.400' boxSize='24' />
+                <Text textAlign='center' color='gray.400'>Your wishlist is empty. Click the "+" button to add products</Text>
+              </Stack>
           ) : (
             wishes.map(({ product }, i) => (
               <Box mb='10' key={`wishitem#${i}`}>
