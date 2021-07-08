@@ -1,4 +1,4 @@
-export const base = 'http://localhost:3001/'
+export const base = process.env.API_BASE
 
 export const api = {
   home: base,
