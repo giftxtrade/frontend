@@ -6,8 +6,11 @@ import {
   Link,
   Icon
 } from '@chakra-ui/react';
+import { useState } from 'react';
 
 export default function BackToEvent({ eventId }: { eventId: number }) {
+  const [loading, setLoading] = useState(false)
+
   return (
     <Box mb='5'>
       <NextLink href={`/events/${eventId}`} passHref>
@@ -15,6 +18,8 @@ export default function BackToEvent({ eventId }: { eventId: number }) {
           <Button
             leftIcon={<Icon as={BsChevronLeft} />}
             size='sm'
+            isLoading={loading}
+            onClick={() => setLoading(true)}
           >
             Back to Event
           </Button>
