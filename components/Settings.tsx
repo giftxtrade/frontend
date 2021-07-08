@@ -213,7 +213,6 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     placeholder='Ex. Eid 2021 Gift Exchange'
                     type='text'
                     name='name'
-                    autoFocus={true}
                     value={name}
                     onChange={(e: any) => setName(e.target.value)}
                   />

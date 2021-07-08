@@ -52,7 +52,7 @@ export default function Google() {
   return (
     <>
       <Head>
-        <title>Logging in... - GiftTrade</title>
+        <title>Logging in...</title>
       </Head>
 
       {

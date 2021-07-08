@@ -1,9 +1,7 @@
-import { User } from '../store/jwt-payload';
 import { authStore, logout } from '../store/auth-store';
 import router from "next/router";
 import { useCookies } from "react-cookie";
-import { useMediaQuery } from '@chakra-ui/react'
-import NextLink from 'next/link';
+import { Flex, Spinner } from '@chakra-ui/react'
 import Head from 'next/head';
 import { useEffect } from 'react';
 import { serialize } from 'cookie';
@@ -21,6 +19,10 @@ export default function Logout() {
       <Head>
         <title>Logging out...</title>
       </Head>
+
+      <Flex alignItems="center" justifyContent='center' p='20' >
+        <Spinner size='xl' />
+      </Flex>
     </>
   )
 }
