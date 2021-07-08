@@ -8,6 +8,7 @@ import { authStore } from '../store/auth-store';
 import styles from '../styles/landing-page.module.css'
 import cookie, { serialize } from "cookie"
 import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
+import { api } from '../util/api';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -59,7 +60,7 @@ export default function LandingPage() {
                     </Text>
 
                     <Container maxW='full' p='0' mt='5vh'>
-                      <Link href='http://localhost:3001/auth/google'>
+                      <Link href={`${api.google}`} isExternal={true}>
                         <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
                       </Link>
                     </Container>
