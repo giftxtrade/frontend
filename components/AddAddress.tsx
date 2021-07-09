@@ -95,8 +95,8 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
                 },
                 err => {
                   toast({
-                    title: "Could not fetch address",
-                    description: "We were unable to detect your address using the location service on your device. Try using the input box to enter your address manually.",
+                    title: "Unable to use location services on your device",
+                    description: "Make sure location services are turned on, or try using the input box to enter your address manually.",
                     status: "error",
                     duration: 5000,
                     isClosable: true,
