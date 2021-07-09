@@ -11,7 +11,8 @@ import {
   Icon,
   useDisclosure,
   Stack,
-  useToast
+  useToast,
+  LinkBox,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
@@ -29,6 +30,7 @@ import EventBoxSm from '../components/EventBoxSm';
 import { FcClearFilters } from 'react-icons/fc';
 import { useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 
 export interface IHopeProps {
   accessToken: string,
@@ -168,14 +170,18 @@ export default function Home(props: IHopeProps) {
                 ) : (
                   <Stack spacing={3}>
                     {events.map((e, i) => (
-                      <EventBoxSm
-                        event={e}
-                        isInvite={false}
-                        key={`event#${i}`}
-                        handleAccept={handleAccept}
-                        handleDecline={handleDecline}
-                        index={i}
-                      />
+                      <NextLink href={`/events/${e.id}`} passHref>
+                        <LinkBox cursor='pointer'>
+                          <EventBoxSm
+                            event={e}
+                            isInvite={false}
+                            key={`event#${i}`}
+                            handleAccept={handleAccept}
+                            handleDecline={handleDecline}
+                            index={i}
+                          />
+                        </LinkBox>
+                      </NextLink>
                     ))}
                   </Stack>
                 )

@@ -8,6 +8,7 @@ import {
   Stack,
   Flex,
   Icon,
+  LinkOverlay
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { BsCheck, BsX } from 'react-icons/bs'
@@ -36,13 +37,11 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
           {event.name}
         </Heading>
       ) : (
-          <NextLink href={`/events/${event.id}`} passHref>
-            <Link>
-              <Heading size='md'>
-                {event.name}
-              </Heading>
-            </Link>
-          </NextLink>
+          <LinkOverlay href={`/events/${event.id}`}>
+            <Heading size='md'>
+              {event.name}
+            </Heading>
+          </LinkOverlay>
       )}
 
       <Text color='gray.500' fontSize='xs'>
@@ -81,28 +80,28 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       </Stack>
 
       {isInvite ? (
-        <Flex direction='row' alignItems='center' justifyContent='flex-end'>
+        <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing='3' mt='4'>
           <Button
             size='xs'
             colorScheme='green'
-            variant='ghost'
             title='Accept this event invite'
             onClick={() => handleAccept(event.id, index)}
+            leftIcon={<Icon as={BsCheck} boxSize='4' />}
           >
-            <Icon as={BsCheck} boxSize='5' />
+            Accept
           </Button>
 
           <Button
             size='xs'
             colorScheme='red'
             variant='ghost'
-            ml='4'
             title='Decline this event invite'
             onClick={() => handleDecline(event.id, index)}
+            leftIcon={<Icon as={BsX} boxSize='4' />}
           >
-            <Icon as={BsX} boxSize='5' />
+            Decline
           </Button>
-        </Flex>
+        </Stack>
       ) : <></>}
     </Box>
   )
