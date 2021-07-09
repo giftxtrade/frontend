@@ -27,7 +27,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         <meta property="og:title" content={content.BASE_TITLE} />
         <meta property="og:description" content={content.DESCRIPTION} />
-        <meta property="og:image" content="/banner.jpg" />
+        <meta property="og:image" content={`${base}banner.jpg`} />
         <meta property="og:url" content={base} />
         <meta property="og:site_name" content="GiftTrade" />
 
