@@ -61,6 +61,18 @@ export default function Home(props: IHopeProps) {
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
+    const numInvites = invites.length
+    if (numInvites > 0) {
+      toast({
+        title: numInvites + (numInvites == 1 ? " Pending Invite" : "Pending Invites"),
+        status: 'warning',
+        description: "You have pending invites. Make sure to accept or decline them and continue",
+        duration: 2000,
+        isClosable: true,
+        variant: 'subtle'
+      })
+    }
+
     axios.get(api.events, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
@@ -99,6 +111,13 @@ export default function Home(props: IHopeProps) {
 
   const handleDecline = (eventId: number, index: number) => {
     setInvites(invites.filter((_, i) => i !== index))
+    toast({
+      title: "Invite declined!",
+      status: "info",
+      duration: 2000,
+      isClosable: true,
+      variant: 'subtle'
+    })
 
     axios.get(`${api.decline_invite}/${eventId}`, {
       headers: { "Authorization": "Bearer " + accessToken }
