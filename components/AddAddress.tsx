@@ -69,28 +69,42 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
             isLoading={loadingLocation}
             onClick={() => {
               setLoadingLocation(true)
-              navigator.geolocation.getCurrentPosition(pos => {
-                const { latitude, longitude } = pos.coords
-                axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDf_L_C6EXCZlD4XNhZOdF0aENCzRASmhI`)
-                  .then(({ data }: any) => {
-                    const myAddress = data.results[0].formatted_address
-                    unstable_batchedUpdates(() => {
-                      setAddress(myAddress)
+              navigator.geolocation.getCurrentPosition(
+                pos => {
+                  const { latitude, longitude } = pos.coords
+                  axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyDf_L_C6EXCZlD4XNhZOdF0aENCzRASmhI`)
+                    .then(({ data }: any) => {
+                      const myAddress = data.results[0].formatted_address
+                      unstable_batchedUpdates(() => {
+                        setAddress(myAddress)
+                        setLoadingLocation(false)
+                      })
+                      updateAddress(myAddress)
+                    })
+                    .catch(err => {
+                      toast({
+                        title: "Something went wrong",
+                        description: "Please reload and try again",
+                        status: "error",
+                        duration: 5000,
+                        isClosable: true,
+                        variant: 'subtle'
+                      })
                       setLoadingLocation(false)
                     })
-                    updateAddress(myAddress)
+                },
+                err => {
+                  toast({
+                    title: "Could not fetch address",
+                    description: "We were unable to detect your address using the location service on your device. Try using the input box to enter your address manually.",
+                    status: "error",
+                    duration: 5000,
+                    isClosable: true,
+                    variant: 'subtle'
                   })
-                  .catch(err => {
-                    toast({
-                      title: "Could not fetch address",
-                      description: address,
-                      status: "error",
-                      duration: 2000,
-                      isClosable: true,
-                      variant: 'subtle'
-                    })
-                  })
-              });
+                  setLoadingLocation(false)
+                }
+              );
             }}
             title='Use my current location'
           >
