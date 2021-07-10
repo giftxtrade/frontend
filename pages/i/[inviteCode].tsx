@@ -1,11 +1,13 @@
+import { DocumentContext } from 'next/document';
 import { Flex, Spinner, Text, Link } from '@chakra-ui/react';
 import { api } from "../../util/api"
 import { useEffect, useState } from "react"
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
+import Head from 'next/head';
 
-export default function Invite() {
+export default function Invite(props: { details: { name: string, description: string } | undefined }) {
   const [error, setError] = useState(false)
   const [val, setVal] = useState(false)
   const router = useRouter()
@@ -26,6 +28,17 @@ export default function Invite() {
 
   return (
     <>
+      {props.details ? (
+        <Head>
+          <title>{props.details.name} Invite - GiftTrade</title>
+          <meta name="description" content={
+            props.details.description !== '' ?
+              props.details.description :
+              `Click the link to join ${props.details.name} with simple one click login.`
+          } />
+        </Head>
+      ) : <></>}
+
       {
         error ? (
           <Flex direction='column' alignItems="center" justifyContent='center' p='20' >
@@ -44,3 +57,18 @@ export default function Invite() {
     </>
   )
 }
+
+export const getServerSideProps = async (ctx: DocumentContext) => {
+  const inviteCode = ctx.query.inviteCode;
+
+  let details: { name: string, description: string } | undefined;
+  await axios.get(`${api.eventDetails}/${inviteCode}`)
+    .then(({ data }: { data: { name: string, description: string } }) => {
+      details = data
+    })
+    .catch(_ => {
+      details = undefined
+    })
+
+  return { props: { details } }
+};
