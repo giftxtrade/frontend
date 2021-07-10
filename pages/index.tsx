@@ -31,6 +31,8 @@ export default function LandingPage() {
       <Head>
         <title>GiftTrade - Gift Exchange, Secret Santa Generator</title>
 
+        <meta name="robots" content="index, follow" />
+
         <meta property="og:title" content={content.BASE_TITLE} />
         <meta property="og:description" content={content.DESCRIPTION} />
         <meta property="og:image" content={`${base}banner.jpg`} />

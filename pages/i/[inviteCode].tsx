@@ -39,6 +39,8 @@ export default function Invite(props: { details: { name: string, description: st
           <title>{details?.name} Invite - GiftTrade</title>
           <meta name="description" content={description} />
 
+          <meta name="robots" content="noindex" />
+
           <meta property="og:title" content={title} />
           <meta property="og:description" content={description} />
           <meta property="og:url" content={`${base}i/${inviteCode}`} />

@@ -23,7 +23,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <link rel="icon" href="/favicon.ico" />
 
         <meta name="description" content={content.DESCRIPTION} />
-        <meta name="robots" content="index, follow" />
 
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${content.GTAG}`} />
 
