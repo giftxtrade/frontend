@@ -8,13 +8,17 @@ import {
 } from '@chakra-ui/react';
 import { WishlistProductItem } from './WishlistItem';
 import { IWish } from '../types/Wish';
+import { useState } from 'react';
 
 export interface IParticipantWishlistProps {
   name: string | undefined
   wishlist: Array<IWish>
+  isMyDraw: boolean
 }
 
-export default function ParticipantWishlist({ name, wishlist }: IParticipantWishlistProps) {
+export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParticipantWishlistProps) {
+  const [myDraw, setMyDraw] = useState(isMyDraw)
+
   return (
     <Box
       flex='1'

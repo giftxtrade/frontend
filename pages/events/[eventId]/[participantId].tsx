@@ -53,6 +53,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   const [wishlist, setWishlist] = useState(props.wishlist)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
   const [myDraw, setMyDraw] = useState(props.myDraw)
+  const [isMyDraw, setIsMyDraw] = useState(myDraw?.email === participant.email)
 
   const name = participant.user?.name
   const avatarSize = '100px'
@@ -104,7 +105,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                       </Badge>
                     ) : <></>}
 
-                    {myDraw?.email === participant.email ? (
+                    {isMyDraw ? (
                       <Badge
                         borderRadius="full"
                         px="2"
@@ -137,6 +138,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                   <ParticipantWishlist
                     name={name}
                     wishlist={wishlist}
+                    isMyDraw={isMyDraw}
                   />
                 </Box>
               ) : <></>}
@@ -155,6 +157,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                 <ParticipantWishlist
                   name={name}
                   wishlist={wishlist}
+                    isMyDraw={isMyDraw}
                 />) : <></>}
             </Container>
           )}
