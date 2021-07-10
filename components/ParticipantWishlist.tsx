@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { IProduct } from '../types/Product';
 import numberToCurrency from '../util/currency';
 import styles from '../styles/ParticipantWishlist.module.css'
+import { content } from '../util/content';
 
 export interface IParticipantWishlistProps {
   name: string | undefined
@@ -34,11 +35,15 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
 
   const toast = useToast()
 
-  const buildAddToCartUrl = () => {
+  const buildAddToCartUrl = (accessKey: string, associatesTag: string) => {
     // https://webservices.amazon.com/paapi5/documentation/add-to-cart-form.html
     const amzBase = 'https://www.amazon.com/gp/aws/cart/add.html'
-    let urlWithParam = amzBase + `?AWSAccessKeyId=`
-    urlWithParam = urlWithParam + `&AssociateTag=`
+    let urlWithParam = amzBase + `?AWSAccessKeyId=${accessKey}`
+    urlWithParam = urlWithParam + `&AssociateTag=${associatesTag}`
+    selectedProducts.map(p => p.productKey).forEach((key, i) => {
+      urlWithParam += `&ASIN.${i + 1}=${key}&Quantity.${i + 1}=1`
+    })
+    return urlWithParam
   }
 
   return (
@@ -77,6 +82,9 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
                 colorScheme='blue'
                 size='sm'
                 onClick={() => {
+                  const cartUrl = buildAddToCartUrl('randomkey', content.ASSOCIATE_TAG)
+                  const newWindow = window.open(cartUrl, '_blank')
+
                   toast({
                     title: 'Feature currently unavailable',
                     description: 'Once this feature is ready, users will be able to add all selected products to their Amazon cart',
