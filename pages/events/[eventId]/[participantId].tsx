@@ -55,10 +55,12 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   const [myDraw, setMyDraw] = useState(props.myDraw)
   const [isMyDraw, setIsMyDraw] = useState(myDraw?.email === participant.email)
 
-  const name = participant.user?.name
-  const avatarSize = '100px'
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
+  const [isSmallScreen] = useMediaQuery('(max-width: 500px)')
+
+  const name = participant.user?.name
+  const avatarSize = isSmallScreen ? '70px' : '100px'
 
   return (
     <>
@@ -83,15 +85,21 @@ export default function ParticipantPage(props: IParticipantPageProps) {
 
             <Box mt='5'>
               <Stack spacing='4' mt='5' direction='row'>
-                <Box>
-                  <Image src={participant.user?.imageUrl} w={avatarSize} maxW={avatarSize} rounded='xl' />
+                <Box maxW={avatarSize}>
+                  <Image
+                    src={participant.user?.imageUrl}
+                    w={avatarSize} maxW={avatarSize}
+                    rounded='xl'
+                  />
                 </Box>
 
-                <Box>
-                  <Heading size='lg'>
+                <Box maxW='full'>
+                  <Heading size={isSmallScreen ? 'md' : 'lg'}>
                     {name}
                   </Heading>
-                  <Text>{participant.user?.email}</Text>
+                  <Text fontSize={isSmallScreen ? 'sm' : 'md'} wordBreak='break-all'>
+                    {participant.user?.email}
+                  </Text>
 
                   <Stack direction='row' spacing='1' mt='2'>
                     {participant.organizer ? (
