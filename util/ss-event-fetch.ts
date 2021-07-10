@@ -5,6 +5,7 @@ import { IParticipantUser, IParticipant } from '../types/Participant';
 import { ILink } from '../types/Link';
 import axios from 'axios';
 import { api } from './api';
+import { IDraw } from '../types/Draw';
 
 export default async function eventFetch(ctx: DocumentContext) {
   const idRaw = ctx.query.eventId;
@@ -52,4 +53,18 @@ export default async function eventFetch(ctx: DocumentContext) {
       meParticipant: meParticipant
     }
   }
+}
+
+export async function fetchMyDraw(eventId: number, accessToken: string): Promise<IParticipant | null> {
+  let myDraw: IParticipant | null = null
+  await axios.get(`${api.draws}/me/${eventId}`, {
+    headers: { "Authorization": "Bearer " + accessToken }
+  })
+    .then(({ data }: { data: IDraw }) => {
+      myDraw = data.drawee
+    })
+    .catch(err => {
+      myDraw = null
+    })
+  return myDraw
 }

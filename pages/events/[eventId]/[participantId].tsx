@@ -15,7 +15,7 @@ import {
 import Head from 'next/head';
 import Navbar from '../../../components/Navbar';
 import { DocumentContext } from "next/document";
-import eventFetch from "../../../util/ss-event-fetch";
+import eventFetch, { fetchMyDraw } from "../../../util/ss-event-fetch";
 import { useMediaQuery } from '@chakra-ui/react';
 import { IWish } from '../../../types/Wish';
 import { User } from '../../../store/jwt-payload';
@@ -52,6 +52,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
   const [participant, setParticipant] = useState(props.participant)
   const [wishlist, setWishlist] = useState(props.wishlist)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
+  const [myDraw, setMyDraw] = useState(props.myDraw)
 
   const name = participant.user?.name
   const avatarSize = '100px'
@@ -113,6 +114,17 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                         Participant
                       </Badge>
                     ) : <></>}
+
+                    {myDraw?.email === participant.email ? (
+                      <Badge
+                        borderRadius="full"
+                        px="2"
+                        colorScheme="purple"
+                        title={'You are a participant for this event'}
+                      >
+                        Participant
+                      </Badge>
+                    ) : <></>}
                   </Stack>
 
                   <Stack mt='3' direction='row' spacing='2' color='gray.600' fontSize='sm'>
@@ -164,7 +176,7 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
 
   const { props, notFound } = await eventFetch(ctx)
 
-  if (notFound) {
+  if (notFound || !props?.event || !props?.accessToken) {
     return { notFound: true }
   }
 
@@ -172,6 +184,8 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
   if (!participant || !participant.accepted) {
     return { notFound: true }
   }
+
+  const myDraw = await fetchMyDraw(props.event.id, props.accessToken)
 
   let wishlist: IWish[] | null = null;
   await axios.get(`${api.wishes}/${props?.event.id}/${participant.id}`, {
@@ -188,5 +202,5 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
     return { notFound: true }
   }
 
-  return { props: { ...props, participant, wishlist } }
+  return { props: { ...props, participant, wishlist, myDraw } }
 };

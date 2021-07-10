@@ -37,7 +37,7 @@ import ParticipantUser from '../../components/ParticipantUser';
 import GetLinkEvent from '../../components/GetLinkEvent';
 import { unstable_batchedUpdates } from "react-dom";
 import MyWishlist from "../../components/MyWishlist";
-import eventFetch from "../../util/ss-event-fetch";
+import eventFetch, { fetchMyDraw } from "../../util/ss-event-fetch";
 import Draws from "../../components/Draws";
 import { IDraw } from "../../types/Draw";
 import Settings from "../../components/Settings";
@@ -462,19 +462,10 @@ export default function Event(props: IEventProps) {
 export const getServerSideProps = async (ctx: DocumentContext) => {
   const { props, notFound } = await eventFetch(ctx)
 
-  if (notFound) {
+  if (notFound || !props?.event || !props?.accessToken) {
     return { notFound: true }
   }
 
-  let myDraw: IParticipant | null = null
-  await axios.get(`${api.draws}/me/${props?.event.id}`, {
-    headers: { "Authorization": "Bearer " + props?.accessToken }
-  })
-    .then(({ data }: { data: IDraw }) => {
-      myDraw = data.drawee
-    })
-    .catch(err => {
-      myDraw = null
-    })
+  const myDraw = await fetchMyDraw(props.event.id, props.accessToken)
   return { props: { ...props, myDraw } }
 };
