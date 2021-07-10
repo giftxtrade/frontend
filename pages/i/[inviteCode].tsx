@@ -7,14 +7,14 @@ import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 
-export default function Invite(props: { details: { name: string, description: string } | undefined }) {
+export default function Invite(props: { details: { name: string, description: string } | null }) {
+  const [details, setDetails] = useState(props.details)
   const [error, setError] = useState(false)
-  const [val, setVal] = useState(false)
   const router = useRouter()
   const { inviteCode } = router.query
 
   useEffect(() => {
-    if (inviteCode) {
+    if (details) {
       axios.get(`${api.verify_invite_code}/${inviteCode}`)
         .then(({ data }) => {
           localStorage.setItem('invite_code', data.code)
@@ -22,25 +22,14 @@ export default function Invite(props: { details: { name: string, description: st
         })
         .catch(_ => setError(true))
     } else {
-      setVal(!val)
+      setError(true)
     }
-  }, [val])
+  }, [])
 
   return (
     <>
-      {props.details ? (
-        <Head>
-          <title>{props.details.name} Invite - GiftTrade</title>
-          <meta name="description" content={
-            props.details.description !== '' ?
-              props.details.description :
-              `Click the link to join ${props.details.name} with simple one click login.`
-          } />
-        </Head>
-      ) : <></>}
-
       {
-        error ? (
+        error || !details ? (
           <Flex direction='column' alignItems="center" justifyContent='center' p='20' >
             <Text mb='5'>Something went wrong. Perhaps the invite link was expired, or non-existent.</Text>
 
@@ -49,9 +38,20 @@ export default function Invite(props: { details: { name: string, description: st
             </NextLink>
           </Flex>
         ) : (
-          <Flex alignItems="center" justifyContent='center' p='20' >
-            <Spinner size='xl' />
-          </Flex>
+            <>
+              <Head>
+                <title>{details.name} Invite - GiftTrade</title>
+                <meta name="description" content={
+                  details.description !== '' ?
+                    details.description :
+                    `Click the link to join ${details.name} with simple one click login.`
+                } />
+              </Head>
+
+              <Flex alignItems="center" justifyContent='center' p='20' >
+                <Spinner size='xl' />
+              </Flex>
+            </>
         )
       }
     </>
@@ -70,5 +70,5 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
       details = undefined
     })
 
-  return { props: { details } }
+  return { props: { details: details ? details : null } }
 };
