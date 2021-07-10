@@ -88,6 +88,7 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
         />
       </Stack>
 
+      <Box overflowX='hidden'>
       {
         loading ? [1, 2].map((p, i) => (
           <Box mb='5' key={`loading#${i}`}>
@@ -111,6 +112,7 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
           )
         )
       }
+      </Box>
     </>
   )
 }

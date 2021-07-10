@@ -144,7 +144,7 @@ export default function Wishlist(props: IEventProps) {
                   <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
                 </Flex>
 
-                <Box h='90vh' overflowY='auto'>
+                  <Box h='90vh' overflowY='auto' overflowX='hidden'>
                   {
                     loadingWishes ? [1, 2].map((p, i) => (
                       <Box mb='5' key={`loading#${i}`}>
