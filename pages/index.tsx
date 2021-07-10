@@ -11,6 +11,7 @@ import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
 import { api } from '../util/api';
 import { content } from '../util/content';
 import { base } from '../util/site';
+import NextLink from 'next/link';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -68,9 +69,11 @@ export default function LandingPage() {
                     </Text>
 
                     <Container maxW='full' p='0' mt='5vh'>
-                      <Link href={`${api.google}`}>
-                        <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
-                      </Link>
+                      <NextLink href='/login' passHref>
+                        <Link>
+                          <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
+                        </Link>
+                      </NextLink>
                     </Container>
                   </Box>
                 </Container>

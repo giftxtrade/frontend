@@ -1,6 +1,7 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+
 export default function Terms() {
   const router = useRouter()
 
@@ -8,7 +9,5 @@ export default function Terms() {
     router.push('/privacy')
   }, [])
 
-  return (
-    <Head>Redirecting to Privacy Page...</Head>
-  )
+  return <></>
 }
