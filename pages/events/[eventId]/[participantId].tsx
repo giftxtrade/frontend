@@ -104,17 +104,6 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                       </Badge>
                     ) : <></>}
 
-                    {participant.participates ? (
-                      <Badge
-                        borderRadius="full"
-                        px="2"
-                        colorScheme="blue"
-                        title={'You are a participant for this event'}
-                      >
-                        Participant
-                      </Badge>
-                    ) : <></>}
-
                     {myDraw?.email === participant.email ? (
                       <Badge
                         borderRadius="full"
@@ -122,9 +111,18 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                         colorScheme="purple"
                         title={'You are a participant for this event'}
                       >
+                        My Draw
+                      </Badge>
+                    ) : (
+                      <Badge
+                        borderRadius="full"
+                        px="2"
+                          colorScheme="blue"
+                        title={'You are a participant for this event'}
+                      >
                         Participant
                       </Badge>
-                    ) : <></>}
+                    )}
                   </Stack>
 
                   <Stack mt='3' direction='row' spacing='2' color='gray.600' fontSize='sm'>
