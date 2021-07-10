@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
+import { base } from '../../util/site';
 
 export default function Invite(props: { details: { name: string, description: string } | null }) {
   const [details, setDetails] = useState(props.details)
@@ -26,6 +27,31 @@ export default function Invite(props: { details: { name: string, description: st
     }
   }, [])
 
+  const renderSuccess = () => {
+    const title = `${details?.name} Invite - GiftTrade`
+    const description = details?.description !== '' ?
+      details?.description :
+      `Click the link to join ${details?.name} with simple one click login.`
+
+    return (
+      <>
+        <Head>
+          <title>{details?.name} Invite - GiftTrade</title>
+          <meta name="description" content={description} />
+
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+          <meta property="og:url" content={`${base}i/${inviteCode}`} />
+          <meta property="og:site_name" content="GiftTrade" />
+        </Head>
+
+        <Flex alignItems="center" justifyContent='center' p='20' >
+          <Spinner size='xl' />
+        </Flex>
+      </>
+    )
+  }
+
   return (
     <>
       {
@@ -37,22 +63,7 @@ export default function Invite(props: { details: { name: string, description: st
               <Link color='blue.600' fontWeight='bold'>Head to the homepage</Link>
             </NextLink>
           </Flex>
-        ) : (
-            <>
-              <Head>
-                <title>{details.name} Invite - GiftTrade</title>
-                <meta name="description" content={
-                  details.description !== '' ?
-                    details.description :
-                    `Click the link to join ${details.name} with simple one click login.`
-                } />
-              </Head>
-
-              <Flex alignItems="center" justifyContent='center' p='20' >
-                <Spinner size='xl' />
-              </Flex>
-            </>
-        )
+        ) : renderSuccess()
       }
     </>
   )

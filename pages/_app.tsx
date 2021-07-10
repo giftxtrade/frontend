@@ -25,12 +25,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content={content.DESCRIPTION} />
         <meta name="robots" content="index, follow" />
 
-        <meta property="og:title" content={content.BASE_TITLE} />
-        <meta property="og:description" content={content.DESCRIPTION} />
-        <meta property="og:image" content={`${base}banner.jpg`} />
-        <meta property="og:url" content={base} />
-        <meta property="og:site_name" content="GiftTrade" />
-
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${content.GTAG}`} />
 
         <script

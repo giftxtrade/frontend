@@ -9,6 +9,8 @@ import styles from '../styles/landing-page.module.css'
 import cookie, { serialize } from "cookie"
 import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
 import { api } from '../util/api';
+import { content } from '../util/content';
+import { base } from '../util/site';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -28,6 +30,12 @@ export default function LandingPage() {
     <>
       <Head>
         <title>GiftTrade - Gift Exchange, Secret Santa Generator</title>
+
+        <meta property="og:title" content={content.BASE_TITLE} />
+        <meta property="og:description" content={content.DESCRIPTION} />
+        <meta property="og:image" content={`${base}banner.jpg`} />
+        <meta property="og:url" content={base} />
+        <meta property="og:site_name" content="GiftTrade" />
       </Head>
 
       <Container maxW='full' p='0'>
