@@ -42,6 +42,7 @@ import Draws from "../../components/Draws";
 import { IDraw } from "../../types/Draw";
 import Settings from "../../components/Settings";
 import LeaveGroup from "../../components/LeaveGroup";
+import PendingInvite from "../../components/PendingInvite";
 
 export interface IEventProps {
   accessToken: string
@@ -229,6 +230,15 @@ export default function Event(props: IEventProps) {
             flex='2'
             pl='1'
           >
+            {!meParticipant.accepted ? (
+              <Box mb='5'>
+                <PendingInvite
+                  event={event}
+                  accessToken={accessToken}
+                />
+              </Box>
+            ) : <></>}
+
             <Box>
               <Stack direction='row' spacing='1' mb='7'>
                 {meParticipant.organizer ? (

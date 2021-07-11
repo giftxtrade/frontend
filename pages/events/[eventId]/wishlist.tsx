@@ -31,6 +31,7 @@ import { api } from '../../../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { IProduct } from '../../../types/Product';
 import { BsBagFill } from 'react-icons/bs';
+import PendingInvite from '../../../components/PendingInvite';
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -60,7 +61,9 @@ export default function Wishlist(props: IEventProps) {
           setWishProductIds(productIdSet)
         })
       })
-      .catch()
+      .catch(err => {
+        setLoadingWishes(false)
+      })
   }, [])
 
   const addWish = (product: IProduct) => {
@@ -118,6 +121,15 @@ export default function Wishlist(props: IEventProps) {
             flex='2'
             pl='0'
           >
+            {!meParticipant.accepted ? (
+              <Box mb='5'>
+                <PendingInvite
+                  event={event}
+                  accessToken={accessToken}
+                />
+              </Box>
+            ) : <></>}
+
             <Search
               accessToken={accessToken}
               minPrice={1}

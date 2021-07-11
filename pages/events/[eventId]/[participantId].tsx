@@ -28,6 +28,7 @@ import axios from 'axios';
 import { WishlistProductItem } from '../../../components/WishlistItem';
 import { MdLocationCity } from 'react-icons/md'
 import ParticipantWishlist from '../../../components/ParticipantWishlist';
+import PendingInvite from '../../../components/PendingInvite';
 
 export interface IParticipantPageProps {
   accessToken: string
@@ -81,6 +82,15 @@ export default function ParticipantPage(props: IParticipantPageProps) {
             flex='2'
             pl='0'
           >
+            {!meParticipant.accepted ? (
+              <Box mb='5'>
+                <PendingInvite
+                  event={event}
+                  accessToken={accessToken}
+                />
+              </Box>
+            ) : <></>}
+
             <BackToEvent eventId={event.id} />
 
             <Box mt='5'>

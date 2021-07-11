@@ -42,7 +42,9 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
           setLoading(false)
         })
       })
-      .catch()
+      .catch(() => {
+        setLoading(false)
+      })
   }, [])
 
   const removeWish = (product: IProduct) => {
