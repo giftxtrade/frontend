@@ -64,7 +64,7 @@ export default function Home(props: IHopeProps) {
     const numInvites = invites.length
     if (numInvites > 0) {
       toast({
-        title: numInvites + (numInvites == 1 ? " Pending Invite" : "Pending Invites"),
+        title: numInvites + " " + (numInvites == 1 ? "Pending Invite" : "Pending Invites"),
         status: 'warning',
         description: "You have pending invites. Make sure to accept or decline them and continue",
         duration: 2000,
