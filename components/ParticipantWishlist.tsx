@@ -84,15 +84,6 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
                 onClick={() => {
                   const cartUrl = buildAddToCartUrl('randomkey', content.ASSOCIATE_TAG)
                   const newWindow = window.open(cartUrl, '_blank')
-
-                  toast({
-                    title: 'Feature currently unavailable',
-                    description: 'Once this feature is ready, users will be able to add all selected products to their Amazon cart',
-                    status: 'warning',
-                    duration: 10000,
-                    isClosable: true,
-                    variant: 'subtle'
-                  })
                 }}
               >
                 Add to Cart
