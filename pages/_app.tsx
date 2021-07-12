@@ -5,6 +5,8 @@ import authenticate from '../util/authenticate';
 import Head from 'next/head';
 import { content } from '../util/content';
 import { base } from '../util/site';
+import '../styles/main.css';
+import '../public/fonts/fonts.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loggedIn, setLoggedIn] = useState(false)

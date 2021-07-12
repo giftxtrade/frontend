@@ -26,7 +26,14 @@ export default function Privacy() {
           <br />
 
           <Text>
-            Our team at GiftTrade truly believes in a safe and secure web. As a result, we make sure to clearly explain how GiftTrade displays, manages, and stores user data.
+            Our team at GiftTrade takes user's privacy extremely seriously. As a result, we make sure to clearly explain how GiftTrade displays, manages, and stores user data. We also make sure to only store the most minimal amount of data to make GiftTrade work faster and provide a reliable service.
+          </Text>
+
+          <br />
+
+          <Heading size='md'>Your privacy</Heading>
+          <Text>
+            Due to the nature of how users join GiftTrade, it is required for them to
           </Text>
         </Box>
       </Container>
