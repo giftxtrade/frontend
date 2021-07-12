@@ -1,17 +1,13 @@
-import { Button, Container, Link, Image, Flex, Heading, Text, Box, Spinner } from '@chakra-ui/react';
-import axios from 'axios'
 import { useRouter } from 'next/dist/client/router';
 import { DocumentContext } from 'next/document';
 import Head from 'next/head'
 import { useEffect, useState } from 'react';
 import { authStore } from '../store/auth-store';
 import styles from '../styles/landing-page.module.css'
-import cookie, { serialize } from "cookie"
 import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
-import { api } from '../util/api';
 import { content } from '../util/content';
 import { base } from '../util/site';
-import NextLink from 'next/link';
+import Link from 'next/link';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -30,7 +26,7 @@ export default function LandingPage() {
   return (
     <>
       <Head>
-        <title>GiftTrade - Gift Exchange, Secret Santa Generator</title>
+        <title>Online Gift Exchange, Secret Santa Generator - GiftTrade</title>
 
         <meta name="robots" content="index, follow" />
 
@@ -41,46 +37,52 @@ export default function LandingPage() {
         <meta property="og:site_name" content="GiftTrade" />
       </Head>
 
-      <Container maxW='full' p='0'>
-        {
-          loading ? (
-            <Flex alignItems="center" justifyContent='center' p='20' >
-              <Spinner size='md' />
-            </Flex>
-          ) : (
-              <Container p='0' maxW='full' h='100vh' className={styles.landingPageHero}>
-                <Flex
-                  direction='row'
-                  alignItems='center'
-                  justifyContent='center'
-                  className={styles.landingNav}
-                >
-                  <Image w='48' src='/giftxtrade_logotype_color.svg' />
-                </Flex>
+      <div className={styles.landingPage}>
+        <div className={styles.pageHero}>
+          <div className={styles.pageHeroInner}>
 
-                <Container maxW='5xl' className={styles.landingContent}>
-                  <Box pt='20' pb='20'>
-                    <Heading size='2xl' mb='7'>Gift Exchange. Made Simple.</Heading>
-                    <Text color='gray.800' fontSize='xl'>
-                      Setting up gift exchanges can be difficult, so we made the proccess simple.
-                    </Text>
-                    <Text color='gray.800' fontSize='xl'>
-                      With simple Google sign-in and contacts integration, setting up <i>your</i> secret santa is only a few clicks away.
-                    </Text>
+            <nav className={styles.heroNav}>
+              <div className={styles.left}>
+                <Link href="/">
+                  <a>
+                    <img src='/logos/logo_profile_rounded.svg' alt='Logo' />
+                  </a>
+                </Link>
+              </div>
 
-                    <Container maxW='full' p='0' mt='5vh'>
-                      <NextLink href='/login' passHref>
-                        <Link>
-                          <Button colorScheme='red' size='lg'>Start your Gift Exchange!</Button>
-                        </Link>
-                      </NextLink>
-                    </Container>
-                  </Box>
-                </Container>
-              </Container>
-          )
-        }
-      </Container>
+              <div className={styles.right}></div>
+            </nav>
+
+            <div className={styles.hero}>
+              <div className={styles.heroCaption}>
+                <div className={styles.heroCaptionHeading}>
+                  <h1>Gift Exchange.</h1>
+                  <h1>Simplified.</h1>
+                </div>
+
+                <div className={styles.button}>
+                  <Link href="/login">
+                    <a>
+                      <div className={styles.loginButton}>Start your Gift Exchnage</div>
+                    </a>
+                  </Link>
+                </div>
+              </div>
+
+              <div className={styles.sitePreviewPanel}>
+                <div className={styles.mobilePreview}>
+                  <img src='/screenshots/iphone-xs.png' alt='Mobile' />
+                </div>
+
+                <div className={styles.laptopPreview}>
+                  <img src='/screenshots/macbook-pro-13.png' alt='Macbook' />
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </>
   )
 }

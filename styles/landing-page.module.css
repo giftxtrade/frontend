@@ -1,22 +1,104 @@
-.landingPageHero {
-    /* background: -webkit-linear-gradient(rgba(88,88,88,.9),rgba(12,12,12,.9)),url(/_next/static/media/mountain_snow.7960cbac31786dad4b2052ae463bc029.jpg); */
-    background: rgba(255, 240, 218, 0.9);
+.landingPage {
+  background-color: #fff;
 }
 
-.landingContent {
-    margin-top: 7vh;
+.pageHero {
+  width: 100%;
+  height: 100vh;
+  background-color: #fff4e3;
 }
 
-.landingNav {
-    padding: 5em 10px;
+.pageHeroInner {
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  height: 100vh;
+  padding: 0px 15px;
 }
 
-@media screen and (max-width: 900px) {
-    .landingContent {
-        margin-top: 0vh;
-    }
+.heroNav {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 15px;
+  z-index: 5;
+}
+.heroNav > .left img {
+  max-width: 50px;
+}
 
-    .landingNav {
-        padding: 2em 10px;
-    }
+
+.hero {
+  top: 200px;
+  position: absolute;
+  width: 100%;
+}
+
+.heroCaption {
+  position: absolute;
+  z-index: 2;
+}
+
+.heroCaption > .heroCaptionHeading {
+
+}
+.heroCaptionHeading h1 {
+  font-size: 5em;
+  font-weight: bold;
+  margin-bottom: 0px;
+  line-height: 1.1em;
+}
+
+.heroCaption > .button .loginButton {
+  margin-top: 2em;
+  background-color: #c13a38;
+  padding: 15px 30px;
+  color: #fff;
+  text-align: center;
+  display: inline-block;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 1.5em;
+  box-shadow: 0px 5px 40px rgba(0,0,0,0.6);
+}
+.loginButton:hover {
+  background-color: #a52e2c!important;
+}
+.loginButton:focus,
+.loginButton:active {
+  background-color: #942a28!important;
+}
+
+
+.sitePreviewPanel {
+  position: absolute;
+  top: 10em;
+  z-index: 1;
+  right: 0;
+}
+
+.sitePreviewPanel .mobilePreview {
+  position: absolute;
+  z-index: 2;
+  bottom: -2em;
+  left: -5em;
+}
+.mobilePreview > img {
+  border-radius: 20px;
+  max-width: 200px;
+  box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+}
+
+.sitePreviewPanel .laptopPreview {
+  
+}
+.laptopPreview > img {
+  border-radius: 20px;
+  max-width: 800px;
+  box-shadow: 0px 10px 50px rgba(0,0,0,0.2);
 }
