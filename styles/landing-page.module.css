@@ -48,9 +48,7 @@
   z-index: 2;
 }
 
-.heroCaption > .heroCaptionHeading {
-
-}
+.heroCaption > .heroCaptionHeading {}
 .heroCaptionHeading h1 {
   font-size: 5em;
   font-weight: bold;
@@ -174,5 +172,31 @@
   }
   .mobilePreviewSm > img {
     max-width: 300px;
+  }
+
+  @media screen and (max-height: 720px) {
+    .sitePreviewPanelSm {
+      bottom: -20em;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .heroCaptionHeading h1 {
+    font-size: 2.5em;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .loginButton {
+    padding: 15px 20px!important;
+  }
+
+  .sitePreviewPanelSm {
+    bottom: -14em;
+  }
+
+  .mobilePreviewSm > img {
+    max-width: 250px;
   }
 }
