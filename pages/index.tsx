@@ -80,6 +80,12 @@ export default function LandingPage() {
               </div>
             </div>
 
+            <div className={styles.sitePreviewPanelSm}>
+              <div className={styles.mobilePreviewSm}>
+                <img src='/screenshots/iphone-xs.png' alt='Mobile' />
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
