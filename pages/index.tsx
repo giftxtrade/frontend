@@ -50,7 +50,13 @@ export default function LandingPage() {
                 </Link>
               </div>
 
-              <div className={styles.right}></div>
+              <div className={styles.right}>
+                <Link href="/login">
+                  <a>
+                    <div className={styles.navLogin}>Login</div>
+                  </a>
+                </Link>
+              </div>
             </nav>
 
             <div className={styles.hero}>
