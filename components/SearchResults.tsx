@@ -67,7 +67,6 @@ export default function SearchResults({
         "Authorization": "Beare " + accessToken
       }
     }).then(({ data }: { data: IProduct[] }) => {
-      console.log(data.length)
       unstable_batchedUpdates(() => {
         setError(false)
         setResults([...results, ...data])
