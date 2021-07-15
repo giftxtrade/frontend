@@ -12,7 +12,8 @@ import {
   Spinner,
   Heading,
   Box,
-  SimpleGrid
+  SimpleGrid,
+  useToast
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -36,6 +37,10 @@ export interface IDrawsProps {
 export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, event, emailToImageMap, meParticipant }: IDrawsProps) {
   const [loading, setLoading] = useState(true)
   const [draws, setDraws] = useState(Array<IDraw>())
+  const [confirmDisable, setConfirmDisable] = useState(true);
+  const [confirmLoading, setConfirmLoading] = useState(false)
+
+  const toast = useToast()
 
   const sorter = (a: IDraw, b: IDraw) => {
     if (a.drawer.email < b.drawer.email) {
@@ -54,7 +59,14 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
           setDraws(data.sort(sorter))
         })
       })
-      .catch(err => console.log(err))
+      .catch(_ => {
+        toast({
+          title: 'Something went wrong',
+          variant: 'subtle',
+          status: 'error'
+        })
+        setLoading(false)
+      })
   }, [])
 
   const drawAgain = () => {
@@ -71,9 +83,17 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
           const myDraw = data.find(({ drawer }) => drawer.email === meParticipant.email)
           if (myDraw)
             setMyDraw(myDraw.drawee)
+          setConfirmDisable(false);
         })
       })
-      .catch(err => console.log(err))
+      .catch(_ => {
+        toast({
+          title: 'Could not generate draws',
+          variant: 'subtle',
+          status: 'error'
+        })
+        setLoading(false)
+      })
   }
 
   const drawUser = (user: User | null | undefined, p: IParticipant, key: string) => {
@@ -116,17 +136,9 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
             <Spinner mb='5' />
           </Flex>
         ) : draws.length === 0 ? (
-          <Text>
-            Are you sure you want to draw?
-            <Button
-              size='sm'
-              colorScheme='blue'
-              ml='2'
-              onClick={() => drawAgain()}
-            >
-              Yes
-            </Button>
-          </Text>
+            <>
+              {drawAgain()}
+            </>
         ) : (
           <Box maxW='100%' overflowX='auto'>
             <SimpleGrid columns={2}>
@@ -148,7 +160,6 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
 
       <ModalFooter>
         <Button
-          colorScheme='blue'
           size='sm'
           ml='2'
           onClick={() => drawAgain()}
@@ -157,10 +168,42 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
         </Button>
 
         <Button
-          colorScheme='green'
+          colorScheme='blue'
           size='sm'
           ml='2'
-          onClick={() => onClose()}
+          onClick={() => {
+            setConfirmDisable(true)
+            setConfirmLoading(true)
+
+            axios.get(
+              `${api.draw_confirm}/${event.id}`,
+              { headers: { "Authorization": "Bearer " + accessToken } }
+            )
+              .then(({ data }: { data: IDraw[] }) => {
+                unstable_batchedUpdates(() => {
+                  setConfirmLoading(false)
+                  onClose()
+                })
+                toast({
+                  title: 'Notifying participants...',
+                  variant: 'subtle',
+                  status: 'success'
+                })
+              })
+              .catch(_ => {
+                toast({
+                  title: 'Could not generate draws',
+                  variant: 'subtle',
+                  status: 'error'
+                })
+                unstable_batchedUpdates(() => {
+                  setConfirmLoading(false)
+                  setConfirmDisable(false)
+                })
+              })
+          }}
+          disabled={confirmDisable}
+          isLoading={confirmLoading}
         >
           Confirm
         </Button>

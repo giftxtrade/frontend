@@ -20,6 +20,7 @@ export const api = {
   eventDetails: base + 'events/get-details', // [GET] :inviteCode
   wishes: base + 'wishes', // Auth required, [POST] with {eventId, participantId, productId}, [GET] :eventId, [DELETE] with {eventId, participantId, productId}
   draws: base + 'draws', // Auth-required [POST] with {eventId}, [GET] :eventId, [GET] /me/eventId
+  draw_confirm: base + 'draws/confirm', // Auth-required, [GET] :eventId
   participants: base + 'participants', // [DELETE] :participantId, [PATCH] :participantId with {address}
   manage_participants: base + 'participants/manage', // Auth-required [DELETE] query param {eventId, participantId}, [PATCH] query param {eventId, participantId} with {organizer: boolean}
 };
