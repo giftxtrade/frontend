@@ -38,6 +38,8 @@ export interface ISearchProps {
   removeWish: (product: IProduct) => void
 }
 
+const defaultSearchQ = 'new';
+
 export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
   const ignoreKeys = ['Control', 'Alt', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'CapsLock', 'Shift']
   const [searchLoading, setSearchLoading] = useState(false)
@@ -49,7 +51,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   const [scroll, setScroll] = useState(false)
 
   const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}&search=new`
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
     if (search && search.length > 1) {
       url += `&search=${search}`
     }
@@ -85,7 +87,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       });
     }
 
-    getProducts(setInitLoading, 1)
+    getProducts(setInitLoading, 1, defaultSearchQ)
   }, [])
 
   const renderResults = () => {
@@ -162,7 +164,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
-                const s = q === '' ? 'new' : q;
+                const s = q === '' ? defaultSearchQ : q;
                 setSearch(s)
                 getProducts(setSearchLoading, 1, s)
               }, 500);
