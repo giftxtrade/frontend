@@ -49,7 +49,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   const [scroll, setScroll] = useState(false)
 
   const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}&search=new`
     if (search && search.length > 1) {
       url += `&search=${search}`
     }
@@ -162,8 +162,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
-                setSearch(q)
-                getProducts(setSearchLoading, 1, q)
+                const s = q === '' ? 'new' : q;
+                setSearch(s)
+                getProducts(setSearchLoading, 1, s)
               }, 500);
             }}
             shadow='sm'
