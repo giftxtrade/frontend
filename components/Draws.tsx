@@ -12,12 +12,7 @@ import {
   Spinner,
   Heading,
   Box,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
+  SimpleGrid
 } from '@chakra-ui/react'
 import axios from 'axios';
 import { IEvent } from '../types/Event';
@@ -42,12 +37,21 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
   const [loading, setLoading] = useState(true)
   const [draws, setDraws] = useState(Array<IDraw>())
 
+  const sorter = (a: IDraw, b: IDraw) => {
+    if (a.drawer.email < b.drawer.email) {
+      return -1;
+    } else if (a.drawer.email > b.drawer.email) {
+      return 1;
+    }
+    return 0;
+  }
+
   useEffect(() => {
     axios.get(`${api.draws}/${event.id}`, { headers: { "Authorization": "Bearer " + accessToken } })
       .then(({ data }: { data: IDraw[] }) => {
         unstable_batchedUpdates(() => {
           setLoading(false)
-          setDraws(data)
+          setDraws(data.sort(sorter))
         })
       })
       .catch(err => console.log(err))
@@ -63,13 +67,32 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
       .then(({ data }: { data: IDraw[] }) => {
         unstable_batchedUpdates(() => {
           setLoading(false)
-          setDraws(data)
+          setDraws(data.sort(sorter))
           const myDraw = data.find(({ drawer }) => drawer.email === meParticipant.email)
           if (myDraw)
             setMyDraw(myDraw.drawee)
         })
       })
       .catch(err => console.log(err))
+  }
+
+  const drawUser = (user: User | null | undefined, p: IParticipant, key: string) => {
+    return (
+      <Box mb='3' height='50px' overflowY='hidden'>
+        <ParticipantUser
+          user={user ? user : null}
+          name={p.name}
+          email={p.email}
+          participates={p.participates}
+          accepted={p.accepted}
+          organizer={p.organizer}
+          address={p.address}
+          id={p.id}
+          event={event}
+          key={key}
+        />
+      </Box>
+    )
   }
 
   return (
@@ -106,75 +129,42 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
           </Text>
         ) : (
           <Box maxW='100%' overflowX='auto'>
-            <Table size="sm" variant='simple'>
-              <Thead>
-                <Tr>
-                  <Th>Participant</Th>
-                  <Th>Draw</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                    {draws.sort((a, b) => {
-                      if (a.drawer.email < b.drawer.email) {
-                        return -1;
-                      }
-                      if (a.drawer.email > b.drawer.email) {
-                        return 1;
-                      }
-                      return 0;
-                    }).map(({ drawer, drawee }, i) => {
-                      const drawerUser = emailToImageMap.get(drawer.email);
-                      const draweeUser = emailToImageMap.get(drawee.email);
-                      return (
-                          <Tr>
-                            <Td>
-                              <ParticipantUser
-                              user={drawerUser ? drawerUser : null}
-                              name={drawer.name}
-                              email={drawer.email}
-                              participates={drawer.participates}
-                              accepted={drawer.accepted}
-                              organizer={drawer.organizer}
-                              address={drawer.address}
-                              id={drawer.id}
-                              event={event}
-                            />
-                        </Td>
-                        <Td>
-                          <ParticipantUser
-                            user={draweeUser ? draweeUser : null}
-                            name={drawee.name}
-                            email={drawee.email}
-                            participates={drawee.participates}
-                            accepted={drawee.accepted}
-                            organizer={drawee.organizer}
-                            address={drawee.address}
-                            id={drawee.id}
-                              event={event}
-                          />
-                        </Td>
-                      </Tr>
-                      )
-                })}
-              </Tbody>
-            </Table>
+            <SimpleGrid columns={2}>
+              <Box>
+                <Heading size='sm' mb='3'>Participant</Heading>
 
-            <Box mt='10'>
-              Do you want to draw again?
-              <Button
-                colorScheme='blue'
-                size='sm'
-                ml='2'
-                onClick={() => drawAgain()}
-              >
-                Yes
-              </Button>
-            </Box>
+                {draws.map(({ drawer }, i) => drawUser(emailToImageMap.get(drawer.email), drawer, `drawer#${i}`))}
+              </Box>
+
+              <Box>
+                <Heading size='sm' mb='3'>Draw</Heading>
+
+                {draws.map(({ drawee }, i) => drawUser(emailToImageMap.get(drawee.email), drawee, `drawee#${i}`))}
+              </Box>
+            </SimpleGrid>
           </Box>
         )}
       </ModalBody>
 
-      <ModalFooter></ModalFooter>
-    </ModalContent >
+      <ModalFooter>
+        <Button
+          colorScheme='blue'
+          size='sm'
+          ml='2'
+          onClick={() => drawAgain()}
+        >
+          Draw Again
+        </Button>
+
+        <Button
+          colorScheme='green'
+          size='sm'
+          ml='2'
+          onClick={() => onClose()}
+        >
+          Confirm
+        </Button>
+      </ModalFooter>
+    </ModalContent>
   );
 }
