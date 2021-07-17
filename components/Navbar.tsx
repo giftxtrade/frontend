@@ -22,7 +22,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
         <NextLink href='/home' passHref>
           <Link>
             {isMediumScreen ? (
-              <Image w='35px' src='/giftxtrade_profile_rounded.png' />
+              <Image w='35px' src='/logos/logo_profile_rounded.svg' />
             ) : (
               <Image w='40' src='/giftxtrade_logotype_color.svg' />
             )}
