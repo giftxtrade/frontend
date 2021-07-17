@@ -166,6 +166,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               timeout = setTimeout(function () {
                 const s = q === '' ? defaultSearchQ : q;
                 setSearch(s)
+                window.scrollTo(0, 0)
                 getProducts(setSearchLoading, 1, s)
               }, 500);
             }}
