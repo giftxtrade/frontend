@@ -25,6 +25,7 @@ import SearchResults from './SearchResults';
 import BackToEvent from './BackToEvent';
 import numberToCurrency from '../util/currency';
 import styles from '../styles/Search.module.css';
+import SearchOptions from './SearchOptions';
 
 export interface ISearchProps {
   accessToken: string
@@ -49,9 +50,11 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   const [hasMore, setHasMore] = useState(true)
   const [search, setSearch] = useState('')
   const [scroll, setScroll] = useState(false)
+  const [minPriceGlobal, setMinPriceGlobal] = useState(minPrice)
+  const [maxPriceGlobal, setMaxPriceGlobal] = useState(maxPrice)
 
-  const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
+  const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string, max?: number, min?: number) => {
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${min ? min : minPriceGlobal}&max_price=${max ? max : maxPriceGlobal}`
     if (search && search.length > 1) {
       url += `&search=${search}`
     }
@@ -102,8 +105,8 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               <SearchResults
                 results={results}
                 pageLimit={pageLimit}
-                minPrice={minPrice}
-                maxPrice={maxPrice}
+                minPrice={minPriceGlobal}
+                maxPrice={maxPriceGlobal}
                 accessToken={accessToken}
                 search={search}
                 hasMore={hasMore}
@@ -150,27 +153,31 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             fontSize="1em"
             children={<SearchIcon color="gray.400" w='5' />}
           />
+
           <Input
             bg='white'
             placeholder="Search for products"
             autoFocus={true}
-            onKeyUp={(e: any) => {
+            onChange={(e: any) => {
+              const value = e.target.value
+              setSearch(value)
+
               for (const k of ignoreKeys) {
                 if (e.key === k)
                   return
               }
 
-              const q: string = e.target.value.trim()
+              const q: string = value.trim()
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
                 const s = q === '' ? defaultSearchQ : q;
-                setSearch(s)
                 window.scrollTo(0, 0)
                 getProducts(setSearchLoading, 1, s)
               }, 500);
             }}
             shadow='sm'
+            value={search}
           />
 
           {searchLoading ? (
@@ -182,16 +189,18 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
           )}
         </InputGroup>
 
-        <Box mt='4'>
-          <Tag
-            size='md'
-            borderRadius="full"
-            variant="solid"
-            colorScheme='gray'
-          >
-            <TagLabel>Budget <b>{numberToCurrency(maxPrice)}</b></TagLabel>
-            <TagCloseButton />
-          </Tag>
+        <Box mt='3'>
+          <SearchOptions
+            min={minPrice}
+            max={maxPrice}
+            setMin={setMinPriceGlobal}
+            setMax={setMaxPriceGlobal}
+            getProducts={getProducts}
+            setSearchLoading={setSearchLoading}
+            globalMax={maxPrice}
+            search={search}
+            setSearch={setSearch}
+          />
         </Box>
       </Box>
 
