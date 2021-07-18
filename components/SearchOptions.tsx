@@ -56,7 +56,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
 
         <Input
           value={m}
-          type='text'
+          type='number'
           size='xs'
           rounded='md'
           id='budget'
@@ -70,7 +70,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
               } catch (e) {
                 val = 0.0
               }
-
+              setMax(val)
               getProducts(setSearchLoading, 1, undefined, val)
             }
           }}
