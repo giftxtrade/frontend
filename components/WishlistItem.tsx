@@ -4,7 +4,8 @@ import {
   Link,
   Box,
   Image,
-  Button
+  Button,
+  Stack
 } from '@chakra-ui/react'
 import { IProduct } from '../types/Product';
 import { generateAmazonAffiliateLink } from '../util/links';
@@ -44,17 +45,22 @@ export function WishlistProductItem({ product, removeWish }: IWishlistProductPro
         <Text noOfLines={2} size='xs' mb='1'>
           <Link href={link} isExternal={true}>{product.title}</Link>
         </Text>
-        <Text>
-          <b>{numberToCurrency(product.price)}</b>
 
-          <span>&nbsp;&nbsp;</span>
+        <StarRatings
+          rating={product.rating}
+          starDimension="13px"
+          starSpacing="0.5px"
+          starRatedColor="rgb(255, 188, 0)"
+        />
 
-          <StarRatings
-            rating={product.rating}
-            starDimension="13px"
-            starSpacing="0.5px"
-            starRatedColor="rgb(255, 188, 0)"
-          />
+        <Stack
+          direction='row'
+          alignItems='center'
+          justifyContent='space-between'
+        >
+          <Text fontSize='sm' fontWeight='bold'>
+            {numberToCurrency(product.price)}
+          </Text>
 
           {removeWish ? (
             <Button
@@ -66,7 +72,7 @@ export function WishlistProductItem({ product, removeWish }: IWishlistProductPro
               Remove
             </Button>
           ) : <></>}
-        </Text>
+        </Stack>
       </Box>
     </Flex>
   )
