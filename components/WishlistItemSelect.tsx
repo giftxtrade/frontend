@@ -28,6 +28,7 @@ export default function WishlistItemSelect({ selectedProducts, product, removeWi
         flex='1'
         pr='5'
         ml='1'
+        isChecked={selectedProducts.find(p => p.id === product.id) ? true : false}
       />
 
       <Box flex='100'>

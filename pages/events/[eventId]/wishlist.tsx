@@ -32,6 +32,9 @@ import { unstable_batchedUpdates } from 'react-dom';
 import { IProduct } from '../../../types/Product';
 import { BsBagFill } from 'react-icons/bs';
 import PendingInvite from '../../../components/PendingInvite';
+import WishlistItemSelect from '../../../components/WishlistItemSelect';
+import WishlistTotal from '../../../components/WishlistTotal';
+import styles from '../../../styles/ParticipantWishlist.module.css'
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -44,6 +47,7 @@ export default function Wishlist(props: IEventProps) {
   const [wishes, setWishes] = useState(Array<IWish>())
   const [wishProductIds, setWishProductIds] = useState(new Set<number>())
   const [showWishlist, setShowWishlist] = useState(false)
+  const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>())
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -152,11 +156,22 @@ export default function Wishlist(props: IEventProps) {
               pr='0'
             >
               <Box position='sticky' top='2'>
-                <Flex mb='7' direction='row' alignItems='center' justifyContent='start'>
-                  <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
-                </Flex>
+                  <Box
+                    pt='3' pb='3' pl='4' pr='4'
+                    bg='white'
+                    className={styles.cartReveal}
+                  >
+                    <Heading size='md' mb='3' color='gray.700'>
+                      My Wishlist
+                    </Heading>
 
-                  <Box h='90vh' overflowY='auto' overflowX='hidden'>
+                    <WishlistTotal
+                      selectedProducts={selectedProducts}
+                      showAddToCart={false}
+                    />
+                  </Box>
+
+                  <Box h='90vh' pt='4' pb='7' overflowY='auto' overflowX='hidden'>
                   {
                     loadingWishes ? [1, 2].map((p, i) => (
                       <Box mb='5' key={`loading#${i}`}>
@@ -167,9 +182,11 @@ export default function Wishlist(props: IEventProps) {
                         <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
                       ) : (
                         wishes.map(({ product }, i) => (
-                          <Box mb='10' key={`wishitem#${i}`}>
-                            <WishlistProductItem
+                          <Box mb='5' key={`wishItem#${i}`}>
+                            <WishlistItemSelect
                               product={product}
+                              selectedProducts={selectedProducts}
+                              setSelectedProducts={setSelectedProducts}
                               removeWish={removeWish}
                             />
                           </Box>
@@ -190,12 +207,21 @@ export default function Wishlist(props: IEventProps) {
             isOpen={isOpen}
             onClose={onClose}
             size={'md'}
+            scrollBehavior='inside'
           >
             <ModalOverlay />
 
             <ModalContent>
               <ModalHeader>My Wishlist</ModalHeader>
               <ModalCloseButton />
+
+              <Box pl='6' pr='6' mb='3'>
+                <WishlistTotal
+                  selectedProducts={selectedProducts}
+                  showAddToCart={false}
+                />
+              </Box>
+
               <ModalBody>
                 {
                   loadingWishes ? [1, 2].map((p, i) => (
@@ -207,9 +233,11 @@ export default function Wishlist(props: IEventProps) {
                       <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
                     ) : (
                       wishes.map(({ product }, i) => (
-                        <Box mb='10' key={`wishitem#${i}`}>
-                          <WishlistProductItem
+                        <Box mb='5' key={`wishItemMd#${i}`}>
+                          <WishlistItemSelect
                             product={product}
+                            selectedProducts={selectedProducts}
+                            setSelectedProducts={setSelectedProducts}
                             removeWish={removeWish}
                           />
                         </Box>
@@ -218,12 +246,6 @@ export default function Wishlist(props: IEventProps) {
                   )
                 }
               </ModalBody>
-
-              <ModalFooter>
-                <Button colorScheme="blue" mr={3} onClick={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
             </ModalContent>
           </Modal>
 
