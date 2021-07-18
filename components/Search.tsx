@@ -189,7 +189,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
           )}
         </InputGroup>
 
-        <Box mt='2'>
+        <Box mt='2' pl='2' pr='2'>
           <SearchOptions
             min={minPrice}
             max={maxPrice}
