@@ -70,11 +70,11 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
   }
 
   return (
-    <Stack direction='row' spacing='5' alignItems='center'>
-      <Stack direction='row' spacing='2' alignItems='center'>
-        <Text fontWeight='bold'>Price</Text>
+    <Stack direction='row' spacing='4' alignItems='center'>
+      <Stack direction='row' spacing='1' alignItems='center'>
+        <Text fontWeight='bold' fontSize='sm'>Price</Text>
         <Select
-          variant="outline"
+          variant="filled"
           defaultValue={`budget${max}`}
           size='sm'
           rounded='md'
@@ -85,9 +85,9 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
       </Stack>
 
       <Stack direction='row' spacing='2' alignItems='center'>
-        <Text fontWeight='bold'>Sort</Text>
+        <Text fontWeight='bold' fontSize='sm'>Sort</Text>
         <Select
-          variant="outline"
+          variant="filled"
           defaultValue={`budget${max}`}
           size='sm'
           rounded='md'
