@@ -27,6 +27,8 @@ export interface ISearchOptionsProps {
 }
 
 export default function SearchOptions({ min, max, globalMax, search, sort, setSearchLoading, getProducts, setSearch, setMax, setMin, setSort }: ISearchOptionsProps) {
+  const [m, setM] = useState(max.toString())
+
   const getSortOptions = () => {
     const options = new Array<ReactElement>()
     const tags = ['Rating', 'Price']
@@ -53,23 +55,25 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
         </label>
 
         <Input
-          onChange={(e: any) => {
-            const val = +(e.target.value)
-            setMax(val)
-
-            console.log(val, e.key)
-
-            if (e.key === 'Enter' && val > 1) {
-              getProducts(setSearchLoading, 1, undefined, val)
-            }
-          }}
+          value={m}
           type='text'
-          pattern='[0-9]*'
           size='xs'
           rounded='md'
           id='budget'
           maxW='5em'
-          value={max}
+          onChange={e => setM(e.target.value)}
+          onKeyDown={(e: any) => {
+            if (e.key === 'Enter') {
+              let val = 0.0
+              try {
+                val = parseFloat(m)
+              } catch (e) {
+                val = 0.0
+              }
+
+              getProducts(setSearchLoading, 1, undefined, val)
+            }
+          }}
         />
       </Stack>
 
