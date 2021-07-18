@@ -6,7 +6,8 @@ import {
   TagCloseButton,
   Select,
   Stack,
-  Text
+  Text,
+  Input
 } from '@chakra-ui/react';
 import { useState, Dispatch, SetStateAction, ReactElement } from 'react';
 
@@ -26,23 +27,6 @@ export interface ISearchOptionsProps {
 }
 
 export default function SearchOptions({ min, max, globalMax, search, sort, setSearchLoading, getProducts, setSearch, setMax, setMin, setSort }: ISearchOptionsProps) {
-
-  const getBudgetOptions = () => {
-    const options = new Array<ReactElement>()
-    for (let i = -1; i < 10; i++) {
-      let b = +globalMax + (10 * i)
-      options.push(
-        <option
-          value={b}
-          key={`budget_${b}`}
-        >
-          {numberToCurrency(b)}
-        </option>
-      )
-    }
-    return options.map(o => o);
-  }
-
   const getSortOptions = () => {
     const options = new Array<ReactElement>()
     const tags = ['Rating', 'Price']
@@ -64,37 +48,40 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
   return (
     <Stack direction='row' spacing='4' alignItems='center'>
       <Stack direction='row' spacing='1' alignItems='center'>
-        <label htmlFor='budgetOptions'>
-          <Text fontWeight='bold' fontSize='sm'>Price</Text>
+        <label htmlFor='budget'>
+          <Text fontWeight='bold' fontSize='xs'>Price</Text>
         </label>
 
-        <Select
-          variant="filled"
-          size='sm'
-          rounded='md'
-          maxW='6.5em'
-          onChange={e => {
-            const price = +(e.target.value)
-            setMax(price)
-            getProducts(setSearchLoading, 1, undefined, price)
+        <Input
+          onChange={(e: any) => {
+            const val = +(e.target.value)
+            setMax(val)
+
+            console.log(val, e.key)
+
+            if (e.key === 'Enter' && val > 1) {
+              getProducts(setSearchLoading, 1, undefined, val)
+            }
           }}
-          value={`${max}`}
-          id='budgetOptions'
-        >
-          {getBudgetOptions()}
-        </Select>
+          type='text'
+          pattern='[0-9]*'
+          size='xs'
+          rounded='md'
+          id='budget'
+          maxW='5em'
+          value={max}
+        />
       </Stack>
 
       <Stack direction='row' spacing='2' alignItems='center'>
         <label htmlFor='sortOptions'>
-          <Text fontWeight='bold' fontSize='sm' for='sortOptions'>Sort</Text>
+          <Text fontWeight='bold' fontSize='xs'>Sort</Text>
         </label>
 
         <Select
-          variant="filled"
-          size='sm'
+          size='xs'
           rounded='md'
-          maxW='6.5em'
+          maxW='5em'
           onChange={e => {
             const tagLower = e.target.value
             setSort(tagLower)
