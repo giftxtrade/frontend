@@ -1,21 +1,16 @@
 import {
-  Flex,
   Heading,
   Text,
-  Button,
   Box,
-  Stack,
-  Checkbox,
-  Container,
   useToast
 } from '@chakra-ui/react';
 import { WishlistProductItem } from './WishlistItem';
 import { IWish } from '../types/Wish';
 import { useState } from 'react';
 import { IProduct } from '../types/Product';
-import numberToCurrency from '../util/currency';
 import styles from '../styles/ParticipantWishlist.module.css'
-import { content } from '../util/content';
+import WishlistItemSelect from './WishlistItemSelect';
+import WishlistTotal from './WishlistTotal';
 
 export interface IParticipantWishlistProps {
   name: string | undefined
@@ -24,7 +19,6 @@ export interface IParticipantWishlistProps {
 }
 
 export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParticipantWishlistProps) {
-  const [myDraw, setMyDraw] = useState(isMyDraw)
   const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>())
 
   let sNameFormatted = ''
@@ -34,17 +28,6 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
   }
 
   const toast = useToast()
-
-  const buildAddToCartUrl = (accessKey: string, associatesTag: string) => {
-    // https://webservices.amazon.com/paapi5/documentation/add-to-cart-form.html
-    const amzBase = 'https://www.amazon.com/gp/aws/cart/add.html'
-    let urlWithParam = amzBase + `?AWSAccessKeyId=${accessKey}`
-    urlWithParam = urlWithParam + `&AssociateTag=${associatesTag}`
-    selectedProducts.map(p => p.productKey).forEach((key, i) => {
-      urlWithParam += `&ASIN.${i + 1}=${key}&Quantity.${i + 1}=1`
-    })
-    return urlWithParam
-  }
 
   return (
     <>
@@ -66,29 +49,10 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
               {sNameFormatted} Wishlist
             </Heading>
 
-            <Stack spacing='4' direction='row' justify='space-between' alignItems='center'>
-              <Stack spacing='4' direction='row'>
-                <Text fontWeight='bold'>Total</Text>
-                <Text>
-                  {selectedProducts.length === 0 ?
-                    numberToCurrency(0.0) :
-                    numberToCurrency(selectedProducts.map(p => p.price).reduce((prev, cur) => prev + cur))
-                  }
-                </Text>
-              </Stack>
-
-              <Button
-                disabled={selectedProducts.length === 0}
-                colorScheme='blue'
-                size='sm'
-                onClick={() => {
-                  const cartUrl = buildAddToCartUrl('randomkey', content.ASSOCIATE_TAG)
-                  const newWindow = window.open(cartUrl, '_blank')
-                }}
-              >
-                Add to Cart
-              </Button>
-            </Stack>
+            <WishlistTotal
+              selectedProducts={selectedProducts}
+              showAddToCart={true}
+            />
           </Box>
         ) : (
           <Heading size='md' mb='5' color='gray.700'>
@@ -103,27 +67,12 @@ export default function ParticipantWishlist({ name, wishlist, isMyDraw }: IParti
             wishlist.map(({ product }, i) => (
               <Box mb='5' key={`wishitem#${i}`}>
                 {isMyDraw ? (
-                  <Flex direction='row'>
-                    <Checkbox
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedProducts([...selectedProducts, product])
-                        } else {
-                          setSelectedProducts([...selectedProducts.filter(p => p.id !== product.id)])
-                        }
-                      }}
-                      flex='1'
-                      pr='5'
-                      ml='1'
-                    />
-
-                    <Box flex='100'>
-                      <WishlistProductItem
-                        product={product}
-                        removeWish={null}
-                      />
-                    </Box>
-                  </Flex>
+                  <WishlistItemSelect
+                    selectedProducts={selectedProducts}
+                    product={product}
+                    setSelectedProducts={setSelectedProducts}
+                    removeWish={null}
+                  />
                 ) : (
                     <WishlistProductItem
                       product={product}
