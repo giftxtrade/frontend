@@ -33,12 +33,8 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
       let b = +globalMax + (10 * i)
       options.push(
         <option
-          value={`budget${b}`}
-          onClick={() => {
-            setMax(b)
-            getProducts(setSearchLoading, 1, '', b)
-          }}
-          key={`budget${b}`}
+          value={b}
+          key={`budget_${b}`}
         >
           {numberToCurrency(b)}
         </option>
@@ -55,11 +51,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
 
       options.push(
         <option
-          value={`sortBy${tag}`}
-          onClick={() => {
-            setSort(tagLower)
-            getProducts(setSearchLoading, 1, undefined, undefined, undefined, tagLower)
-          }}
+          value={tagLower}
           key={`sortBy${tag}`}
         >
           {tag}
@@ -75,10 +67,15 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
         <Text fontWeight='bold' fontSize='sm'>Price</Text>
         <Select
           variant="filled"
-          defaultValue={`budget${max}`}
           size='sm'
           rounded='md'
           maxW='6.5em'
+          onChange={e => {
+            const price = +(e.target.value)
+            setMax(price)
+            getProducts(setSearchLoading, 1, undefined, price)
+          }}
+          value={`${max}`}
         >
           {getBudgetOptions()}
         </Select>
@@ -88,10 +85,15 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
         <Text fontWeight='bold' fontSize='sm'>Sort</Text>
         <Select
           variant="filled"
-          defaultValue={`sortByRating`}
           size='sm'
           rounded='md'
           maxW='6.5em'
+          onChange={e => {
+            const tagLower = e.target.value
+            setSort(tagLower)
+            getProducts(setSearchLoading, 1, undefined, undefined, undefined, tagLower)
+          }}
+          value={sort}
         >
           {getSortOptions()}
         </Select>
