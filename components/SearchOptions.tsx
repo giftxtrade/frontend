@@ -64,7 +64,10 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
   return (
     <Stack direction='row' spacing='4' alignItems='center'>
       <Stack direction='row' spacing='1' alignItems='center'>
-        <Text fontWeight='bold' fontSize='sm'>Price</Text>
+        <label htmlFor='budgetOptions'>
+          <Text fontWeight='bold' fontSize='sm'>Price</Text>
+        </label>
+
         <Select
           variant="filled"
           size='sm'
@@ -76,13 +79,17 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
             getProducts(setSearchLoading, 1, undefined, price)
           }}
           value={`${max}`}
+          id='budgetOptions'
         >
           {getBudgetOptions()}
         </Select>
       </Stack>
 
       <Stack direction='row' spacing='2' alignItems='center'>
-        <Text fontWeight='bold' fontSize='sm'>Sort</Text>
+        <label htmlFor='sortOptions'>
+          <Text fontWeight='bold' fontSize='sm' for='sortOptions'>Sort</Text>
+        </label>
+
         <Select
           variant="filled"
           size='sm'
@@ -94,6 +101,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
             getProducts(setSearchLoading, 1, undefined, undefined, undefined, tagLower)
           }}
           value={sort}
+          id='sortOptions'
         >
           {getSortOptions()}
         </Select>
