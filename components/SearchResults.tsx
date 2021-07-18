@@ -18,6 +18,7 @@ export interface ISearchResultsProps {
   search: string
   hasMore: boolean
   productSet: Set<number>
+  sort: string
 
   setError: Dispatch<SetStateAction<boolean>>
   setResults: Dispatch<SetStateAction<IProduct[]>>
@@ -36,6 +37,7 @@ export default function SearchResults({
   accessToken,
   hasMore,
   productSet,
+  sort,
 
   setError,
   setResults,
@@ -58,7 +60,7 @@ export default function SearchResults({
       return
     }
 
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}`
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}&sort=${sort}`
     if (search !== '' || search.length > 2)
       url += `&search=${search}`
 

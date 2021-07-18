@@ -48,16 +48,15 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
   const [results, setResults] = useState(Array<IProduct>())
   const [error, setError] = useState(false)
   const [hasMore, setHasMore] = useState(true)
-  const [search, setSearch] = useState('')
+  const [searchGlobal, setSearchGlobal] = useState('')
   const [scroll, setScroll] = useState(false)
   const [minPriceGlobal, setMinPriceGlobal] = useState(minPrice)
   const [maxPriceGlobal, setMaxPriceGlobal] = useState(maxPrice)
+  const [sortGlobal, setSortGlobal] = useState('rating')
 
-  const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string, max?: number, min?: number) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${min ? min : minPriceGlobal}&max_price=${max ? max : maxPriceGlobal}`
-    if (search && search.length > 1) {
-      url += `&search=${search}`
-    }
+  const getProducts = (setLoadState: (value: SetStateAction<boolean>) => void, page: number, search?: string, max?: number, min?: number, sort?: string) => {
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${min ? min : minPriceGlobal}&max_price=${max ? max : maxPriceGlobal}&sort=${sort ? sort : sortGlobal}&search=${search ? search : searchGlobal}`
+
     setLoadState(true)
 
     axios.get(url, {
@@ -108,8 +107,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
                 minPrice={minPriceGlobal}
                 maxPrice={maxPriceGlobal}
                 accessToken={accessToken}
-                search={search}
+                search={searchGlobal}
                 hasMore={hasMore}
+                sort={sortGlobal}
 
                 productSet={productSet}
 
@@ -160,7 +160,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             autoFocus={true}
             onChange={(e: any) => {
               const value = e.target.value
-              setSearch(value)
+              setSearchGlobal(value)
 
               for (const k of ignoreKeys) {
                 if (e.key === k)
@@ -177,7 +177,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               }, 500);
             }}
             shadow='sm'
-            value={search}
+            value={searchGlobal}
           />
 
           {searchLoading ? (
@@ -193,23 +193,25 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
           <SearchOptions
             min={minPrice}
             max={maxPrice}
+            sort={sortGlobal}
             setMin={setMinPriceGlobal}
             setMax={setMaxPriceGlobal}
             getProducts={getProducts}
             setSearchLoading={setSearchLoading}
             globalMax={maxPrice}
-            search={search}
-            setSearch={setSearch}
+            search={searchGlobal}
+            setSearch={setSearchGlobal}
+            setSort={setSortGlobal}
           />
         </Box>
       </Box>
 
       <Box position='relative' maxW='inherit'>
         <Box mt='3' mb='5'>
-          {search === '' ? (
+          {searchGlobal === '' ? (
             <Text>🔥 Popular items</Text>
           ) : (
-            <Text>Search results for <b><i>{search}</i></b></Text>
+              <Text>Search results for <b><i>{searchGlobal}</i></b></Text>
           )}
         </Box>
 
