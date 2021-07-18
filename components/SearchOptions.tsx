@@ -88,7 +88,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
         <Text fontWeight='bold' fontSize='sm'>Sort</Text>
         <Select
           variant="filled"
-          defaultValue={`budget${max}`}
+          defaultValue={`sortByRating`}
           size='sm'
           rounded='md'
           maxW='6.5em'
