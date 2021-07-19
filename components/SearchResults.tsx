@@ -99,7 +99,7 @@ export default function SearchResults({
   }
 
   return (
-    <>
+    <Box ml='-8px' mr='-8px'>
       <Masonry
         items={results}
         columnCount={columnBreakPoints()}
@@ -118,15 +118,15 @@ export default function SearchResults({
 
       <Box>
         {loading ? (
-          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='10'>
+          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='14'>
             <Spinner size='md' />
           </Flex>
         ) : !hasMore ? (
-          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='10'>
+            <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='14'>
             <Heading textAlign='center' size='sm'>No more results</Heading>
           </Flex>
         ) : <></>}
       </Box>
-    </>
+    </Box>
   )
 }
