@@ -1,12 +1,10 @@
 import { api } from '../util/api';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import Masonry from 'react-masonry-css';
+import { Masonry, useInfiniteLoader } from 'masonic'
 import ProductSm from './ProductSm';
 import axios from 'axios';
 import { IProduct } from '../types/Product';
-import styles from '../styles/masonary.module.css'
 import { useState, Dispatch, SetStateAction } from 'react';
-import { Flex, Spinner, Heading } from '@chakra-ui/react';
+import { Flex, Spinner, Heading, Box, useMediaQuery } from '@chakra-ui/react';
 import { unstable_batchedUpdates } from "react-dom";
 
 export interface ISearchResultsProps {
@@ -52,10 +50,15 @@ export default function SearchResults({
     300: 1
   };
 
+  const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(2)
+  const maxPages = 8;
+
+  const [isMedSmallScreen] = useMediaQuery('(max-width: 535px)')
+  const [isTinyScreen] = useMediaQuery('(max-width: 300px)')
 
   const callNextPage = () => {
-    if (page > 6) {
+    if (page > maxPages) {
       setHasMore(false)
       return
     }
@@ -64,56 +67,66 @@ export default function SearchResults({
     if (search !== '' || search.length > 2)
       url += `&search=${search}`
 
-    axios.get(url, {
-      headers: {
-        "Authorization": "Beare " + accessToken
-      }
-    }).then(({ data }: { data: IProduct[] }) => {
-      unstable_batchedUpdates(() => {
-        setError(false)
-        setResults([...results, ...data])
-        setHasMore(data.length < pageLimit ? false : true)
-        setPage(page + 1)
+    setLoading(true)
+
+    axios.get(url)
+      .then(({ data }: { data: IProduct[] }) => {
+        unstable_batchedUpdates(() => {
+          setError(false)
+          setResults([...results, ...data])
+          setHasMore(data.length < pageLimit ? false : true)
+          setPage(page + 1)
+          setLoading(false)
+        })
+      }).catch(err => {
+        unstable_batchedUpdates(() => {
+          setHasMore(false)
+          setLoading(false)
+        })
       })
-    }).catch(err => {
-      unstable_batchedUpdates(() => {
-        setHasMore(false)
-      })
-    })
+  }
+
+  const loadMore = useInfiniteLoader(callNextPage, {
+    totalItems: pageLimit * maxPages,
+  })
+
+  const columnBreakPoints = () => {
+    if (isTinyScreen)
+      return 1
+    if (isMedSmallScreen)
+      return 2
+    return 3;
   }
 
   return (
-    <InfiniteScroll
-      dataLength={results.length} //This is important field to render the next data
-      next={callNextPage}
-      hasMore={hasMore}
-      loader={
-        <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
-          <Spinner size='md' />
-        </Flex>
-      }
-      endMessage={
-        <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
-          <Heading textAlign='center' size='sm'>No more results</Heading>
-        </Flex>
-      }
-    >
+    <>
       <Masonry
-        breakpointCols={breakpointColumnsObj}
-        className={styles.grid}
-        columnClassName={styles.gridColumn}
-      >
-        {results.map((result: IProduct, i) => (
+        items={results}
+        columnCount={columnBreakPoints()}
+        render={({ index, data }: any) => (
           <ProductSm
-            product={result}
+            product={data}
             productSet={productSet}
-            key={`sp#${i}`}
+            key={`sp#${index}`}
 
             addWish={addWish}
             removeWish={removeWish}
           />
-        ))}
-      </Masonry>
-    </InfiniteScroll>
+        )}
+        onRender={loadMore}
+      />
+
+      <Box>
+        {loading ? (
+          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='10'>
+            <Spinner size='md' />
+          </Flex>
+        ) : !hasMore ? (
+          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='10'>
+            <Heading textAlign='center' size='sm'>No more results</Heading>
+          </Flex>
+        ) : <></>}
+      </Box>
+    </>
   )
 }

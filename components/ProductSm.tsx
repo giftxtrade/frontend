@@ -19,7 +19,7 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
   const price = numberToCurrency(product.price)
 
   return (
-    <Box mb='10' id={`product#${product.id}`}>
+    <Box mb='10' id={`product#${product.id}`} pl='2' pr='2'>
       <Box overflow='hidden'>
         <Link
           href={link} target='blank'
