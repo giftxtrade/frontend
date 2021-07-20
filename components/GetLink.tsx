@@ -7,6 +7,7 @@ import {
 import { base } from '../util/site'
 import { InfoIcon, CopyIcon } from '@chakra-ui/icons';
 import { useState } from 'react';
+import moment from "moment";
 
 export default function GetLink({ link, drawDate }: { link: string, drawDate: string }) {
   const [copy, setCopy] = useState(false);
@@ -33,7 +34,7 @@ export default function GetLink({ link, drawDate }: { link: string, drawDate: st
 
       <Text mt='5' fontSize='sm' color='gray.600'>
         <InfoIcon mr='2' />
-        You can use the generated link to share with anyone that you want to have in your event. This link is set to deactivate on <i>{new Date(drawDate).toDateString()}</i>.
+        This link is set to deactivate on <b><i>{moment(drawDate).format('ll')}</i></b>. To change the expiration date, update the event draw date.
       </Text>
     </>
   )

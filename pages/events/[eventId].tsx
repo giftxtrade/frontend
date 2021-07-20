@@ -43,6 +43,7 @@ import { IDraw } from "../../types/Draw";
 import Settings from "../../components/Settings";
 import LeaveGroup from "../../components/LeaveGroup";
 import PendingInvite from "../../components/PendingInvite";
+import styles from '../../styles/eventId.module.css'
 
 export interface IEventProps {
   accessToken: string
@@ -365,7 +366,7 @@ export default function Event(props: IEventProps) {
 
             {renderMyDraw()}
 
-            <SimpleGrid columns={isSmallScreen ? 1 : 2} spacing={10} mt='14'>
+            <div className={styles.participantsPanel}>
               <Box>
                 <Heading size='md' mb='5'>Organizers</Heading>
 
@@ -406,7 +407,7 @@ export default function Event(props: IEventProps) {
                   ))}
                 </Stack>
               </Box>
-            </SimpleGrid>
+            </div>
           </Container>
 
           {isMediumScreen ? (

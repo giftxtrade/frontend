@@ -12,7 +12,8 @@ import {
   AlertTitle,
   AlertDescription,
   Spinner,
-  Flex
+  Flex,
+  ModalCloseButton
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction } from 'react';
 import { base } from '../../util/site';
@@ -52,6 +53,18 @@ export default function GetLinkMode({ linkLoading, error, link, drawDate, setMai
       ) : (
         <>
           <ModalHeader>Get Link</ModalHeader>
+
+            <ModalCloseButton onClick={() => {
+              setMain(true)
+              setGetLink(false)
+              setBudget(0)
+              setName('')
+              setDrawDate('')
+              setDescription('')
+              setReset(false)
+              onClose()
+            }} />
+
           <ModalBody>
             {error ? (
               <Alert status="error" mt='7' rounded='md'>
@@ -67,17 +80,23 @@ export default function GetLinkMode({ linkLoading, error, link, drawDate, setMai
             )}
           </ModalBody>
 
-          <ModalFooter mt='7'>
-            <Button colorScheme='blue' mr={3} onClick={() => {
-              setMain(true)
-              setGetLink(false)
-              setBudget(0)
-              setName('')
-              setDrawDate('')
-              setDescription('')
+            <ModalFooter pr='3'>
+              <Button
+                colorScheme='blue'
+                pl='6'
+                pr='6'
+
+                onClick={() => {
+                  setMain(true)
+                  setGetLink(false)
+                  setBudget(0)
+                  setName('')
+                  setDrawDate('')
+                  setDescription('')
                 setReset(false)
-              onClose()
-            }}>
+                  onClose()
+                }}
+              >
               Done
             </Button>
           </ModalFooter>

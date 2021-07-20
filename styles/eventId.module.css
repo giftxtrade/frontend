@@ -1,0 +1,20 @@
+.participantsPanel {
+    display: flex;
+    flex-direction: row;
+    margin-top: 3em;
+    justify-content: space-between;
+}
+
+@media screen and (max-width: 565px) {
+    .participantsPanel {
+        flex-direction: column;
+    }
+
+    .participantsPanel > div {
+        margin-bottom: 3em;
+    }
+
+    .participantsPanel > div:last-child {
+        margin-bottom: 2em;
+    }
+}
