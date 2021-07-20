@@ -44,12 +44,6 @@ export default function SearchResults({
   addWish,
   removeWish
 }: ISearchResultsProps) {
-  const breakpointColumnsObj = {
-    default: 3,
-    535: 2,
-    300: 1
-  };
-
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(2)
   const maxPages = 8;
@@ -73,7 +67,11 @@ export default function SearchResults({
       .then(({ data }: { data: IProduct[] }) => {
         unstable_batchedUpdates(() => {
           setError(false)
-          setResults([...results, ...data])
+          try {
+            setResults([...results, ...data])
+          } catch (e) {
+            setResults([...data])
+          }
           setHasMore(data.length < pageLimit ? false : true)
           setPage(page + 1)
           setLoading(false)
