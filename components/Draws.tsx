@@ -96,6 +96,35 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
       })
   }
 
+  const notifyParticipants = () => {
+    if (!confirmDisable) {
+      axios.get(
+        `${api.draw_confirm}/${event.id}`,
+        { headers: { "Authorization": "Bearer " + accessToken } }
+      )
+        .then(({ data }: { data: IDraw[] }) => {
+          setConfirmLoading(false)
+          onClose()
+          toast({
+            title: 'Notifying participants...',
+            variant: 'subtle',
+            status: 'success'
+          })
+        })
+        .catch(_ => {
+          toast({
+            title: 'Could not generate draws',
+            variant: 'subtle',
+            status: 'error'
+          })
+          unstable_batchedUpdates(() => {
+            setConfirmLoading(false)
+            setConfirmDisable(false)
+          })
+        })
+    }
+  }
+
   const drawUser = (user: User | null | undefined, p: IParticipant, key: string) => {
     return (
       <Box mb='3' height='50px' overflowY='hidden'>
@@ -121,6 +150,7 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
       <ModalCloseButton onClick={() => {
         setShowDraw(false)
         onClose()
+        notifyParticipants()
       }} />
 
       <ModalBody>
@@ -172,35 +202,8 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
           size='sm'
           ml='2'
           onClick={() => {
-            setConfirmDisable(true)
             setConfirmLoading(true)
-
-            axios.get(
-              `${api.draw_confirm}/${event.id}`,
-              { headers: { "Authorization": "Bearer " + accessToken } }
-            )
-              .then(({ data }: { data: IDraw[] }) => {
-                unstable_batchedUpdates(() => {
-                  setConfirmLoading(false)
-                  onClose()
-                })
-                toast({
-                  title: 'Notifying participants...',
-                  variant: 'subtle',
-                  status: 'success'
-                })
-              })
-              .catch(_ => {
-                toast({
-                  title: 'Could not generate draws',
-                  variant: 'subtle',
-                  status: 'error'
-                })
-                unstable_batchedUpdates(() => {
-                  setConfirmLoading(false)
-                  setConfirmDisable(false)
-                })
-              })
+            notifyParticipants()
           }}
           disabled={confirmDisable}
           isLoading={confirmLoading}
