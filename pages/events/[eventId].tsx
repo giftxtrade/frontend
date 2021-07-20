@@ -147,15 +147,6 @@ export default function Event(props: IEventProps) {
               meParticipant={meParticipant}
             />
           </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={() => {
-              onClose()
-              setLinkModal(false)
-            }}>
-              Close
-            </Button>
-          </ModalFooter>
         </ModalContent>
       )
     } else if (settingsModal) {
