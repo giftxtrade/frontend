@@ -437,6 +437,7 @@ export default function Event(props: IEventProps) {
         onClose()
         }}
         size={showDraw ? 'xl' : 'md'}
+        closeOnOverlayClick={false}
       >
         <ModalOverlay />
 
