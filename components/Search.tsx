@@ -39,6 +39,8 @@ export interface ISearchProps {
   removeWish: (product: IProduct) => void
 }
 
+let timeout: any = null;
+
 const defaultSearchQ = 'new';
 
 export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
@@ -123,7 +125,6 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
     )
   }
 
-  let timeout: any = null;
 
   return (
     <Box
@@ -155,16 +156,13 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
             bg='white'
             placeholder="Search for products"
             autoFocus={true}
-            onChange={(e: any) => {
-              const value = e.target.value
-              setSearchGlobal(value)
-
+            onKeyUp={(e: any) => {
               for (const k of ignoreKeys) {
                 if (e.key === k)
                   return
               }
 
-              const q: string = value.trim()
+              const q: string = searchGlobal.trim()
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
@@ -172,6 +170,9 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
                 window.scrollTo(0, 0)
                 getProducts(setSearchLoading, 1, s)
               }, 500);
+            }}
+            onChange={(e: any) => {
+              setSearchGlobal(e.target.value)
             }}
             shadow='sm'
             value={searchGlobal}
