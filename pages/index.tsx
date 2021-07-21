@@ -11,13 +11,10 @@ import Link from 'next/link';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
-  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     authStore.subscribe(() => setLoggedIn(authStore.getState().loggedIn))
-    setLoading(false)
-
     if (loggedIn) {
       router.push('/home')
     }
@@ -69,7 +66,7 @@ export default function LandingPage() {
                 <div className={styles.button}>
                   <Link href="/login">
                     <a>
-                      <div className={styles.loginButton}>Start your Gift Exchnage</div>
+                      <div className={styles.loginButton}>Start your Gift Exchange</div>
                     </a>
                   </Link>
                 </div>
@@ -92,6 +89,12 @@ export default function LandingPage() {
               </div>
             </div>
 
+          </div>
+        </div>
+
+        <div className={styles.howToPage}>
+          <div className={styles.howToHeading}>
+            <h1>How it works</h1>
           </div>
         </div>
       </div>

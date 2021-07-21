@@ -10,6 +10,7 @@
   height: 100vh;
   background-color: #fff4e3;
   overflow: hidden;
+  box-shadow: 0px 1px 10px rgba(0,0,0,0.1);
 }
 
 .pageHeroInner {
@@ -212,4 +213,16 @@
   .mobilePreviewSm > img {
     max-width: 250px;
   }
+}
+
+
+.howToPage {
+  height: 500px;
+}
+
+.howToHeading h1 {
+  font-size: 3em;
+  font-weight: bold;
+  text-align: center;
+  padding: 2em 10px;
 }
