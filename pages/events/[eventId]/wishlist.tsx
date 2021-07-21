@@ -187,7 +187,10 @@ export default function Wishlist(props: IEventProps) {
                               product={product}
                               selectedProducts={selectedProducts}
                               setSelectedProducts={setSelectedProducts}
-                              removeWish={removeWish}
+                              removeWish={(pr: IProduct) => {
+                                setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
+                                removeWish(pr)
+                              }}
                             />
                           </Box>
                         ))
@@ -238,7 +241,10 @@ export default function Wishlist(props: IEventProps) {
                             product={product}
                             selectedProducts={selectedProducts}
                             setSelectedProducts={setSelectedProducts}
-                            removeWish={removeWish}
+                            removeWish={(pr: IProduct) => {
+                              setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
+                              removeWish(pr)
+                            }}
                           />
                         </Box>
                       ))
