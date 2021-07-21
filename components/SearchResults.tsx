@@ -46,7 +46,7 @@ export default function SearchResults({
 }: ISearchResultsProps) {
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(2)
-  const maxPages = 8;
+  const maxPages = 15;
 
   const [isMedSmallScreen] = useMediaQuery('(max-width: 535px)')
   const [isTinyScreen] = useMediaQuery('(max-width: 300px)')

@@ -41,8 +41,6 @@ export interface ISearchProps {
 
 let timeout: any = null;
 
-const defaultSearchQ = 'new';
-
 export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
   const ignoreKeys = ['Control', 'Alt', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'CapsLock', 'Shift']
   const [searchLoading, setSearchLoading] = useState(false)
@@ -88,7 +86,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       });
     }
 
-    getProducts(setInitLoading, 1, defaultSearchQ)
+    getProducts(setInitLoading, 1)
   }, [])
 
   const renderResults = () => {
@@ -166,9 +164,8 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
               clearTimeout(timeout);
 
               timeout = setTimeout(function () {
-                const s = q === '' ? defaultSearchQ : q;
                 window.scrollTo(0, 0)
-                getProducts(setSearchLoading, 1, s)
+                getProducts(setSearchLoading, 1, q)
               }, 500);
             }}
             onChange={(e: any) => {
