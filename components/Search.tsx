@@ -152,7 +152,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
 
           <Input
             bg='white'
-            placeholder="Search for products"
+            placeholder="Keywords, Amazon URL, or ASIN number"
             autoFocus={true}
             onKeyUp={(e: any) => {
               for (const k of ignoreKeys) {
