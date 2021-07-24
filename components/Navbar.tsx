@@ -39,7 +39,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
             router.push('/logout')
           }}
         >
-          <Image src={user.imageUrl} w='35px' mr='3' rounded='md' />
+          <Image src={user.imageUrl} w='35px' mr='2' rounded='md' />
           <Box>
             <Heading size='xs'>{user.name}</Heading>
             {isSmallScreen ? (
