@@ -256,13 +256,18 @@ export default function Event(props: IEventProps) {
                 ) : <></>}
               </Stack>
 
+              <Text color='gray.500' fontSize='xs' mb='1' textAlign='right'>
+                <b style={{ marginRight: '8px' }}>Created on</b>
+                <span>{moment(event.createdAt).format('LL')}</span>
+              </Text>
+
               <Heading size='lg'>{event.name}</Heading>
 
               <Box mt='1' fontSize='.9em' color='gray.600'>
                 <Stack direction='row' spacing='4'>
-                  <Text title='Created on'>
+                  <Text title='Draw date'>
                     <Icon as={BsClock} mr='1' />
-                    <span>{moment(event.createdAt).format('ll')}</span>
+                    <span>{moment(event.drawAt).format('ll')}</span>
                   </Text>
 
                   <Box>
