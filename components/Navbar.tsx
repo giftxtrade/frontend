@@ -24,7 +24,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
             {isMediumScreen ? (
               <Image w='35px' src='/logos/logo_profile_rounded.svg' />
             ) : (
-              <Image w='40' src='/giftxtrade_logotype_color.svg' />
+                <Image w='40' src='/logos/logotype_color.svg' />
             )}
           </Link>
         </NextLink>
