@@ -41,8 +41,9 @@ export default function LandingPage() {
             <nav className={styles.heroNav}>
               <div className={styles.left}>
                 <Link href="/">
-                  <a>
-                    <img src='/logos/logo_profile_rounded.svg' alt='Logo' />
+                  <a className={styles.logotype}>
+                    <span className={styles.logo}></span>
+                    <span className={styles.logotext}>GiftTrade</span>
                   </a>
                 </Link>
               </div>

@@ -1,5 +1,10 @@
 @import "../public/fonts/Inter/inter.css";
 
+.logotype {
+  --logo-height: 40px;
+  --logo-width: 40px;
+}
+
 .landingPage {
   background-color: #fff;
   font-family: "Inter", sans-serif;
@@ -33,15 +38,35 @@
   padding: 20px 15px;
   z-index: 5;
 }
-.heroNav > .left img {
-  max-width: 50px;
+
+.logotype {
+  display: flex;
+  align-items: center;
+}
+.logotype > .logo {
+  background-image: url('../public/logos/logo_profile_rounded.svg');
+  background-repeat: no-repeat;
+  background-size: var(--logo-width) var(--logo-height);
+  width: var(--logo-width);
+  height: var(--logo-height);
+}
+.logotype > .logotext {
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-left: 10px;
+}
+
+@media screen and (max-width: 350px) {
+  .logotext {
+    display: none;
+  }
 }
 
 .navLogin {
   background-color: #fff;
-  border-radius: 5px;
+  border-radius: 8px;
   color: #000;
-  padding: 10px 25px;
+  padding: 8px 25px;
   font-weight: bold;
   box-shadow: 0px 2px 20px rgba(0,0,0,0.1);
 }
