@@ -87,9 +87,27 @@ export default function LandingPage() {
         </div>
 
         <div className={styles.howToPage}>
+
           <div className={styles.howToHeading}>
-            <h1>How it works</h1>
+            <h2>How it works</h2>
           </div>
+
+          <div className={styles.instructions}>
+            <div className={styles.demoContainer}>
+              <div className={styles.phoneHolder}>
+                <video
+                  loop
+                  muted
+                  disablePictureInPicture
+                  disableRemotePlayback
+                  autoPlay
+                >
+                  <source src="/clips/intro-landing.mp4" />
+                </video>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </>
