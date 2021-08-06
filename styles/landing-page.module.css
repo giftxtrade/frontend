@@ -1,8 +1,13 @@
 @import "../public/fonts/Inter/inter.css";
 
+.landingPage {
+  --default-color: #c13a38;
+  --logo-size: 40px;
+}
+
 .logotype {
-  --logo-height: 40px;
-  --logo-width: 40px;
+  --logo-height: var(--logo-size);
+  --logo-width: var(--logo-size);
 }
 
 .landingPage {
@@ -97,7 +102,7 @@
 
 .heroCaption > .button .loginButton {
   margin-top: 2em;
-  background-color: #c13a38;
+  background-color: var(--default-color);
   padding: 15px 30px;
   color: #fff;
   text-align: center;
@@ -123,25 +128,45 @@
   right: 0;
 }
 
+.mobilePreviewImg {
+  background-image: url('../public/screenshots/iphone-xs.png');
+  background-repeat: no-repeat;
+}
+
 .sitePreviewPanel .mobilePreview {
   position: absolute;
   z-index: 2;
   bottom: -2em;
   left: -5em;
 }
-.mobilePreview > img {
+.mobilePreview {
   border-radius: 20px;
-  max-width: 200px;
+  --width: 200px;
+  --height: 433.067px;
+
+  background-size: var(--width) var(--height);
+  width: var(--width);
+  height: var(--height);
   box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
 }
 
 .sitePreviewPanel .laptopPreview {
   right: 0px;
 }
-.laptopPreview > img {
+.laptopPreview {
   border-radius: 20px;
-  max-width: 800px;
   box-shadow: 0px 10px 50px rgba(0,0,0,0.2);
+}
+.laptopPreviewImg {
+  background-image: url('../public/screenshots/macbook-pro-13.png');
+  background-repeat: no-repeat;
+
+  --width: 800px;
+  --height: 500px;
+
+  background-size: var(--width) var(--height);
+  width: var(--width);
+  height: var(--height);
 }
 
 
@@ -151,9 +176,14 @@
   bottom: -25em;
   right: 10px;
 }
-.mobilePreviewSm > img {
+.mobilePreviewSm {
   border-radius: 20px;
-  max-width: 350px;
+  --width: 350px;
+  --height: 757.867px;
+
+  background-size: var(--width) var(--height);
+  width: var(--width);
+  height: var(--height);
   box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
 }
 
@@ -196,8 +226,9 @@
   .sitePreviewPanelSm {
     bottom: -15em;
   }
-  .mobilePreviewSm > img {
-    max-width: 300px;
+  .mobilePreviewSm {
+    --width: 300px;
+    --height: 650px;
   }
 }
 
@@ -208,9 +239,6 @@
   
   .sitePreviewPanelSm {
     bottom: -15em;
-  }
-  .mobilePreviewSm > img {
-    max-width: 300px;
   }
 
   @media screen and (max-height: 720px) {
@@ -235,8 +263,9 @@
     bottom: -14em;
   }
 
-  .mobilePreviewSm > img {
-    max-width: 250px;
+  .mobilePreviewSm {
+    --width: 250px;
+    --height: 541px;
   }
 }
 

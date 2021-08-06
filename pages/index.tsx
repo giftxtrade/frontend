@@ -74,20 +74,13 @@ export default function LandingPage() {
               </div>
 
               <div className={styles.sitePreviewPanel}>
-                <div className={styles.mobilePreview}>
-                  <img src='/screenshots/iphone-xs.png' alt='Mobile' />
-                </div>
-
-                <div className={styles.laptopPreview}>
-                  <img src='/screenshots/macbook-pro-13.png' alt='Macbook' />
-                </div>
+                <div className={styles.mobilePreview + " " + styles.mobilePreviewImg}></div>
+                <div className={styles.laptopPreview + " " + styles.laptopPreviewImg}></div>
               </div>
             </div>
 
             <div className={styles.sitePreviewPanelSm}>
-              <div className={styles.mobilePreviewSm}>
-                <img src='/screenshots/iphone-xs.png' alt='Mobile' />
-              </div>
+              <div className={styles.mobilePreviewSm + " " + styles.mobilePreviewImg}></div>
             </div>
 
           </div>
