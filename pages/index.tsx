@@ -101,6 +101,8 @@ export default function LandingPage() {
                   disablePictureInPicture
                   disableRemotePlayback
                   autoPlay
+                  playsInline
+                  preload="none"
                 >
                   <source src="/clips/intro-landing.mp4" />
                 </video>
