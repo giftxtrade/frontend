@@ -107,6 +107,12 @@ export default function LandingPage() {
                   <source src="/clips/intro-landing.mp4" />
                 </video>
               </div>
+
+              <div className={styles.details}>
+                <h3>Creating Events</h3>
+                <p>Creating an event is as simple as tapping the "+" icon and adding an event name, budget, and draw date.</p>
+                <p>Inviting friends and family to your event is extremely easy, via link sharing.</p>
+              </div>
             </div>
           </div>
 
