@@ -301,21 +301,34 @@
 .demoContainer {
   max-width: 750px;
   margin: 0 auto;
-  margin-bottom: 10rem;
   display: flex;
   flex-direction: row;
   justify-content: center;
+  padding: 4rem 0px;
+  border-bottom: 1px solid rgba(233, 233, 233, .8);
+}
+
+.instructions .demoContainer:first-child {
+  padding-top: 0px;
+}
+.instructions .demoContainer:last-child {
+  padding-bottom: 0px;
+  border: 0px;
+}
+
+.demoRight {
+  flex-direction: row-reverse;
 }
 
 .phoneHolder {
-  --widthPhoneHolder: 280px;
+  --widthPhoneHolder: 230px;
   width: var(--widthPhoneHolder);
   min-width: var(--widthPhoneHolder);
   max-width: var(--widthPhoneHolder);
   border-radius: 2.6875rem;
   background-color: rgba(233, 233, 233, 1);
   padding: 12px;
-  box-shadow: 0px 12px 50px rgba(0,0,0,0.2);
+  box-shadow: 0px 15px 50px rgba(0,0,0,0.1);
   position: relative;
   flex: 2;
 }
@@ -324,8 +337,8 @@
   background-image: url('../public/iphone-notch.svg');
   background-repeat: no-repeat;
   
-  --width: 257px;
-  --height: 19px;
+  --width: 195px;
+  --height: 15px;
 
   background-size: var(--width) var(--height);
   width: var(--width);
@@ -341,9 +354,17 @@
 }
 
 
+
 .demoContainer .details {
-  margin-left: 2.5em;
+  --margin-size: 2.5em;
+
+  margin-left: var(--margin-size);
+  margin-right: 0px;
   flex: 1;
+}
+.demoContainer.demoRight .details {
+  margin-right: var(--margin-size);
+  margin-left: 0px;
 }
 .details h3 {
   font-weight: bold;
@@ -354,15 +375,17 @@
   margin-bottom: 10px;
 }
 
-@media screen and (max-width: 780px) {
+@media screen and (max-width: 580px) {
   .demoContainer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 2rem 0px;
   }
 
   .demoContainer .details {
     margin-top: 3em;
     margin-left: 0px!important;
+    margin-right: 0px!important;
   }
 }
