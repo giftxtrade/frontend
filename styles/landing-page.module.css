@@ -144,6 +144,8 @@
   --width: 200px;
   --height: 433.067px;
 
+  background-color: #fff;
+
   background-size: var(--width) var(--height);
   width: var(--width);
   height: var(--height);
@@ -154,6 +156,7 @@
   right: 0px;
 }
 .laptopPreview {
+  background-color: #fff;
   border-radius: 20px;
   box-shadow: 0px 10px 50px rgba(0,0,0,0.2);
 }
@@ -180,6 +183,8 @@
   border-radius: 20px;
   --width: 350px;
   --height: 757.867px;
+
+  background-color: #fff;
 
   background-size: var(--width) var(--height);
   width: var(--width);
@@ -270,7 +275,7 @@
 
 
 .howToPage {
-  height: 500px;
+  margin-bottom: 5em;
 }
 
 .howToHeading {
@@ -322,9 +327,16 @@
 
 .phoneHolder {
   --widthPhoneHolder: 230px;
+  --heightPhoneHolder: 470px;
+
   width: var(--widthPhoneHolder);
   min-width: var(--widthPhoneHolder);
   max-width: var(--widthPhoneHolder);
+
+  height: var(--heightPhoneHolder);
+  min-height: var(--heightPhoneHolder);
+  max-height: var(--heightPhoneHolder);
+
   border-radius: 2.6875rem;
   background-color: rgba(233, 233, 233, 1);
   padding: 12px;
@@ -351,6 +363,7 @@
 }
 .phoneHolder video {
   border-radius: 1.8rem;
+  background-color: #fff;
 }
 
 
