@@ -129,7 +129,7 @@
 }
 
 .mobilePreviewImg {
-  background-image: url('../public/screenshots/iphone-xs.png');
+  background-image: url('../public/screenshots/iphone-xs.webp');
   background-repeat: no-repeat;
 }
 
@@ -158,7 +158,7 @@
   box-shadow: 0px 10px 50px rgba(0,0,0,0.2);
 }
 .laptopPreviewImg {
-  background-image: url('../public/screenshots/macbook-pro-13.png');
+  background-image: url('../public/screenshots/macbook-pro-13.webp');
   background-repeat: no-repeat;
 
   --width: 800px;
@@ -184,7 +184,6 @@
   background-size: var(--width) var(--height);
   width: var(--width);
   height: var(--height);
-  box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
 }
 
 @media screen and (max-width: 1000px) {
