@@ -1,0 +1,45 @@
+.footer {
+  padding: 30px 10px;
+  margin: 20px auto 15px auto;
+  color: rgb(77, 77, 77);
+  text-align: center;
+}
+
+.footer .copyInfo {
+  font-size: 0.85em;
+}
+
+.footer .links {
+  margin-top: 10px;
+  list-style: none;
+  font-size: 0.8em;
+
+  --li-margin: 10px;
+}
+
+.links > li {
+  display: inline-block;
+  margin-right: var(--li-margin);
+}
+.links > li::after {
+  content: "•";
+  margin-left: var(--li-margin);
+}
+.links > li:last-child {
+  margin-right: 0px;
+}
+.links > li:last-child::after {
+  display: none;
+}
+
+.links > li a {
+  text-decoration: underline;
+  color: rgb(102, 102, 102);
+}
+
+.links > li a:hover,
+.links > li a:focus,
+.links > li a:active {
+  text-decoration: none;
+  color: rgb(46, 46, 46);
+}

@@ -7,6 +7,7 @@ import { content } from '../util/content';
 import { base } from '../util/site';
 import '../styles/main.css';
 import '../public/fonts/fonts.css';
+import Footer from '../components/Footer';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -44,6 +45,8 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ChakraProvider>
         <Component {...pageProps} />
       </ChakraProvider>
+
+      <Footer />
     </>
   )
 }
