@@ -13,6 +13,7 @@
 .landingPage {
   background-color: #fff;
   font-family: "Inter", sans-serif;
+  overflow-x: hidden;
 }
 
 .pageHero {
