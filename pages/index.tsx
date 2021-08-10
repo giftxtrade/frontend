@@ -104,7 +104,7 @@ export default function LandingPage() {
                   playsInline
                   preload="none"
                 >
-                  <source src="/clips/intro-landing.mp4" />
+                  <source src="/clips/create_event_demo.mp4" />
                 </video>
               </div>
 
@@ -126,7 +126,7 @@ export default function LandingPage() {
                   playsInline
                   preload="none"
                 >
-                  <source src="/clips/intro-landing.mp4" />
+                  <source src="/clips/wishlist_demo.mp4" />
                 </video>
               </div>
 
