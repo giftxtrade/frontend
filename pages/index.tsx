@@ -9,17 +9,21 @@ import { content } from '../util/content';
 import { base } from '../util/site';
 import Link from 'next/link';
 import PhoneHolder from '../components/PhoneHolder';
+import Aos from 'aos';
+import "aos/dist/aos.css"
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
+    Aos.init({ duration: 500 })
+
     authStore.subscribe(() => setLoggedIn(authStore.getState().loggedIn))
     if (loggedIn) {
       router.push('/home')
     }
-  })
+  }, [])
 
   return (
     <>
@@ -39,7 +43,7 @@ export default function LandingPage() {
         <div className={styles.pageHero}>
           <div className={styles.pageHeroInner}>
 
-            <nav className={styles.heroNav}>
+            <nav className={styles.heroNav} data-aos="fade">
               <div className={styles.left}>
                 <Link href="/">
                   <a className={styles.logotype}>
@@ -59,7 +63,7 @@ export default function LandingPage() {
             </nav>
 
             <div className={styles.hero}>
-              <div className={styles.heroCaption}>
+              <div className={styles.heroCaption} data-aos="fade-down">
                 <div className={styles.heroCaptionHeading}>
                   <h1>Gift Exchange.</h1>
                   <h1>Simplified.</h1>
@@ -74,13 +78,13 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className={styles.sitePreviewPanel}>
+              <div className={styles.sitePreviewPanel} data-aos="fade-up">
                 <div className={styles.mobilePreview + " " + styles.mobilePreviewImg}></div>
                 <div className={styles.laptopPreview + " " + styles.laptopPreviewImg}></div>
               </div>
             </div>
 
-            <div className={styles.sitePreviewPanelSm}>
+            <div className={styles.sitePreviewPanelSm} data-aos="fade-up">
               <div className={styles.mobilePreviewSm + " " + styles.mobilePreviewImg}></div>
             </div>
 
@@ -94,7 +98,7 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.instructions}>
-            <div className={styles.demoContainer}>
+            <div data-aos="fade-left" className={styles.demoContainer}>
               <PhoneHolder video="/clips/create_event_demo.mp4" />
 
               <div className={styles.details}>
@@ -104,7 +108,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.demoContainer + " " + styles.demoRight}>
+            <div data-aos="fade-right" className={styles.demoContainer + " " + styles.demoRight}>
               <PhoneHolder video="/clips/wishlist_demo.mp4" />
 
               <div className={styles.details}>
@@ -114,7 +118,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.demoContainer}>
+            <div data-aos="fade-left" className={styles.demoContainer}>
               <PhoneHolder video="/clips/intro-landing.mp4" />
 
               <div className={styles.details}>
