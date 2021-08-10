@@ -8,6 +8,7 @@ import { redirectHomeIfLoggedIn } from '../util/server-side-auth';
 import { content } from '../util/content';
 import { base } from '../util/site';
 import Link from 'next/link';
+import PhoneHolder from '../components/PhoneHolder';
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -94,41 +95,17 @@ export default function LandingPage() {
 
           <div className={styles.instructions}>
             <div className={styles.demoContainer}>
-              <div className={styles.phoneHolder}>
-                <video
-                  loop
-                  muted
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  autoPlay
-                  playsInline
-                  preload="none"
-                >
-                  <source src="/clips/create_event_demo.mp4" />
-                </video>
-              </div>
+              <PhoneHolder video="/clips/create_event_demo.mp4" />
 
               <div className={styles.details}>
                 <h3>1. Create an Event</h3>
                 <p>Creating an event is as simple as tapping the "+" icon and adding an event name, budget, and draw date.</p>
-                <p>Inviting friends and family to your event is extremely easy, via link sharing. Simply copy the link and share with friends and family.</p>
+                <p>Inviting friends and family to yourwishlist_demo event is extremely easy, via link sharing. Simply copy the link and share with friends and family.</p>
               </div>
             </div>
 
             <div className={styles.demoContainer + " " + styles.demoRight}>
-              <div className={styles.phoneHolder}>
-                <video
-                  loop
-                  muted
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  autoPlay
-                  playsInline
-                  preload="none"
-                >
-                  <source src="/clips/wishlist_demo.mp4" />
-                </video>
-              </div>
+              <PhoneHolder video="/clips/wishlist_demo.mp4" />
 
               <div className={styles.details}>
                 <h3>2. Make your wish list</h3>
@@ -138,19 +115,7 @@ export default function LandingPage() {
             </div>
 
             <div className={styles.demoContainer}>
-              <div className={styles.phoneHolder}>
-                <video
-                  loop
-                  muted
-                  disablePictureInPicture
-                  disableRemotePlayback
-                  autoPlay
-                  playsInline
-                  preload="none"
-                >
-                  <source src="/clips/intro-landing.mp4" />
-                </video>
-              </div>
+              <PhoneHolder video="/clips/intro-landing.mp4" />
 
               <div className={styles.details}>
                 <h3>3. Draw participants</h3>
