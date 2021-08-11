@@ -11,6 +11,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { BsChevronLeft } from 'react-icons/bs';
+import BackButton from '../components/BackButton';
 
 export default function PageNotFound() {
   const router = useRouter()
@@ -34,17 +35,11 @@ export default function PageNotFound() {
           If what you were looking for is an event, it might have been deleted or you might not be a part of the event.
         </Text>
 
-        <Box mt='7'>
-          <NextLink href='/home' passHref>
-            <Link>
-              <Button
-                leftIcon={<Icon as={BsChevronLeft} />}
-                size='sm'
-              >
-                Back to Home
-              </Button>
-            </Link>
-          </NextLink>
+        <Box mt='5'>
+          <BackButton
+            href="/"
+            value="Back to Home"
+          />
         </Box>
       </Container>
     </>
