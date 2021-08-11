@@ -45,8 +45,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       )}
 
       <Text color='gray.500' fontSize='xs'>
-        <b style={{ marginRight: '8px' }}>Created on</b>
-        <span>{moment(event.createdAt).format('LL')}</span>
+        <span>{moment(event.drawAt).format('LL')}</span>
       </Text>
 
       {
