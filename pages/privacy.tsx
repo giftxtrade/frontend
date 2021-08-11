@@ -13,8 +13,8 @@ export default function Privacy() {
       <Container pt='10' pb='10' maxW='2xl'>
         <Box mb='14'>
           <NextLink href='/' passHref>
-            <Link>
-              <Image w='40' src='/giftxtrade_logotype_color.svg' quality='90' />
+            <Link display="inline-block">
+              <Image w='40' src='/logos/logotype_color.svg' quality='90' />
             </Link>
           </NextLink>
         </Box>
