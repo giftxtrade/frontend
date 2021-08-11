@@ -1,6 +1,18 @@
 import Link from "next/link";
 import styles from "../styles/Footer.module.css";
 
+export function FooterLink({ href: link, pageName }: { href: string, pageName: string }) {
+  return (
+    <li>
+      <Link href={link}>
+        <a>
+          {pageName}
+        </a>
+      </Link>
+    </li>
+  )
+}
+
 export default function Footer() {
   return (
     <div className={styles.footer}>
@@ -9,21 +21,20 @@ export default function Footer() {
       </div>
 
       <ul className={styles.links}>
-        <li>
-          <Link href="/about">
-            <a>
-              About
-            </a>
-          </Link>
-        </li>
+        <FooterLink
+          href="/"
+          pageName="Home"
+        />
 
-        <li>
-          <Link href="/privacy">
-            <a>
-              Terms and Privacy
-            </a>
-          </Link>
-        </li>
+        <FooterLink
+          href="/about"
+          pageName="About"
+        />
+
+        <FooterLink
+          href="/privacy"
+          pageName="Terms and Privacy"
+        />
       </ul>
     </div>
   )
