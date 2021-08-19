@@ -86,7 +86,7 @@ export default function MainMode({ name, setName, description, setDescription, b
                 </InputGroup>
               </FormControl>
 
-              <FormControl id="budget" isRequired>
+              <FormControl id="drawDate" isRequired>
                 <FormLabel>Draw Date</FormLabel>
                 <Input
                   placeholder="Date"
