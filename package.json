@@ -28,7 +28,8 @@
     "react-intersection-observer": "^8.32.0",
     "react-star-ratings": "^2.3.0",
     "react-window": "^1.8.6",
-    "react-window-infinite-loader": "^1.0.7"
+    "react-window-infinite-loader": "^1.0.7",
+    "slugify": "^1.6.0"
   },
   "devDependencies": {
     "@types/aos": "^3.0.4",
