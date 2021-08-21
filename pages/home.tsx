@@ -31,6 +31,7 @@ import { FcClearFilters } from 'react-icons/fc';
 import { useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
+import { eventNameSlug } from '../util/links';
 
 export interface IHopeProps {
   accessToken: string,
@@ -189,7 +190,7 @@ export default function Home(props: IHopeProps) {
                 ) : (
                   <Stack spacing={3}>
                     {events.map((e, i) => (
-                      <NextLink href={`/events/${e.id}`} passHref>
+                      <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
                         <LinkBox cursor='pointer'>
                           <EventBoxSm
                             event={e}

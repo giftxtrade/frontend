@@ -14,6 +14,7 @@ import moment from 'moment'
 import { BsCheck, BsX } from 'react-icons/bs'
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
+import { eventNameSlug } from '../util/links';
 
 export interface IEventBoxSmProps {
   event: IEvent
@@ -37,7 +38,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
           {event.name}
         </Heading>
       ) : (
-          <LinkOverlay href={`/events/${event.id}`}>
+          <LinkOverlay href={`/events/${event.id}/${eventNameSlug(event.name)}`}>
             <Heading size='md'>
               {event.name}
             </Heading>
