@@ -12,6 +12,7 @@ import {
   LinkOverlay
 } from "@chakra-ui/react"
 import { IEvent } from '../types/Event';
+import { eventNameSlug } from '../util/links';
 
 export interface IParticipantUserProps {
   id: number
@@ -26,10 +27,12 @@ export interface IParticipantUserProps {
 }
 
 export default function ParticipantUser({ id, name, email, address, organizer, participates, accepted, user, event }: IParticipantUserProps) {
-  const avatarSize = '50px';
+  const avatarSize = '50px'
+  const link = `/events/${event.id}/${eventNameSlug(event.name)}/${id}`
+
   return (
     <Box>
-      <NextLink href={`/events/${event.id}/${id}`} passHref>
+      <NextLink href={link} passHref>
         <LinkBox cursor='pointer'>
           <Stack direction='row' spacing={2}>
             <Box>
@@ -54,7 +57,7 @@ export default function ParticipantUser({ id, name, email, address, organizer, p
               ) : <></>}
 
               <Heading size='xs'>
-                <LinkOverlay href={`/events/${event.id}/${id}`}>
+                <LinkOverlay href={link}>
                   {user ? (
                     user.name === name ?
                       name
