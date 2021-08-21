@@ -139,7 +139,7 @@ export default function Wishlist(props: IEventProps) {
               minPrice={1}
               maxPrice={event.budget}
               pageLimit={50}
-              eventId={event.id}
+              event={event}
 
               addWish={addWish}
               removeWish={removeWish}

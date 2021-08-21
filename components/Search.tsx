@@ -22,17 +22,18 @@ import { api } from '../util/api';
 import { IProduct } from '../types/Product';
 import { FcClearFilters } from 'react-icons/fc'
 import SearchResults from './SearchResults';
-import BackToEvent from './BackToEvent';
-import numberToCurrency from '../util/currency';
 import styles from '../styles/Search.module.css';
 import SearchOptions from './SearchOptions';
+import { IEvent } from '../types/Event';
+import BackButton from './BackButton';
+import { eventNameSlug } from '../util/links';
 
 export interface ISearchProps {
   accessToken: string
   pageLimit: number
   minPrice: number
   maxPrice: number
-  eventId: number
+  event: IEvent
   productSet: Set<number>
 
   addWish: (product: IProduct) => void
@@ -41,7 +42,7 @@ export interface ISearchProps {
 
 let timeout: any = null;
 
-export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eventId, productSet, addWish, removeWish }: ISearchProps) {
+export default function Search({ accessToken, pageLimit, minPrice, maxPrice, event, productSet, addWish, removeWish }: ISearchProps) {
   const ignoreKeys = ['Control', 'Alt', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Tab', 'CapsLock', 'Shift']
   const [searchLoading, setSearchLoading] = useState(false)
   const [initLoading, setInitLoading] = useState(true)
@@ -131,7 +132,10 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       position='relative'
       maxWidth='600px'
     >
-      <BackToEvent eventId={eventId} />
+      <BackButton
+        href={`/events/${event.id}/${eventNameSlug(event.name)}`}
+        value="Back to Event"
+      />
 
       <Box
         pt='2' pb='2'

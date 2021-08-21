@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Flex,
   Heading,
   Text,
-  Button,
   Box,
   Stack,
   Container,
-  Link,
   Icon,
   Badge,
   Image
@@ -22,12 +20,13 @@ import { User } from '../../../../store/jwt-payload';
 import { IEvent } from '../../../../types/Event';
 import { IParticipantUser, IParticipant } from '../../../../types/Participant';
 import { ILink } from '../../../../types/Link';
-import BackToEvent from '../../../../components/BackToEvent';
 import { api } from '../../../../util/api';
 import axios from 'axios';
 import { MdLocationCity } from 'react-icons/md'
 import ParticipantWishlist from '../../../../components/ParticipantWishlist';
 import PendingInvite from '../../../../components/PendingInvite';
+import BackButton from '../../../../components/BackButton';
+import { eventNameSlug } from '../../../../util/links';
 
 export interface IParticipantPageProps {
   accessToken: string
@@ -90,7 +89,10 @@ export default function ParticipantPage(props: IParticipantPageProps) {
               </Box>
             ) : <></>}
 
-            <BackToEvent eventId={event.id} />
+            <BackButton
+              href={`/events/${event.id}/${eventNameSlug(event.name)}`}
+              value="Back to Event"
+            />
 
             <Box mt='5'>
               <Stack spacing='4' mt='5' direction='row'>
