@@ -53,12 +53,9 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
     }
   }
 
-  // Check if slug is valid
   if (eventName) {
-    console.log("Check if slug is correct");
     // Verify is slug is correct
     if (eventName !== eventNameSlug(event.name)) {
-      console.log("Slug is incorrect")
       return {
         props: undefined,
         notFound: false,
@@ -69,7 +66,6 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
     }
   } else {
     // Redirect to event with slug
-    console.log("No slug")
     return {
       props: undefined,
       notFound: false,
