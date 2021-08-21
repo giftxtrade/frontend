@@ -21,6 +21,7 @@ import { IProduct } from '../types/Product';
 import { IParticipant } from '../types/Participant';
 import AddAddress from './AddAddress';
 import { RiShoppingBag3Fill } from 'react-icons/ri'
+import { eventNameSlug } from '../util/links';
 
 export interface IMyWishlistProps {
   event: IEvent,
@@ -66,7 +67,7 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
       <Flex mb='5' direction='row' alignItems='center' justifyContent='start'>
         <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
 
-        <NextLink href={`/events/${event.id}/wishlist`} passHref>
+        <NextLink href={`/events/${event.id}/${eventNameSlug(event.name)}/wishlist`} passHref>
           <Link>
             <Button
               size='md'
