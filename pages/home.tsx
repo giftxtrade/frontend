@@ -105,7 +105,7 @@ export default function Home(props: IHopeProps) {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }) => {
-        router.push(`/events/${data.id}`)
+        router.push(`/events/${data.id}/${eventNameSlug(data.name)}`)
       })
       .catch(err => console.log(err))
   }
