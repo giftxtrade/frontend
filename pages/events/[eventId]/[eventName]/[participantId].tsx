@@ -13,22 +13,21 @@ import {
   Image
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import Navbar from '../../../components/Navbar';
+import Navbar from '../../../../components/Navbar';
 import { DocumentContext } from "next/document";
-import eventFetch, { fetchMyDraw } from "../../../util/ss-event-fetch";
+import eventFetch, { fetchMyDraw } from "../../../../util/ss-event-fetch";
 import { useMediaQuery } from '@chakra-ui/react';
-import { IWish } from '../../../types/Wish';
-import { User } from '../../../store/jwt-payload';
-import { IEvent } from '../../../types/Event';
-import { IParticipantUser, IParticipant } from '../../../types/Participant';
-import { ILink } from '../../../types/Link';
-import BackToEvent from '../../../components/BackToEvent';
-import { api } from '../../../util/api';
+import { IWish } from '../../../../types/Wish';
+import { User } from '../../../../store/jwt-payload';
+import { IEvent } from '../../../../types/Event';
+import { IParticipantUser, IParticipant } from '../../../../types/Participant';
+import { ILink } from '../../../../types/Link';
+import BackToEvent from '../../../../components/BackToEvent';
+import { api } from '../../../../util/api';
 import axios from 'axios';
-import { WishlistProductItem } from '../../../components/WishlistItem';
 import { MdLocationCity } from 'react-icons/md'
-import ParticipantWishlist from '../../../components/ParticipantWishlist';
-import PendingInvite from '../../../components/PendingInvite';
+import ParticipantWishlist from '../../../../components/ParticipantWishlist';
+import PendingInvite from '../../../../components/PendingInvite';
 
 export interface IParticipantPageProps {
   accessToken: string
@@ -136,7 +135,7 @@ export default function ParticipantPage(props: IParticipantPageProps) {
                       <Badge
                         borderRadius="full"
                         px="2"
-                          colorScheme="blue"
+                        colorScheme="blue"
                         title={'You are a participant for this event'}
                       >
                         Participant
@@ -168,14 +167,14 @@ export default function ParticipantPage(props: IParticipantPageProps) {
           ) : (
             <Container
               flex='1'
-                pl='2'
-                pr='0'
-              >
+              pl='2'
+              pr='0'
+            >
               {!isMediumScreen ? (
                 <ParticipantWishlist
                   name={name}
                   wishlist={wishlist}
-                    isMyDraw={isMyDraw}
+                  isMyDraw={isMyDraw}
                 />) : <></>}
             </Container>
           )}
@@ -187,13 +186,22 @@ export default function ParticipantPage(props: IParticipantPageProps) {
 
 export const getServerSideProps = async (ctx: DocumentContext) => {
   const participantIdRaw = ctx.query.participantId;
-  let pId: number
+  let pId: number = 0
   if (typeof (participantIdRaw) === 'string')
     pId = parseInt(participantIdRaw)
   else if (typeof (participantIdRaw) === 'object')
     pId = parseInt(participantIdRaw[0])
 
-  const { props, notFound } = await eventFetch(ctx)
+  const { props, notFound, redirect } = await eventFetch(ctx)
+
+  if (redirect) {
+    return {
+      redirect: {
+        destination: `${redirect.destination}/${pId}`,
+        permanent: false
+      }
+    }
+  }
 
   if (notFound || !props?.event || !props?.accessToken) {
     return { notFound: true }

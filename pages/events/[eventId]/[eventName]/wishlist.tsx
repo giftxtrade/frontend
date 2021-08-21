@@ -18,23 +18,23 @@ import {
   Badge
 } from '@chakra-ui/react';
 import Head from 'next/head';
-import Navbar from '../../../components/Navbar';
+import Navbar from '../../../../components/Navbar';
 import { DocumentContext } from "next/document";
-import Search from "../../../components/Search";
-import eventFetch from "../../../util/ss-event-fetch";
-import { IEventProps } from "../[eventId]";
+import Search from "../../../../components/Search";
+import eventFetch from "../../../../util/ss-event-fetch";
+import { IEventProps } from "../[eventName]";
 import { useMediaQuery } from '@chakra-ui/react';
-import { WishlistLoadingItem, WishlistProductItem } from '../../../components/WishlistItem';
-import { IWish } from '../../../types/Wish';
+import { WishlistLoadingItem, WishlistProductItem } from '../../../../components/WishlistItem';
+import { IWish } from '../../../../types/Wish';
 import axios from 'axios';
-import { api } from '../../../util/api';
+import { api } from '../../../../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
-import { IProduct } from '../../../types/Product';
+import { IProduct } from '../../../../types/Product';
 import { BsBagFill } from 'react-icons/bs';
-import PendingInvite from '../../../components/PendingInvite';
-import WishlistItemSelect from '../../../components/WishlistItemSelect';
-import WishlistTotal from '../../../components/WishlistTotal';
-import styles from '../../../styles/ParticipantWishlist.module.css'
+import PendingInvite from '../../../../components/PendingInvite';
+import WishlistItemSelect from '../../../../components/WishlistItemSelect';
+import WishlistTotal from '../../../../components/WishlistTotal';
+import styles from '../../../../styles/ParticipantWishlist.module.css'
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -156,22 +156,22 @@ export default function Wishlist(props: IEventProps) {
               pr='0'
             >
               <Box position='sticky' top='2'>
-                  <Box
-                    pt='3' pb='3' pl='4' pr='4'
-                    bg='white'
-                    className={styles.cartReveal}
-                  >
-                    <Heading size='md' mb='3' color='gray.700'>
-                      My Wishlist
-                    </Heading>
+                <Box
+                  pt='3' pb='3' pl='4' pr='4'
+                  bg='white'
+                  className={styles.cartReveal}
+                >
+                  <Heading size='md' mb='3' color='gray.700'>
+                    My Wishlist
+                  </Heading>
 
-                    <WishlistTotal
-                      selectedProducts={selectedProducts}
-                      showAddToCart={false}
-                    />
-                  </Box>
+                  <WishlistTotal
+                    selectedProducts={selectedProducts}
+                    showAddToCart={false}
+                  />
+                </Box>
 
-                  <Box h='90vh' pt='4' pb='7' overflowY='auto' overflowX='hidden'>
+                <Box h='90vh' pt='4' pb='7' overflowY='auto' overflowX='hidden'>
                   {
                     loadingWishes ? [1, 2].map((p, i) => (
                       <Box mb='5' key={`loading#${i}`}>
@@ -291,4 +291,21 @@ export default function Wishlist(props: IEventProps) {
   )
 }
 
-export const getServerSideProps = async (ctx: DocumentContext) => eventFetch(ctx);
+export const getServerSideProps = async (ctx: DocumentContext) => {
+  const { props, notFound, redirect } = await eventFetch(ctx)
+
+  if (redirect) {
+    return {
+      redirect: {
+        destination: `${redirect.destination}/wishlist`,
+        permanent: false
+      }
+    }
+  }
+
+  if (notFound || !props?.event || !props?.accessToken) {
+    return { notFound: true }
+  }
+
+  return { props }
+};

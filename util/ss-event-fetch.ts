@@ -6,9 +6,27 @@ import { ILink } from '../types/Link';
 import axios from 'axios';
 import { api } from './api';
 import { IDraw } from '../types/Draw';
+import { User } from '../store/jwt-payload';
+import { eventNameSlug } from './links';
 
-export default async function eventFetch(ctx: DocumentContext) {
+export interface IServerSideEventFetch {
+  props: {
+    accessToken: string | undefined,
+    user: User | undefined,
+    gToken: string | undefined,
+    loggedIn: boolean | undefined,
+    event: IEvent,
+    participants: IParticipantUser[],
+    link: ILink | undefined,
+    meParticipant: IParticipant | undefined
+  } | undefined,
+  notFound: boolean,
+  redirect: { destination: string } | undefined,
+}
+
+export default async function eventFetch(ctx: DocumentContext): Promise<IServerSideEventFetch> {
   const idRaw = ctx.query.eventId;
+  const eventName = ctx.query.eventName;
 
   const { props } = await serverSideAuth(ctx)
 
@@ -29,17 +47,39 @@ export default async function eventFetch(ctx: DocumentContext) {
 
   if (!event) {
     return {
-      notFound: true
+      props: undefined,
+      notFound: true,
+      redirect: undefined
     }
   }
 
-  let meParticipant: IParticipant | undefined;
-  for (const p of event.participants) {
-    if (p.email === props.user?.email) {
-      meParticipant = p
-      break;
+  // Check if slug is valid
+  if (eventName) {
+    console.log("Check if slug is correct");
+    // Verify is slug is correct
+    if (eventName !== eventNameSlug(event.name)) {
+      console.log("Slug is incorrect")
+      return {
+        props: undefined,
+        notFound: false,
+        redirect: {
+          destination: `/events/${event.id}/${eventNameSlug(event.name)}`
+        }
+      }
+    }
+  } else {
+    // Redirect to event with slug
+    console.log("No slug")
+    return {
+      props: undefined,
+      notFound: false,
+      redirect: {
+        destination: `/events/${event.id}/${eventNameSlug(event.name)}`
+      },
     }
   }
+
+  let meParticipant = getMeParticipant(event, props.user)
 
   return {
     props: {
@@ -51,7 +91,9 @@ export default async function eventFetch(ctx: DocumentContext) {
       participants: participants,
       link: link,
       meParticipant: meParticipant
-    }
+    },
+    notFound: false,
+    redirect: undefined,
   }
 }
 
@@ -67,4 +109,20 @@ export async function fetchMyDraw(eventId: number, accessToken: string): Promise
       myDraw = null
     })
   return myDraw
+}
+
+/**
+ * Gets the current user's participant status
+ * 
+ * @param event Current Event
+ * @param user JWT User object
+ * @returns IParticipant
+ */
+function getMeParticipant(event: IEvent, user: User | undefined): IParticipant | undefined {
+  for (const p of event.participants) {
+    if (p.email === user?.email) {
+      return p
+    }
+  }
+  return undefined
 }

@@ -6,5 +6,7 @@ export const generateAmazonAffiliateLink = (productKey: string): string => {
 }
 
 export function eventNameSlug(eventName: string): string {
-  return slugify(eventName)
+  return slugify(eventName, {
+    lower: true
+  })
 }
