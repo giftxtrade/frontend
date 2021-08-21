@@ -256,11 +256,6 @@ export default function Event(props: IEventProps) {
                 ) : <></>}
               </Stack>
 
-              <Text color='gray.500' fontSize='xs' mb='1' textAlign='right'>
-                <b style={{ marginRight: '8px' }}>Created on</b>
-                <span>{moment(event.createdAt).format('LL')}</span>
-              </Text>
-
               <Heading size='lg'>{event.name}</Heading>
 
               <Box mt='1' fontSize='.9em' color='gray.600'>
