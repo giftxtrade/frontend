@@ -5,6 +5,7 @@ import StarRatings from 'react-star-ratings';
 import numberToCurrency from "../util/currency";
 import { FaCartPlus } from 'react-icons/fa'
 import { IoMdAddCircle } from 'react-icons/io'
+import styles from '../styles/ProductSm.module.css'
 
 export interface IProductSmProps {
   product: IProduct,
@@ -31,6 +32,7 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
             rounded='md'
             mb='3'
             overflow='hidden'
+            className={`${styles.productImg} skeletonLoading`}
           />
           <Heading
             size='sm'

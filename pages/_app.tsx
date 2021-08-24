@@ -8,6 +8,7 @@ import { base } from '../util/site';
 import '../styles/main.css';
 import '../public/fonts/fonts.css';
 import Footer from '../components/Footer';
+import '../styles/main.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loggedIn, setLoggedIn] = useState(false)
