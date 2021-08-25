@@ -1,13 +1,13 @@
 .skeletonLoading {
-    animation: skeletonLoading 1s linear infinite alternate;
+    animation: skeletonLoading 1s cubic-bezier(.65,.05,.36,1) infinite alternate;
 }
 
 @keyframes skeletonLoading {
     0% {
-        background-color: #eee;
+        background-color: hsl(200, 20%, 85%);
     }
 
     100% {
-        background-color: #bebebe;
+        background-color: hsl(200, 20%, 90%);
     }
 }
