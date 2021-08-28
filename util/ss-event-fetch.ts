@@ -9,24 +9,32 @@ import { IDraw } from '../types/Draw';
 import { User } from '../store/jwt-payload';
 import { eventNameSlug } from './links';
 
+export interface IServiceSideEventProps {
+  accessToken: string | undefined,
+  user: User | undefined,
+  gToken: string | undefined,
+  loggedIn: boolean | undefined,
+  event: IEvent,
+  participants: IParticipantUser[],
+  link: ILink | undefined,
+  meParticipant: IParticipant | undefined
+}
+
 export interface IServerSideEventFetch {
-  props: {
-    accessToken: string | undefined,
-    user: User | undefined,
-    gToken: string | undefined,
-    loggedIn: boolean | undefined,
-    event: IEvent,
-    participants: IParticipantUser[],
-    link: ILink | undefined,
-    meParticipant: IParticipant | undefined
-  } | undefined,
+  props: IServiceSideEventProps | undefined,
   notFound: boolean,
   redirect: { destination: string } | undefined,
 }
 
 export default async function eventFetch(ctx: DocumentContext): Promise<IServerSideEventFetch> {
   const idRaw = ctx.query.eventId;
-  const eventName = ctx.query.eventName;
+
+  let q = ctx.query.eventName;
+  let eventName: string | undefined;
+  if (typeof (q) === 'object')
+    eventName = q[0]
+  else
+    eventName = q
 
   const { props } = await serverSideAuth(ctx)
 
@@ -46,50 +54,37 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
   }
 
   if (!event) {
-    return {
-      props: undefined,
-      notFound: true,
-      redirect: undefined
-    }
+    return getProps(undefined, true, undefined)
   }
+
+  const eventSlug = eventNameSlug(event.name);
 
   if (eventName) {
-    // Verify is slug is correct
-    if (eventName !== eventNameSlug(event.name)) {
-      return {
-        props: undefined,
-        notFound: false,
-        redirect: {
-          destination: `/events/${event.id}/${eventNameSlug(event.name)}`
-        }
-      }
-    }
-  } else {
-    // Redirect to event with slug
-    return {
-      props: undefined,
-      notFound: false,
-      redirect: {
-        destination: `/events/${event.id}/${eventNameSlug(event.name)}`
-      },
-    }
+    if (eventName !== eventSlug)
+      return getProps(undefined, false, `/events/${event.id}/${eventNameSlug(event.name)}`)
+  } else if (eventSlug !== '') {
+    return getProps(undefined, false, `/events/${event.id}/${eventNameSlug(event.name)}`)
   }
 
-  let meParticipant = getMeParticipant(event, props.user)
+  return getProps({
+    accessToken: props.accessToken,
+    user: props.user,
+    gToken: props.gToken,
+    loggedIn: props.loggedIn,
+    event: event,
+    participants: participants,
+    link: link,
+    meParticipant: getMeParticipant(event, props.user)
+  }, false, undefined)
+}
 
+function getProps(props: IServiceSideEventProps | undefined, notFound: boolean, destination: string | undefined): IServerSideEventFetch {
   return {
-    props: {
-      accessToken: props.accessToken,
-      user: props.user,
-      gToken: props.gToken,
-      loggedIn: props.loggedIn,
-      event: event,
-      participants: participants,
-      link: link,
-      meParticipant: meParticipant
-    },
-    notFound: false,
-    redirect: undefined,
+    props,
+    notFound,
+    redirect: destination ? {
+      destination
+    } : undefined
   }
 }
 
