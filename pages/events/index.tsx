@@ -1,5 +1,5 @@
 import { DocumentContext } from "next/document";
-import { IEventProps } from "./[eventId]/[eventName]";
+import { IEventProps } from "../../components/Event";
 
 export default function EventBase(props: IEventProps) {
   return <></>
