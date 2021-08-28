@@ -22,7 +22,6 @@ import Navbar from '../../../../components/Navbar';
 import { DocumentContext } from "next/document";
 import Search from "../../../../components/Search";
 import eventFetch from "../../../../util/ss-event-fetch";
-import { IEventProps } from "../[eventName]";
 import { useMediaQuery } from '@chakra-ui/react';
 import { WishlistLoadingItem, WishlistProductItem } from '../../../../components/WishlistItem';
 import { IWish } from '../../../../types/Wish';
@@ -35,6 +34,7 @@ import PendingInvite from '../../../../components/PendingInvite';
 import WishlistItemSelect from '../../../../components/WishlistItemSelect';
 import WishlistTotal from '../../../../components/WishlistTotal';
 import styles from '../../../../styles/ParticipantWishlist.module.css'
+import { IEventProps } from '../../../../components/Event';
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
