@@ -47,6 +47,7 @@ import { User } from '../store/jwt-payload';
 import { IParticipantUser, IParticipant } from '../types/Participant';
 import { useRouter } from 'next/router';
 import { ManageParticipant } from './ManageParticipant';
+import { eventNameSlug } from '../util/links';
 
 export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>
@@ -62,6 +63,7 @@ export interface ISettingsProps {
 }
 
 export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants, myDraw, setMyDraw }: ISettingsProps) {
+  const [invalidTitle, setInvalidTitle] = useState(false)
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState(event.name)
   const [description, setDescription] = useState(event.description)
@@ -214,8 +216,22 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     type='text'
                     name='name'
                     value={name}
-                    onChange={(e: any) => setName(e.target.value)}
+                    onChange={(e: any) => {
+                      const val = e.target.value
+                      setName(val)
+
+                      if (eventNameSlug(val) === '') {
+                        setInvalidTitle(true)
+                      } else {
+                        setInvalidTitle(false)
+                      }
+                    }}
                   />
+                  {invalidTitle ? (
+                    <FormHelperText color='red'>Invalid title. Make sure your title isn't just symbols</FormHelperText>
+                  ) : (
+                    <FormHelperText>This will help you and the participants to identify an event</FormHelperText>
+                  )}
                 </FormControl>
 
                 <FormControl id="description">
@@ -268,6 +284,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     colorScheme="blue"
                     onClick={updateEvent}
                     isLoading={loadingUpdate}
+                    isDisabled={invalidTitle}
                   >
                     Update Event
                   </Button>

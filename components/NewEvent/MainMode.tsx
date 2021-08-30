@@ -15,27 +15,26 @@ import {
   InputGroup,
   InputLeftElement,
 } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { eventNameSlug } from '../../util/links';
 
 export interface IMainModeProps {
-  setMain: Dispatch<SetStateAction<boolean>>
-
   name: string
-  setName: Dispatch<SetStateAction<string>>
-
   description: string
-  setDescription: Dispatch<SetStateAction<string>>
-
   budget: number
-  setBudget: Dispatch<SetStateAction<number>>
-
   drawDate: string
-  setDrawDate: Dispatch<SetStateAction<string>>
 
+  setMain: Dispatch<SetStateAction<boolean>>
+  setName: Dispatch<SetStateAction<string>>
+  setDescription: Dispatch<SetStateAction<string>>
+  setBudget: Dispatch<SetStateAction<number>>
+  setDrawDate: Dispatch<SetStateAction<string>>
   onClose: () => void
 }
 
 export default function MainMode({ name, setName, description, setDescription, budget, setBudget, drawDate, setDrawDate, setMain, onClose }: IMainModeProps) {
+  const [invalidTitle, setInvalidTitle] = useState(false)
+
   return (
     <ModalContent>
       <form method='POST'>
@@ -51,9 +50,23 @@ export default function MainMode({ name, setName, description, setDescription, b
                 name='name'
                 autoFocus={true}
                 value={name}
-                onChange={(e: any) => setName(e.target.value)}
+                onChange={(e: any) => {
+                  const val = e.target.value
+                  setName(val)
+
+                  if (eventNameSlug(val) === '') {
+                    setInvalidTitle(true)
+                  } else {
+                    setInvalidTitle(false)
+                  }
+                }}
+                isInvalid={invalidTitle}
               />
-              <FormHelperText>This will help you and the participants to identify an event</FormHelperText>
+              {invalidTitle ? (
+                <FormHelperText color='red'>Invalid title. Make sure your title isn't just symbols</FormHelperText>
+              ) : (
+                  <FormHelperText>This will help you and the participants to identify an event</FormHelperText>
+              )}
             </FormControl>
 
             <FormControl id="description">
@@ -111,7 +124,7 @@ export default function MainMode({ name, setName, description, setDescription, b
               setMain(false)
               e.preventDefault();
             }}
-            isDisabled={!name || !budget || budget === 0 || !drawDate || new Date(drawDate) <= new Date(Date.now())}
+            isDisabled={!name || !budget || budget === 0 || invalidTitle || !drawDate || new Date(drawDate) <= new Date(Date.now())}
           >
             Next: Invitations
           </Button>
