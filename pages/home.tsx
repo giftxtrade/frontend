@@ -32,6 +32,7 @@ import { useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { eventNameSlug } from '../util/links';
+import EventBoxSmLoading from '../components/EventBoxSmLoading';
 
 export interface IHopeProps {
   accessToken: string,
@@ -172,9 +173,10 @@ export default function Home(props: IHopeProps) {
 
             <Box mt='5' mb='10'>
               {loading ? (
-                <Flex maxW='full' alignItems='center' justifyContent='center' p='20'>
-                  <Spinner size='lg' />
-                </Flex>
+                <Stack spacing={3}>
+                  <EventBoxSmLoading />
+                  <EventBoxSmLoading />
+                </Stack>
               ) : (
                 error || events.length == 0 ? (
                   <Flex

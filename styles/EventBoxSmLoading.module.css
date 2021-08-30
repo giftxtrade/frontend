@@ -1,0 +1,31 @@
+.title {
+  height: 24px;
+  border-radius: 8px;
+  width: 80%;
+  margin-bottom: 5px;
+}
+
+.drawDate {
+  width: 88px;
+  height: 13px;
+  border-radius: 5px;
+}
+
+.badgeHolder {
+  --height: 18px;
+
+  margin-top: 10px;
+  width: 100%;
+  height: var(--height);
+}
+
+.badge {
+  width: 88px;
+  height: var(--height);
+  border-radius: 50px;
+  display: inline-block;
+  margin-right: 10px;
+}
+.badge:last-child {
+  margin-right: 0px;
+}
