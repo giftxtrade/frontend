@@ -33,6 +33,7 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { eventNameSlug } from '../util/links';
 import EventBoxSmLoading from '../components/EventBoxSmLoading';
+import styles from '../styles/home.module.css'
 
 export interface IHopeProps {
   accessToken: string,
@@ -58,9 +59,6 @@ export default function Home(props: IHopeProps) {
 
   // Modal
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-  // Responsive
-  const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
 
   useEffect(() => {
     const numInvites = invites.length
@@ -142,86 +140,73 @@ export default function Home(props: IHopeProps) {
       />
 
       <Container maxW='4xl'>
-        <Flex direction='row'>
-          <Container
-            flex='2'
-            p='1'
-          >
-            {invites.length > 0 ? (
-              <Invites
-                invites={invites}
-                handleAccept={handleAccept}
-                handleDecline={handleDecline}
-              />
-            ) : <></>}
+        <Box
+          className={styles.sideContainer}
+          p='1'
+        >
+          {invites.length > 0 ? (
+            <Invites
+              invites={invites}
+              handleAccept={handleAccept}
+              handleDecline={handleDecline}
+            />
+          ) : <></>}
 
-            <Flex direction='row' alignItems='center' justifyContent='start'>
-              <Heading size='lg' m='0' p='0' mt='1.5'>My Events</Heading>
+          <Flex direction='row' alignItems='center' justifyContent='start'>
+            <Heading size='lg' m='0' p='0' mt='1.5'>My Events</Heading>
 
-              <Button
-                size='lg'
-                p='0'
-                ml='5'
-                variant="ghost"
-                colorScheme='blue'
-                spacing='sm'
-                onClick={onOpen}
-              >
-                <Icon as={BsPlusCircle} boxSize='1.5em' />
-              </Button>
-            </Flex>
+            <Button
+              size='lg'
+              p='0'
+              ml='5'
+              variant="ghost"
+              colorScheme='blue'
+              spacing='sm'
+              onClick={onOpen}
+            >
+              <Icon as={BsPlusCircle} boxSize='1.5em' />
+            </Button>
+          </Flex>
 
-            <Box mt='5' mb='10'>
-              {loading ? (
-                <Stack spacing={3}>
-                  <EventBoxSmLoading />
-                  <EventBoxSmLoading />
-                </Stack>
+          <Box mt='5' mb='10'>
+            {loading ? (
+              <Stack spacing={3}>
+                <EventBoxSmLoading />
+                <EventBoxSmLoading />
+              </Stack>
+            ) : (
+              error || events.length == 0 ? (
+                <Flex
+                  direction='column'
+                  maxW='full'
+                  alignItems="center"
+                  justifyContent="center"
+                  pt='10' pb='10' pr='5' pl='5'
+                  fontStyle='italic'
+                >
+                  <Text color='gray.600' size='md' textAlign='center'>You don't have any active events</Text>
+                </Flex>
               ) : (
-                error || events.length == 0 ? (
-                  <Flex
-                    direction='column'
-                    maxW='full'
-                    alignItems="center"
-                    justifyContent="center"
-                    pt='10' pb='10' pr='5' pl='5'
-                    fontStyle='italic'
-                  >
-                    <Text color='gray.600' size='md' textAlign='center'>You don't have any active events</Text>
-                  </Flex>
-                ) : (
-                  <Stack spacing={3}>
-                    {events.map((e, i) => (
-                      <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
-                        <LinkBox cursor='pointer'>
-                          <EventBoxSm
-                            event={e}
-                            isInvite={false}
-                            key={`event#${i}`}
-                            handleAccept={handleAccept}
-                            handleDecline={handleDecline}
-                            index={i}
-                          />
-                        </LinkBox>
-                      </NextLink>
-                    ))}
-                  </Stack>
-                )
-              )}
-            </Box>
-          </Container>
-
-          {isMediumScreen ? (
-            <></>
-          ) : (
-              <Container
-                flex='1'
-                pl='2'
-                pr='0'
-              >
-              </Container>
-          )}
-        </Flex>
+                <Stack spacing={3}>
+                  {events.map((e, i) => (
+                    <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
+                      <LinkBox cursor='pointer'>
+                        <EventBoxSm
+                          event={e}
+                          isInvite={false}
+                          key={`event#${i}`}
+                          handleAccept={handleAccept}
+                          handleDecline={handleDecline}
+                          index={i}
+                        />
+                      </LinkBox>
+                    </NextLink>
+                  ))}
+                </Stack>
+              )
+            )}
+          </Box>
+        </Box>
       </Container>
 
       <NewEvent
