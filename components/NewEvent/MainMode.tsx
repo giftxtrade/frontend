@@ -61,6 +61,7 @@ export default function MainMode({ name, setName, description, setDescription, b
                   }
                 }}
                 isInvalid={invalidTitle}
+                focusBorderColor={invalidTitle ? 'red' : 'blue.500'}
               />
               {invalidTitle ? (
                 <FormHelperText color='red'>Invalid title. Make sure your title isn't just symbols</FormHelperText>

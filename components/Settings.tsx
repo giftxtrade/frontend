@@ -63,7 +63,7 @@ export interface ISettingsProps {
 }
 
 export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants, myDraw, setMyDraw }: ISettingsProps) {
-  const [invalidTitle, setInvalidTitle] = useState(false)
+  const [invalidTitle, setInvalidTitle] = useState(eventNameSlug(event.name) === '' ? true : false)
   const [loading, setLoading] = useState(true)
   const [name, setName] = useState(event.name)
   const [description, setDescription] = useState(event.description)
@@ -226,6 +226,8 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                         setInvalidTitle(false)
                       }
                     }}
+                    isInvalid={invalidTitle}
+                    focusBorderColor={invalidTitle ? 'red' : 'blue.500'}
                   />
                   {invalidTitle ? (
                     <FormHelperText color='red'>Invalid title. Make sure your title isn't just symbols</FormHelperText>
