@@ -48,7 +48,6 @@ export default function LandingPage() {
                 <Link href="/">
                   <a className={styles.logotype}>
                     <span className={styles.logo}></span>
-                    <span className={styles.logotext}>GiftTrade</span>
                   </a>
                 </Link>
               </div>

@@ -7,7 +7,7 @@
 
 .logotype {
   --logo-height: var(--logo-size);
-  --logo-width: var(--logo-size);
+  --logo-width: 157px;
 }
 
 .landingPage {
@@ -50,7 +50,7 @@
   align-items: center;
 }
 .logotype > .logo {
-  background-image: url('../public/logos/logo_profile_rounded.svg');
+  background-image: url('../public/logos/logotype_rounded_color.svg');
   background-repeat: no-repeat;
   background-size: var(--logo-width) var(--logo-height);
   width: var(--logo-width);
