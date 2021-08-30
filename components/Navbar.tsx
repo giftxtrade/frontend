@@ -5,6 +5,7 @@ import router from "next/router";
 import { useCookies } from "react-cookie";
 import { useMediaQuery } from '@chakra-ui/react'
 import NextLink from 'next/link';
+import styles from '../styles/Navbar.module.css';
 
 export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   loggedIn: boolean,
@@ -21,11 +22,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
       <Flex direction='row' justifyContent='space-between' alignItems='center'>
         <NextLink href='/home' passHref>
           <Link>
-            {isMediumScreen ? (
-              <Image w='35px' src='/logos/logo_profile_rounded.svg' />
-            ) : (
-                <Image w='40' src='/logos/logotype_color.svg' />
-            )}
+            <span className={styles.logo}></span>
           </Link>
         </NextLink>
 

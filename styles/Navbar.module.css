@@ -1,0 +1,18 @@
+.logo {
+  --width: 138px;
+  --height: 35px;
+
+  width: var(--width);
+  height: var(--height);
+  background-image: url('../public/logos/logotype_rounded_color.svg');
+  background-size: var(--width) var(--height);
+  background-repeat: no-repeat;
+
+  display: block;
+}
+
+@media screen and (max-width: 650px) {
+  .logo {
+    width: var(--height);
+  }
+}
