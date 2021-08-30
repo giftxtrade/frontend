@@ -1,6 +1,5 @@
 import { Container, Image, Flex, Heading, Text, Link, Button, Box } from "@chakra-ui/react";
 import { User } from '../store/jwt-payload';
-import { authStore, logout } from '../store/auth-store';
 import router from "next/router";
 import { useCookies } from "react-cookie";
 import { useMediaQuery } from '@chakra-ui/react'
