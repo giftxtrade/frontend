@@ -83,6 +83,7 @@ export default function Wishlist(props: IEventProps) {
       })
       .then(({ data }: { data: IWish }) => {
         setWishes([data, ...wishes])
+        setSelectedProducts([...selectedProducts, data.product])
       })
       .catch(_ => console.log("Could not add wish"))
   }
@@ -99,7 +100,9 @@ export default function Wishlist(props: IEventProps) {
         participantId: meParticipant.id
       }
     })
-      .then(({ data }) => { })
+      .then(({ data }) => {
+        setSelectedProducts(selectedProducts.filter(p => p.id !== product.id))
+      })
       .catch(_ => { })
   }
 
