@@ -25,6 +25,8 @@ export interface IEventBoxSmProps {
 }
 
 export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index }: IEventBoxSmProps) {
+  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`
+
   return (
     <Box
       maxW="full"
@@ -35,10 +37,12 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
     >
       {isInvite ? (
         <Heading size='md'>
-          {event.name}
+          <Link href={eventUrl}>
+            {event.name}
+          </Link>
         </Heading>
       ) : (
-          <LinkOverlay href={`/events/${event.id}/${eventNameSlug(event.name)}`}>
+          <LinkOverlay href={eventUrl}>
             <Heading size='md'>
               {event.name}
             </Heading>
