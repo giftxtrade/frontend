@@ -1,0 +1,40 @@
+.productSmLoading {
+  width: 33%;
+  display: inline-block;
+}
+
+.loadingImg {
+  width: 100%;
+  min-height: 150px;
+}
+
+.title {
+  max-width: 100%;
+  height: 16px;
+  margin-bottom: 3px;
+  border-radius: 4px;
+}
+
+.title:last-child {
+  max-width: 60%;
+  margin-bottom: 0;
+}
+
+.starHolder {
+  margin-top: 15px;
+  width: 80px;
+  border-radius: 4px;
+  height: 15px;
+}
+
+@media screen and (max-width: 535px) {
+  .productSmLoading {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .productSmLoading {
+    width: 100%;
+  }
+}

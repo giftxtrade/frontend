@@ -1,0 +1,8 @@
+.loadingContainer {
+  display: block;
+  margin: 0 -8px;
+}
+
+.loadingContainer > div.loadingInner {
+  display: inline-block;
+}

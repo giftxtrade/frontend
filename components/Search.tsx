@@ -27,6 +27,7 @@ import SearchOptions from './SearchOptions';
 import { IEvent } from '../types/Event';
 import BackButton from './BackButton';
 import { eventNameSlug } from '../util/links';
+import SearchLoading from './SearchLoading';
 
 export interface ISearchProps {
   accessToken: string
@@ -95,9 +96,7 @@ export default function Search({ accessToken, pageLimit, minPrice, maxPrice, eve
       <>
         {
           initLoading || searchLoading ? (
-            <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='20'>
-              <Spinner size='lg' />
-            </Flex>
+            <SearchLoading />
           ) : (
               <SearchResults
                 results={results}

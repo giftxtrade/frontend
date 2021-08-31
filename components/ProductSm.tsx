@@ -3,7 +3,6 @@ import { Box, Image, Heading, Text, Button, Link, Icon, Stack } from '@chakra-ui
 import { generateAmazonAffiliateLink } from "../util/links";
 import StarRatings from 'react-star-ratings';
 import numberToCurrency from "../util/currency";
-import { FaCartPlus } from 'react-icons/fa'
 import { IoMdAddCircle } from 'react-icons/io'
 import styles from '../styles/ProductSm.module.css'
 
