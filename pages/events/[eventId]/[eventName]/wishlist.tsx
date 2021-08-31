@@ -35,6 +35,7 @@ import WishlistItemSelect from '../../../../components/WishlistItemSelect';
 import WishlistTotal from '../../../../components/WishlistTotal';
 import styles from '../../../../styles/ParticipantWishlist.module.css'
 import { IEventProps } from '../../../../components/Event';
+import WishlistNav from '../../../../components/WishlistNav';
 
 export default function Wishlist(props: IEventProps) {
   const [loggedIn, setLoggedIn] = useState(props.loggedIn)
@@ -208,88 +209,60 @@ export default function Wishlist(props: IEventProps) {
       </Container>
 
       {isMediumScreen ? (
-        <>
-          <Modal
-            isOpen={isOpen}
-            onClose={onClose}
-            size={'md'}
-            scrollBehavior='inside'
-          >
-            <ModalOverlay />
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          size={'md'}
+          scrollBehavior='inside'
+        >
+          <ModalOverlay />
 
-            <ModalContent>
-              <ModalHeader>My Wishlist</ModalHeader>
-              <ModalCloseButton />
+          <ModalContent>
+            <ModalHeader>My Wishlist</ModalHeader>
+            <ModalCloseButton />
 
-              <Box pl='6' pr='6' mb='3'>
-                <WishlistTotal
-                  selectedProducts={selectedProducts}
-                  showAddToCart={false}
-                />
-              </Box>
+            <Box pl='6' pr='6' mb='3'>
+              <WishlistTotal
+                selectedProducts={selectedProducts}
+                showAddToCart={false}
+              />
+            </Box>
 
-              <ModalBody>
-                {
-                  loadingWishes ? [1, 2].map((p, i) => (
-                    <Box mb='5' key={`loading#${i}`}>
-                      <WishlistLoadingItem />
-                    </Box>
-                  )) : (
-                    wishes.length === 0 ? (
-                      <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
-                    ) : (
-                      wishes.map(({ product }, i) => (
-                        <Box mb='5' key={`wishItemMd#${i}`}>
-                          <WishlistItemSelect
-                            product={product}
-                            selectedProducts={selectedProducts}
-                            setSelectedProducts={setSelectedProducts}
-                            removeWish={(pr: IProduct) => {
-                              setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
-                              removeWish(pr)
-                            }}
-                          />
-                        </Box>
-                      ))
-                    )
+            <ModalBody>
+              {
+                loadingWishes ? [1, 2].map((p, i) => (
+                  <Box mb='5' key={`loading#${i}`}>
+                    <WishlistLoadingItem />
+                  </Box>
+                )) : (
+                  wishes.length === 0 ? (
+                    <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
+                  ) : (
+                    wishes.map(({ product }, i) => (
+                      <Box mb='5' key={`wishItemMd#${i}`}>
+                        <WishlistItemSelect
+                          product={product}
+                          selectedProducts={selectedProducts}
+                          setSelectedProducts={setSelectedProducts}
+                          removeWish={(pr: IProduct) => {
+                            setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
+                            removeWish(pr)
+                          }}
+                        />
+                      </Box>
+                    ))
                   )
-                }
-              </ModalBody>
-            </ModalContent>
-          </Modal>
-
-          <Box
-            p='2' pb='5'
-            position='fixed'
-            bottom='0' left='50%' zIndex='4'
-            transform='translate(-50%, 0)'
-          >
-            <Button
-              boxShadow='dark-lg'
-              colorScheme='red'
-              size='lg'
-              rounded='full'
-              p='1'
-              onClick={() => {
-                setShowWishlist(true)
-                onOpen()
-              }}
-              position='relative'
-            >
-              <Icon as={BsBagFill} />
-              <Box
-                position='absolute'
-                top='-1'
-                right='-1'
-              >
-                <Badge fontSize="0.8em" colorScheme='red' borderRadius='full'>
-                  {wishes.length}
-                </Badge>
-              </Box>
-            </Button>
-          </Box>
-        </>
+                )
+              }
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       ) : <></>}
+
+      <WishlistNav
+        setWishlist={setShowWishlist}
+        onOpen={onOpen}
+      />
     </>
   )
 }

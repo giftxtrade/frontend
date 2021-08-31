@@ -37,6 +37,7 @@ import Settings from './Settings';
 import LeaveGroup from './LeaveGroup';
 import PendingInvite from './PendingInvite';
 import styles from '../styles/eventId.module.css'
+import WishlistNav from "./WishlistNav";
 
 export interface IEventProps {
   accessToken: string
@@ -428,29 +429,10 @@ export default function Event(props: IEventProps) {
         {renderModal()}
       </Modal>
 
-      {isMediumScreen ? (
-        <Box
-          p='2' pb='5'
-          position='fixed'
-          bottom='0' left='50%' zIndex='4'
-          transform='translate(-50%, 0)'
-        >
-          <Button
-            boxShadow='dark-lg'
-            colorScheme='red'
-            size='lg'
-            rounded='full'
-            p='1'
-            onClick={() => {
-              setWishlist(true)
-              onOpen()
-            }}
-            position='relative'
-          >
-            <Icon as={BsBagFill} />
-          </Button>
-        </Box>
-      ) : <></>}
+      <WishlistNav
+        setWishlist={setWishlist}
+        onOpen={onOpen}
+      />
     </>
   )
 }

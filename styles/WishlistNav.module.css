@@ -1,0 +1,15 @@
+.wishlistNav {
+  transform: translate(-50%, 0);
+  position: fixed;
+  padding: 2em;
+  z-index: 4;
+  left: 50%;
+  bottom: 0;
+  display: none;
+}
+
+@media screen and (max-width: 900px) {
+  .wishlistNav {
+    display: block!important;
+  }
+}
