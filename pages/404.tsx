@@ -22,10 +22,8 @@ export default function PageNotFound() {
         <title>404 Page Not Found - GiftTrade</title>
       </Head>
 
-      <Container
-        mt='10' mb='10'
-      >
-        <Heading textAlign='center' mb='5'>404</Heading>
+      <Container>
+        <Heading textAlign='center' pt='10' pb='5'>404</Heading>
 
         <Text fontWeight='bold' textAlign='center'>
           The page you were looking for could not be found
