@@ -97,7 +97,7 @@ export default function SearchResults({
   }
 
   return (
-    <Box ml='-8px' mr='-8px' outline='none'>
+    <Box ml='-8px' mr='-8px'>
       <Masonry
         items={results}
         columnCount={columnBreakPoints()}
@@ -112,6 +112,7 @@ export default function SearchResults({
           />
         )}
         onRender={loadMore}
+        style={{ outline: "none" }}
       />
 
       <Box>

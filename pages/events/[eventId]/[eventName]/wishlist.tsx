@@ -258,6 +258,7 @@ export default function Wishlist(props: IEventProps) {
       <WishlistNav
         setWishlist={setShowWishlist}
         onOpen={onOpen}
+        numWishes={wishes.length}
       />
     </>
   )
