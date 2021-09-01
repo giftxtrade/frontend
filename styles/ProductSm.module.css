@@ -1,5 +1,10 @@
+.productImgContainer {
+  max-height: 300px;
+  overflow: hidden;
+}
+
 .productImg {
-    background-color: #eee;
-    width: 100%;
-    min-height: 150px;
+  background-color: #eee;
+  width: 100%;
+  min-height: 150px;
 }

@@ -25,14 +25,19 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
           href={link} target='blank'
           isExternal={true}
         >
-          <Image
-            src={product.imageUrl}
-            loading='lazy'
+          <Box
+            className={`${styles.productImgContainer} skeletonLoading`}
             rounded='md'
             mb='3'
-            overflow='hidden'
-            className={`${styles.productImg} skeletonLoading`}
-          />
+          >
+            <Image
+              src={product.imageUrl}
+              loading='lazy'
+              rounded='md'
+              className={`${styles.productImg} skeletonLoading`}
+            />
+          </Box>
+
           <Heading
             size='sm'
             noOfLines={3}
