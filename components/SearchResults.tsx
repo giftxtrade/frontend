@@ -97,7 +97,7 @@ export default function SearchResults({
   }
 
   return (
-    <Box ml='-8px' mr='-8px'>
+    <Box ml='-8px' mr='-8px' outline='none'>
       <Masonry
         items={results}
         columnCount={columnBreakPoints()}
