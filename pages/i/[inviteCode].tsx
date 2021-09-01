@@ -1,5 +1,5 @@
 import { DocumentContext } from 'next/document';
-import { Flex, Spinner, Text, Link } from '@chakra-ui/react';
+import { Flex, Text, Link } from '@chakra-ui/react';
 import { api } from "../../util/api"
 import { useEffect, useState } from "react"
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { useRouter } from 'next/dist/client/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { base } from '../../util/site';
+import PageLoader from '../../components/PageLoader';
 
 export default function Invite(props: { details: { name: string, description: string } | null }) {
   const [details, setDetails] = useState(props.details)
@@ -47,9 +48,7 @@ export default function Invite(props: { details: { name: string, description: st
           <meta property="og:site_name" content="GiftTrade" />
         </Head>
 
-        <Flex alignItems="center" justifyContent='center' p='20' >
-          <Spinner size='xl' />
-        </Flex>
+        <PageLoader />
       </>
     )
   }

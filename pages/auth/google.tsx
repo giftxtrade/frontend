@@ -7,6 +7,7 @@ import { useCookies } from 'react-cookie';
 import { DocumentContext } from "next/document";
 import { redirectHomeIfLoggedIn } from "../../util/server-side-auth";
 import Head from 'next/head';
+import PageLoader from '../../components/PageLoader';
 
 export default function Google() {
   const router = useRouter()
@@ -60,11 +61,7 @@ export default function Google() {
           <Flex alignItems="center" justifyContent='center' p='20' >
             <Text>Something went wrong, please try logging in <Link color='blue.600' href={api.google} fontWeight='bold'>again</Link></Text>
           </Flex>
-        ) : (
-            <Flex alignItems="center" justifyContent='center' p='20' >
-              <Spinner size='xl' />
-            </Flex>
-        )
+        ) : <PageLoader />
       }
     </>
   )
