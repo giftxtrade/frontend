@@ -3,19 +3,15 @@ import {
   Flex,
   Heading,
   Text,
-  Button,
   Box,
   Container,
   useDisclosure,
-  Icon,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalOverlay,
   ModalCloseButton,
-  ModalHeader,
-  Badge
+  ModalHeader
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../../../../components/Navbar';
@@ -23,13 +19,12 @@ import { DocumentContext } from "next/document";
 import Search from "../../../../components/Search";
 import eventFetch from "../../../../util/ss-event-fetch";
 import { useMediaQuery } from '@chakra-ui/react';
-import { WishlistLoadingItem, WishlistProductItem } from '../../../../components/WishlistItem';
+import { WishlistLoadingItem } from '../../../../components/WishlistItem';
 import { IWish } from '../../../../types/Wish';
 import axios from 'axios';
 import { api } from '../../../../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { IProduct } from '../../../../types/Product';
-import { BsBagFill } from 'react-icons/bs';
 import PendingInvite from '../../../../components/PendingInvite';
 import WishlistItemSelect from '../../../../components/WishlistItemSelect';
 import WishlistTotal from '../../../../components/WishlistTotal';
@@ -64,6 +59,7 @@ export default function Wishlist(props: IEventProps) {
           setWishes(data)
           setLoadingWishes(false)
           setWishProductIds(productIdSet)
+          setSelectedProducts(data.map<IProduct>(w => w.product))
         })
       })
       .catch(err => {
