@@ -37,6 +37,8 @@ export default function ProductSm({ product, productSet, addWish, removeWish }: 
             size='sm'
             noOfLines={3}
             title={product.title}
+            maxH='57.6px'
+            overflow='hidden'
           >
             {product.title}
           </Heading>
