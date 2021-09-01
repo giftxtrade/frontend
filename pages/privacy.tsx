@@ -14,7 +14,7 @@ export default function Privacy() {
         <Box mb='14'>
           <NextLink href='/' passHref>
             <Link display="inline-block">
-              <Image w='40' src='/logos/logotype_color.svg' quality='90' />
+              <Image w='40' src='/logos/logotype_rounded_color.svg' quality='90' />
             </Link>
           </NextLink>
         </Box>
