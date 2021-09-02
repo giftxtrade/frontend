@@ -20,6 +20,7 @@ export default function Google() {
   useEffect(() => {
     if (code && scope && authuser && prompt) {
       const requestUri = `${api.google_redirect}?code=${code}&scope=${scope}&authuser=${authuser}&propmt=${prompt}`
+
       axios.get(requestUri)
         .then(({ data }) => {
           setError(false)
@@ -30,6 +31,8 @@ export default function Google() {
             path: '/'
           })
 
+          const redirect = localStorage.getItem('redirect')
+
           const inviteCode = localStorage.getItem('invite_code')
           if (inviteCode) {
             axios.get(`${api.invite_code}/${inviteCode}`, { headers: { "Authorization": "Bearer " + data.accessToken } })
@@ -39,7 +42,8 @@ export default function Google() {
               })
               .catch(_ => setError(true))
           } else {
-            router.push('/home')
+            localStorage.removeItem('redirect')
+            router.push(redirect ? redirect : '/home')
           }
         })
         .catch(err => {
