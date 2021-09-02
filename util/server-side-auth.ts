@@ -9,7 +9,9 @@ export async function serverSideAuth(ctx: DocumentContext) {
   const accessToken = cookie.parse(myCookie).access_token
 
   if (ctx.res && (!accessToken || accessToken === '')) {
-    ctx.res.writeHead(302, { Location: '/' });
+    const currentUrl = ctx?.req?.url;
+
+    ctx.res.writeHead(302, { Location: currentUrl ? `/login?redirect=${currentUrl}` : '/login' });
     ctx.res.end();
     return { props: {} }
   }
