@@ -8,13 +8,19 @@ import { DocumentContext } from "next/document";
 import { redirectHomeIfLoggedIn } from "../../util/server-side-auth";
 import Head from 'next/head';
 import PageLoader from '../../components/PageLoader';
+import { toStringOrNull, toStringOrUndefined } from '../../util/content';
 
-export default function Google() {
+export interface IGoogleProps {
+  code: string | null
+  scope: string | null
+  authuser: string | null
+  prompt: string | null
+}
+
+export default function Google({ code, scope, authuser, prompt }: IGoogleProps) {
   const router = useRouter()
-  const { code, scope, authuser, prompt } = router.query
 
   const [error, setError] = useState(false)
-  const [val, setVal] = useState(false)
   const [cookie, setCookie] = useCookies(['access_token'])
 
   useEffect(() => {
@@ -50,9 +56,9 @@ export default function Google() {
           setError(true)
         })
     } else {
-      setVal(!val)
+      setError(true)
     }
-  }, [val])
+  }, [])
 
   return (
     <>
@@ -70,3 +76,18 @@ export default function Google() {
     </>
   )
 }
+
+export const getServerSideProps = async (ctx: DocumentContext) => {
+  const code = ctx.query?.code;
+  const scope = ctx.query?.scope;
+  const authuser = ctx.query?.authuser;
+  const prompt = ctx.query?.prompt;
+  return {
+    props: {
+      code: toStringOrNull(code),
+      scope: toStringOrNull(scope),
+      authuser: toStringOrNull(authuser),
+      prompt: toStringOrNull(prompt),
+    }
+  }
+};

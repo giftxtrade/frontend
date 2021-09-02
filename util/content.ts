@@ -4,3 +4,11 @@ export const content = {
     BASE_TITLE: "Gift Exchange, Made Simple - GiftTrade",
     DESCRIPTION: "Make your Gift Exhange and Secret Santa simple and secure with GiftTrade"
 }
+
+export const toStringOrUndefined = (val: string[] | string | undefined) => {
+    return typeof (val) === 'object' ? val[0] : val;
+}
+
+export const toStringOrNull = (val: string[] | string | undefined) => {
+    return typeof (val) === 'object' ? val[0] : val ? val : null;
+}

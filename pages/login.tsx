@@ -4,8 +4,9 @@ import PageLoader from '../components/PageLoader';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { DocumentContext } from 'next/document';
+import { toStringOrNull } from '../util/content';
 
-export default function Login(props: { redirect: string | undefined }) {
+export default function Login(props: { redirect: string | null }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -28,5 +29,5 @@ export default function Login(props: { redirect: string | undefined }) {
 
 export const getServerSideProps = async (ctx: DocumentContext) => {
   const redirect = ctx.query?.redirect;
-  return { props: { redirect: typeof (redirect) === 'object' ? redirect[0] : redirect } }
+  return { props: { redirect: toStringOrNull(redirect) } }
 };
