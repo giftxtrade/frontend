@@ -1,6 +1,6 @@
-import { ICreateParticipant, IParticipant } from './Participant';
+import { ICreateParticipant, IParticipant, IParticipantUser } from './Participant';
 
-export interface IEvent {
+interface IEventBase {
   id: number
   name: string
   description: string
@@ -9,7 +9,14 @@ export interface IEvent {
   createdAt: string
   drawAt: string
   closeAt: string
+}
+
+export interface IEvent extends IEventBase {
   participants: IParticipant[]
+}
+
+export interface IEventUser extends IEventBase {
+  participants: IParticipantUser[]
 }
 
 export interface ICreateEvent {

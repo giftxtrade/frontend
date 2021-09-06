@@ -20,7 +20,7 @@ import { BsPlusCircle } from 'react-icons/bs'
 import { NewEvent } from "../components/NewEvent";
 import axios from "axios";
 import { api } from "../util/api";
-import { IEvent } from "../types/Event";
+import { IEventUser, IEvent } from '../types/Event';
 import { User } from "../store/jwt-payload";
 import Invites from "../components/Invites";
 import { unstable_batchedUpdates } from 'react-dom';
@@ -36,7 +36,7 @@ export interface IHopeProps {
   user: User,
   gToken: string,
   loggedIn: boolean,
-  invites: IEvent[],
+  invites: IEventUser[],
 }
 
 export default function Home(props: IHopeProps) {
@@ -46,7 +46,7 @@ export default function Home(props: IHopeProps) {
   const [user, setUser] = useState(props.user)
 
   const [invites, setInvites] = useState(props.invites)
-  const [events, setEvents] = useState(Array<IEvent>())
+  const [events, setEvents] = useState(Array<IEventUser>())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -72,7 +72,7 @@ export default function Home(props: IHopeProps) {
     axios.get(`${api.events}?user=true`, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
-      .then(({ data }: { data: IEvent[] }) => {
+      .then(({ data }: { data: IEventUser[] }) => {
         unstable_batchedUpdates(() => {
           setEvents(data)
           setLoading(false)
@@ -211,7 +211,7 @@ export default function Home(props: IHopeProps) {
         onClose={onClose}
         accessToken={accessToken}
         user={user}
-        addEvent={(e: IEvent) => setEvents([e, ...events])}
+        addEvent={(e: IEventUser) => setEvents([e, ...events])}
       />
     </>
   )

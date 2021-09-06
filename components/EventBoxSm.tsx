@@ -1,4 +1,4 @@
-import { IEvent } from '../types/Event'
+import { IEvent, IEventUser } from '../types/Event'
 import {
   Box,
   Heading,
@@ -16,9 +16,10 @@ import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
 import { eventNameSlug } from '../util/links';
 import { User } from '../store/jwt-payload';
+import ParticipantsMini from './ParticipantsMini';
 
 export interface IEventBoxSmProps {
-  event: IEvent
+  event: IEventUser
   isInvite: boolean
   index: number
   user: User
@@ -55,6 +56,12 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       <Text color='gray.500' fontSize='xs'>
         <span>{moment(event.drawAt).format('LL')}</span>
       </Text>
+
+      {isInvite || event.participants.length <= 1 ? <></> : (
+        <Box mt='1' mb='3'>
+          <ParticipantsMini participants={event?.participants} />
+        </Box>
+      )}
 
       {
         event.description ? (

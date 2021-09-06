@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { User } from '../store/jwt-payload';
 import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
-import { IEvent } from '../types/Event';
+import { IEventUser } from '../types/Event';
 import MainMode from './NewEvent/MainMode';
 import SelectParticipantsMode from './NewEvent/SelectParticipantsMode';
 import GetLinkMode from './NewEvent/GetLinkMode';
@@ -25,7 +25,7 @@ export interface INewEventProps {
   onClose: () => void
   accessToken: string
   user: User
-  addEvent: (e: IEvent) => void
+  addEvent: (e: IEventUser) => void
 }
 
 export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewEventProps) {
