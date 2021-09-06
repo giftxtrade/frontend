@@ -15,17 +15,20 @@ import { BsCheck, BsX } from 'react-icons/bs'
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
 import { eventNameSlug } from '../util/links';
+import { User } from '../store/jwt-payload';
 
 export interface IEventBoxSmProps {
   event: IEvent
   isInvite: boolean
   index: number
+  user: User
   handleAccept: (eventId: number, index: number) => void
   handleDecline: (eventId: number, index: number) => void
 }
 
-export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index }: IEventBoxSmProps) {
-  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`
+export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index, user }: IEventBoxSmProps) {
+  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`;
+  const meParticipant = event.participants.find(e => e.email === user?.email);
 
   return (
     <Box
@@ -60,7 +63,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       }
 
       <Stack direction='row' spacing='1' mt='2'>
-        {event.participants[0].organizer ? (
+        {meParticipant?.organizer ? (
           <Badge
             borderRadius="full"
             px="2"
@@ -71,7 +74,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
           </Badge>
         ) : <></>}
 
-        {event.participants[0].participates ? (
+        {meParticipant?.participates ? (
           <Badge
             borderRadius="full"
             px="2"

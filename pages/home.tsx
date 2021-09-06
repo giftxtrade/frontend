@@ -194,6 +194,7 @@ export default function Home(props: IHopeProps) {
                           handleAccept={handleAccept}
                           handleDecline={handleDecline}
                           index={i}
+                          user={user}
                         />
                       </LinkBox>
                     </NextLink>
