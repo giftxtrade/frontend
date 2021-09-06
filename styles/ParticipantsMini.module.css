@@ -3,7 +3,7 @@
   border-radius: 50px;
   --size: 30px;
 
-  width: var(--size);
+  min-width: var(--size);
   height: var(--size);
 
   background-color: #d9d9d9;
@@ -14,6 +14,6 @@
 span.mini {
   font-size: 10px;
   text-align: center;
-  padding: 6px 0px;
+  padding: 6px 2px;
   font-weight: bold;
 }

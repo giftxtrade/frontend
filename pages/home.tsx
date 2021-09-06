@@ -145,6 +145,7 @@ export default function Home(props: IHopeProps) {
               invites={invites}
               handleAccept={handleAccept}
               handleDecline={handleDecline}
+              user={user}
             />
           ) : <></>}
 

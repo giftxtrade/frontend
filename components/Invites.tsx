@@ -7,16 +7,18 @@ import {
   Button,
   Stack,
 } from '@chakra-ui/react'
-import { IEvent } from '../types/Event'
+import { User } from '../store/jwt-payload'
+import { IEventUser } from '../types/Event'
 import EventBoxSm from './EventBoxSm'
 
 export interface IInvitesProps {
-  invites: IEvent[]
+  invites: IEventUser[]
   handleAccept: (eventId: number, index: number) => void
   handleDecline: (eventId: number, index: number) => void
+  user: User
 }
 
-export default function Invites({ invites, handleAccept, handleDecline }: IInvitesProps) {
+export default function Invites({ invites, handleAccept, handleDecline, user }: IInvitesProps) {
   return (
     <Box mb='10'>
 
@@ -41,6 +43,7 @@ export default function Invites({ invites, handleAccept, handleDecline }: IInvit
             handleAccept={handleAccept}
             handleDecline={handleDecline}
             index={i}
+            user={user}
           />
         ))}
       </Stack>
