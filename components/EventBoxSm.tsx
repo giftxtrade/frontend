@@ -11,8 +11,7 @@ import {
   LinkOverlay
 } from '@chakra-ui/react'
 import moment from 'moment'
-import { BsCheck, BsX } from 'react-icons/bs'
-import NextLink from 'next/link';
+import { BsCheck, BsX, BsClock } from 'react-icons/bs';
 import { Link } from '@chakra-ui/react';
 import { eventNameSlug } from '../util/links';
 import { User } from '../store/jwt-payload';
@@ -34,7 +33,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
   return (
     <Box
       maxW="full"
-      borderWidth="1px" borderRadius="lg"
+      borderWidth="1px" borderRadius="lg" borderColor='gray.100'
       overflow="hidden"
       p='5'
       backgroundColor={isInvite ? '#f9f9f9' : 'white'}
@@ -53,8 +52,9 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
           </LinkOverlay>
       )}
 
-      <Text color='gray.500' fontSize='xs'>
-        <span>{moment(event.drawAt).format('LL')}</span>
+      <Text color='gray.500' fontSize='xs' mb='1' title='Draw date'>
+        <Icon as={BsClock} mr='1' />
+        <span>{moment(event.drawAt).format('ll')}</span>
       </Text>
 
       {isInvite || event.participants.length <= 1 ? <></> : (
