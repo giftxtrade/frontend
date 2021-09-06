@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
   Flex,
-  Spinner,
   Heading,
   Text,
   Button,
-  Link,
   Box,
   Container,
   Icon,
@@ -27,8 +25,6 @@ import { User } from "../store/jwt-payload";
 import Invites from "../components/Invites";
 import { unstable_batchedUpdates } from 'react-dom';
 import EventBoxSm from '../components/EventBoxSm';
-import { FcClearFilters } from 'react-icons/fc';
-import { useMediaQuery } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import { eventNameSlug } from '../util/links';
@@ -73,7 +69,7 @@ export default function Home(props: IHopeProps) {
       })
     }
 
-    axios.get(api.events, {
+    axios.get(`${api.events}?user=true`, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }: { data: IEvent[] }) => {
