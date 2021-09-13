@@ -13,7 +13,7 @@ import {
   Flex,
   ModalCloseButton
 } from '@chakra-ui/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import GetLink from '../GetLink';
 import { IEventUser } from '../../types/Event';
 
@@ -36,6 +36,8 @@ export interface IGetLinkMode {
 }
 
 export default function GetLinkMode({ linkLoading, error, link, drawDate, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose, redirectToEvent, event }: IGetLinkMode) {
+  const [redirectLoading, setRedirectLoading] = useState(false)
+
   return (
     <ModalContent>
       {linkLoading ? (
@@ -87,6 +89,7 @@ export default function GetLinkMode({ linkLoading, error, link, drawDate, setMai
                 pr='6'
 
                 onClick={() => {
+                  setRedirectLoading(true)
                   setMain(true)
                   setGetLink(false)
                   setBudget(0)
@@ -96,9 +99,13 @@ export default function GetLinkMode({ linkLoading, error, link, drawDate, setMai
                   setReset(false)
                   onClose()
 
-                  if (event)
+                  if (event) {
                     redirectToEvent(event)
+                  } else {
+                    setRedirectLoading(false)
+                  }
                 }}
+                isLoading={redirectLoading}
               >
               Done
             </Button>

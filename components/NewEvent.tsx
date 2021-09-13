@@ -94,19 +94,21 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
       }
     })
       .then(({ data }: { data: IEventUser }) => {
-        redirectToEvent(data)
-
-        unstable_batchedUpdates(() => {
-          setMain(true)
-          setName('')
-          setDescription('')
-          setBudget(0)
-          setDrawDate('')
-          setReset(true)
-          setLoading(false)
-          addEvent(data)
-          onClose()
-        })
+        if (redirect) {
+          redirectToEvent(data)
+        } else {
+          unstable_batchedUpdates(() => {
+            setMain(true)
+            setName('')
+            setDescription('')
+            setBudget(0)
+            setDrawDate('')
+            setReset(true)
+            setLoading(false)
+            addEvent(data)
+            onClose()
+          })
+        }
       })
       .catch(err => {
         unstable_batchedUpdates(() => {
