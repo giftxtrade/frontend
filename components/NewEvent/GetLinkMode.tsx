@@ -1,4 +1,3 @@
-import { InfoIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Text,
   Button,
@@ -6,7 +5,6 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
-  Input,
   Alert,
   AlertIcon,
   AlertTitle,
@@ -16,9 +14,8 @@ import {
   ModalCloseButton
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction } from 'react';
-import { base } from '../../util/site';
 import GetLink from '../GetLink';
-import { IParticipantForm } from '../NewEvent';
+import { IEventUser } from '../../types/Event';
 
 export interface IGetLinkMode {
   setMain: Dispatch<SetStateAction<boolean>>
@@ -33,9 +30,12 @@ export interface IGetLinkMode {
   linkLoading: boolean
   link: string
   onClose: () => void
+
+  redirectToEvent: (event: IEventUser) => void
+  event: IEventUser | undefined
 }
 
-export default function GetLinkMode({ linkLoading, error, link, drawDate, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose }: IGetLinkMode) {
+export default function GetLinkMode({ linkLoading, error, link, drawDate, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose, redirectToEvent, event }: IGetLinkMode) {
   return (
     <ModalContent>
       {linkLoading ? (
@@ -93,8 +93,11 @@ export default function GetLinkMode({ linkLoading, error, link, drawDate, setMai
                   setName('')
                   setDrawDate('')
                   setDescription('')
-                setReset(false)
+                  setReset(false)
                   onClose()
+
+                  if (event)
+                    redirectToEvent(event)
                 }}
               >
               Done

@@ -17,6 +17,7 @@ import {
 import { IParticipantForm } from '../NewEvent';
 import { Dispatch, SetStateAction } from 'react';
 import { ParticipantForm } from '../ParticipantForm';
+import { IEventUser } from '../../types/Event';
 
 export interface ISelectParticipantsMode {
   setMain: Dispatch<SetStateAction<boolean>>
@@ -26,8 +27,10 @@ export interface ISelectParticipantsMode {
   error: boolean
   loading: boolean
 
-  handleCreateEvent: () => void
+  handleCreateEvent: (redirect: boolean) => void
   handleGenerateLink: () => void
+
+  redirectToEvent: (event: IEventUser) => void
 }
 
 export default function SelectParticipantsMode({ name, forms, setForms, error, loading, setMain, handleGenerateLink, handleCreateEvent }: ISelectParticipantsMode) {
@@ -101,7 +104,9 @@ export default function SelectParticipantsMode({ name, forms, setForms, error, l
         <Button
           colorScheme="blue"
           isDisabled={forms.find(f => f.name === '' || f.email === '') !== undefined}
-          onClick={handleCreateEvent}
+          onClick={() => {
+            handleCreateEvent(true)
+          }}
           isLoading={loading}
         >
           Create Event

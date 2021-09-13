@@ -7,10 +7,12 @@ import { useState, useEffect } from 'react';
 import { User } from '../store/jwt-payload';
 import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
-import { IEventUser } from '../types/Event';
+import { IEvent, IEventUser } from '../types/Event';
 import MainMode from './NewEvent/MainMode';
 import SelectParticipantsMode from './NewEvent/SelectParticipantsMode';
 import GetLinkMode from './NewEvent/GetLinkMode';
+import { useRouter } from 'next/router';
+import { eventNameSlug } from '../util/links';
 
 export interface IParticipantForm {
   creator: boolean
@@ -41,6 +43,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [getLink, setGetLink] = useState(false)
   const [linkLoading, setLinkLoading] = useState(false)
   const [link, setLink] = useState('')
+  const [event, setEvent] = useState<IEventUser>()
+
+  const router = useRouter();
 
   useEffect(() => {
     setForms([{
@@ -79,7 +84,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
     }
   }
 
-  const handleCreateEvent = () => {
+  const handleCreateEvent = (redirect: boolean) => {
     setLoading(true)
     setError(false)
 
@@ -88,7 +93,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
         "Authorization": "Bearer " + accessToken
       }
     })
-      .then(({ data }) => {
+      .then(({ data }: { data: IEventUser }) => {
+        redirectToEvent(data)
+
         unstable_batchedUpdates(() => {
           setMain(true)
           setName('')
@@ -109,6 +116,10 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
       })
   }
 
+  const redirectToEvent = (event: IEventUser) => {
+    router.push(`/events/${event.id}/${eventNameSlug(event.name)}`)
+  }
+
   const handleGenerateLink = () => {
     setGetLink(true)
     setLinkLoading(true)
@@ -118,8 +129,9 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
         "Authorization": "Bearer " + accessToken
       }
     })
-      .then(({ data }) => {
+      .then(({ data }: { data: IEventUser }) => {
         addEvent(data)
+        setEvent(data)
 
         axios.post(
           `${api.get_link}/${data.id}`,
@@ -179,6 +191,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                 setMain={setMain}
                 handleGenerateLink={handleGenerateLink}
                 handleCreateEvent={handleCreateEvent}
+                redirectToEvent={redirectToEvent}
               />
             ) : (
                 <GetLinkMode
@@ -194,6 +207,8 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
                   setDescription={setDescription}
                   setReset={setReset}
                   onClose={onClose}
+                  event={event}
+                  redirectToEvent={redirectToEvent}
                 />
             )
           )
