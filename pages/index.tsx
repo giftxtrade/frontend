@@ -11,6 +11,7 @@ import Link from 'next/link';
 import PhoneHolder from '../components/PhoneHolder';
 import Aos from 'aos';
 import "aos/dist/aos.css"
+import Image from 'next/image'
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(false)
@@ -93,7 +94,7 @@ export default function LandingPage() {
         <div className={styles.howToPage}>
 
           <div className={styles.howToHeading}>
-            <h2>How it works</h2>
+            <h2 className={styles.underlineHeading}>How it works</h2>
           </div>
 
           <div className={styles.instructions}>
@@ -101,9 +102,20 @@ export default function LandingPage() {
               <PhoneHolder video="/clips/create_event_demo.mp4" />
 
               <div className={styles.details}>
-                <h3>Create an Event</h3>
-                <p>We've made it extremely simple to create a new event. Simply press the <i>add event</i> button and fill out the form.</p>
-                <p>Inviting friends and family to your event couldn't have been easier. With link sharing, simply copy and share the invite link with friends and family.</p>
+                <h3>📅 Create an Event</h3>
+                <p>We've made it extremely simple to create a new event. Simply press the <i>add event</i> button, name your event, set a budget, set the draw date, and enjoy!</p>
+              </div>
+            </div>
+
+            <div className={`${styles.demoContainer} ${styles.blockDemo} ${styles.demoCenter}`}>
+              <div className={styles.details}>
+                <h3>Invite with Ease</h3>
+                <div className={styles.detailInfo}>
+                  <img
+                    src='/screenshots/get_link.png'
+                  />
+                  <p>Inviting friends and family to your event couldn't have been easier. With link sharing, simply copy and share the invite link with friends and family.</p>
+                </div>
               </div>
             </div>
 
@@ -111,9 +123,8 @@ export default function LandingPage() {
               <PhoneHolder video="/clips/wishlist_demo.mp4" />
 
               <div className={styles.details}>
-                <h3>Make your wish list</h3>
-                <p>Create your wish list by searching products from the event wishlist. You can sort by price, and rating to find the perfect item.</p>
-                <p>GiftTrade also offers an easy to use item selector to help stay within the event budget without the need for a calculator!</p>
+                <h3>🛍️ Make your wish list</h3>
+                <p>Create your wish list by searching products from the event wishlist. Sort products using the filter tool to find the perfect item.</p>
               </div>
             </div>
 
@@ -121,13 +132,27 @@ export default function LandingPage() {
               <PhoneHolder video="/clips/intro-landing.mp4" />
 
               <div className={styles.details}>
-                <h3>Draw participants</h3>
+                <h3>🎲 Draw participants</h3>
                 <p>Once everyone has joined the event, the organizer can draw names to assign each participant a random name from the list.</p>
-                <p>When the organization has found the perfect pairing, they can confirm the draw so that all participants are notified about their draw.</p>
+                <p>When the organizer has found the perfect pairing, they can confirm the draw so that all participants are notified about their draw.</p>
               </div>
             </div>
           </div>
 
+        </div>
+
+        <div className={styles.closingSection}>
+          <div className={styles.closingInner}>
+            <h2>Start <i>your</i> Gift Exchange Today!</h2>
+
+            <div className={styles.button}>
+              <Link href="/login">
+                <a>
+                  <div className={styles.loginButton}>Start Today!</div>
+                </a>
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </>
