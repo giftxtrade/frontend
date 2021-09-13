@@ -3,6 +3,9 @@
 .landingPage {
   --default-color: #c13a38;
   --logo-size: 40px;
+
+  --c1: #fde9ca;
+  --c2: #ffd7d7;
 }
 
 .logotype {
@@ -17,11 +20,12 @@
 }
 
 .pageHero {
+  --deg: 16deg;
+
   width: 100%;
   height: 100vh;
-  background-color: #fff4e3;
+  background: -webkit-linear-gradient(var(--deg),var(--c1),var(--c2));
   overflow: hidden;
-  box-shadow: 0px 1px 10px rgba(0,0,0,0.1);
 }
 
 .pageHeroInner {
@@ -287,17 +291,32 @@
 }
 
 .howToHeading h2 {
-  font-size: 2.3em;
+  font-size: 2.5em;
   font-weight: bold;
   text-align: center;
   padding: 1.5em 10px;
   width: fit-content;
+  text-transform: uppercase;
+  margin-bottom: 1em;
+}
 
-  -webkit-text-fill-color: transparent;
-  background: -webkit-linear-gradient(-30deg,#27a9ff,#25d8ba);
-    background-clip: border-box;
-  -webkit-background-clip: text;
-  background-clip: text;
+@media screen and (max-width: 400px) {
+  .howToHeading h2 {
+    font-size: 2em;
+  }
+
+  .details h3 {
+    font-size: 1.8em!important;
+  }
+}
+
+.howToHeading h2:after {
+  content: "";
+  max-width: 150px;
+  height: 2px;
+  background: -webkit-linear-gradient(30deg, var(--c1), var(--c2));
+  display: block;
+  margin-top: 10px;
 }
 
 .instructions {
@@ -311,7 +330,7 @@
   flex-direction: row;
   justify-content: center;
   padding: 2rem 0px;
-  border-bottom: 1px solid rgba(233, 233, 233, .8);
+  margin-bottom: 2em;
 }
 
 .instructions .demoContainer:first-child {
@@ -319,7 +338,6 @@
 }
 .instructions .demoContainer:last-child {
   padding-bottom: 0px;
-  border: 0px;
 }
 
 .demoRight {
@@ -341,9 +359,12 @@
   font-weight: bold;
   font-size: 1.6em;
   margin-bottom: 20px;
+  color: #444;
+  font-size: 2.3em;
 }
 .details p {
   margin-bottom: 10px;
+  color: #666;
 }
 
 @media screen and (max-width: 580px) {

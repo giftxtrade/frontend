@@ -97,31 +97,31 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.instructions}>
-            <div data-aos="fade-left" className={styles.demoContainer}>
+            <div className={styles.demoContainer}>
               <PhoneHolder video="/clips/create_event_demo.mp4" />
 
               <div className={styles.details}>
-                <h3>1. Create an Event</h3>
-                <p>Creating an event is as simple as tapping the "+" icon and adding an event name, budget, and draw date.</p>
-                <p>Inviting friends and family to yourwishlist_demo event is extremely easy, via link sharing. Simply copy the link and share with friends and family.</p>
+                <h3>Create an Event</h3>
+                <p>We've made it extremely simple to create a new event. Simply press the <i>add event</i> button and fill out the form.</p>
+                <p>Inviting friends and family to your event couldn't have been easier. With link sharing, simply copy and share the invite link with friends and family.</p>
               </div>
             </div>
 
-            <div data-aos="fade-right" className={styles.demoContainer + " " + styles.demoRight}>
+            <div className={styles.demoContainer + " " + styles.demoRight}>
               <PhoneHolder video="/clips/wishlist_demo.mp4" />
 
               <div className={styles.details}>
-                <h3>2. Make your wish list</h3>
+                <h3>Make your wish list</h3>
                 <p>Create your wish list by searching products from the event wishlist. You can sort by price, and rating to find the perfect item.</p>
                 <p>GiftTrade also offers an easy to use item selector to help stay within the event budget without the need for a calculator!</p>
               </div>
             </div>
 
-            <div data-aos="fade-left" className={styles.demoContainer}>
+            <div className={styles.demoContainer}>
               <PhoneHolder video="/clips/intro-landing.mp4" />
 
               <div className={styles.details}>
-                <h3>3. Draw participants</h3>
+                <h3>Draw participants</h3>
                 <p>Once everyone has joined the event, the organizer can draw names to assign each participant a random name from the list.</p>
                 <p>When the organization has found the perfect pairing, they can confirm the draw so that all participants are notified about their draw.</p>
               </div>
