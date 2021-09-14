@@ -105,7 +105,7 @@ export default function LandingPage() {
               />
 
               <div className={styles.details}>
-                <h3>📅 Create an Event</h3>
+                <h3>Create an Event</h3>
                 <p>We've made it extremely simple to create a new event. Simply press the <i>add event</i> button, name your event, set a budget, set the draw date, and enjoy!</p>
               </div>
             </div>
@@ -127,7 +127,7 @@ export default function LandingPage() {
               <PhoneHolder video="/clips/wishlist_demo.mp4" />
 
               <div className={styles.details}>
-                <h3>🛍️ Make your wish list</h3>
+                <h3>Make your wish list</h3>
                 <p>Create your wish list by searching products from the event wishlist. Sort products using the filter tool to find the perfect item.</p>
               </div>
             </div>
@@ -139,7 +139,7 @@ export default function LandingPage() {
               />
 
               <div className={styles.details}>
-                <h3>🎲 Draw participants</h3>
+                <h3>Draw participants</h3>
                 <p>Once everyone has joined the event, the organizer can draw names to assign each participant a random name from the list.</p>
               </div>
             </div>
