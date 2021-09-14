@@ -328,7 +328,7 @@
 }
 
 .demoContainer {
-  max-width: 750px;
+  max-width: 900px;
   margin: 0 auto;
   display: flex;
   flex-direction: row;
@@ -347,6 +347,25 @@
 
 .demoRight {
   flex-direction: row-reverse;
+}
+
+.newEvent > img {
+  max-width: 450px;
+}
+
+.drawSection > img {
+  max-width: 450px;
+}
+
+@media screen and (max-width: 860px) {
+  .howToPage h2 {
+    margin-bottom: 0px;
+    padding-bottom: 1.5rem;
+  }
+
+  .imageDemo {
+    flex-direction: column;
+  }
 }
 
 .demoContainer .details {

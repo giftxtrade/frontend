@@ -98,8 +98,11 @@ export default function LandingPage() {
           </div>
 
           <div className={styles.instructions}>
-            <div className={styles.demoContainer}>
-              <PhoneHolder video="/clips/create_event_demo.mp4" />
+            <div className={`${styles.demoContainer} ${styles.newEvent} ${styles.imageDemo}`}>
+              <img
+                src='/screenshots/new_event.png'
+                loading='lazy'
+              />
 
               <div className={styles.details}>
                 <h3>📅 Create an Event</h3>
@@ -113,6 +116,7 @@ export default function LandingPage() {
                 <div className={styles.detailInfo}>
                   <img
                     src='/screenshots/get_link.png'
+                    loading='lazy'
                   />
                   <p>Inviting friends and family to your event couldn't have been easier. With link sharing, simply copy and share the invite link with friends and family.</p>
                 </div>
@@ -128,13 +132,15 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className={styles.demoContainer}>
-              <PhoneHolder video="/clips/intro-landing.mp4" />
+            <div className={`${styles.demoContainer} ${styles.drawSection} ${styles.imageDemo}`}>
+              <img
+                src='/screenshots/draw.png'
+                loading='lazy'
+              />
 
               <div className={styles.details}>
                 <h3>🎲 Draw participants</h3>
                 <p>Once everyone has joined the event, the organizer can draw names to assign each participant a random name from the list.</p>
-                <p>When the organizer has found the perfect pairing, they can confirm the draw so that all participants are notified about their draw.</p>
               </div>
             </div>
           </div>
