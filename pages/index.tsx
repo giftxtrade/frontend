@@ -114,10 +114,16 @@ export default function LandingPage() {
               <div className={styles.details}>
                 <h3>Invite with Ease</h3>
                 <div className={styles.detailInfo}>
-                  <img
-                    src='/screenshots/get_link.png'
-                    loading='lazy'
-                  />
+                  <Link href='/i/gOxFJ7d66kr1KY7'>
+                    <a>
+                      <img
+                        src='/screenshots/get_link.png'
+                        loading='lazy'
+                        alt='Join this event to explore GiftTrade'
+                        title='Click to join this public event and explore GiftTrade!'
+                      />
+                    </a>
+                  </Link>
                   <p>Inviting friends and family to your event couldn't have been easier. With link sharing, simply copy and share the invite link with friends and family.</p>
                 </div>
               </div>
