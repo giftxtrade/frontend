@@ -1,12 +1,15 @@
 <p align="center">
     <a href="http://giftxtrade.com/" target="blank">
-        <img src="https://giftxtrade.com/logos/logo_profile_rounded.svg" width='50' alt="GiftTrade Logo" />
+        <!-- <img src="https://giftxtrade.com/logos/logo_profile_rounded.svg" width='50' alt="GiftTrade Logo" /> -->
+        <img src="https://giftxtrade.com/logos/logotype_rounded_color.svg" width='250' alt="GiftTrade Logo" />
     </a>
 </p>
 
 <p align="center">
     The platform that aims to simplify your online gift exchange and secret santa for <i>free</i>.
 </p>
+
+<br />
 
 ## Description
 The GiftTrade frontend repository serves as the main repo for the [giftxtrade.com](https://giftxtrade.com) web app. This repo is designed to be able to run with a fully working API ([giftxtradeapi.com](https://giftxtradeapi.com)) and makes use of Redux for state management.
@@ -25,7 +28,7 @@ npm install
 ```
 
 ### Define environment variables
-GifTrade uses environment variables to help speed up development time and to make sure both developement and prodcution code are similar with little to no tweaks. Therefore, we define these variables to ensure this behaviour.
+GiftTrade uses environment variables to help speed up development time and to make sure both developement and prodcution code are similar with little to no tweaks. Therefore, we define these variables to ensure this behaviour.
 
 #### Step 1: Create `.env.local` file
 Ensure that you create a file named `.env.local` within the root of the project.
