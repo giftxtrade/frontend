@@ -60,7 +60,7 @@ export default function PendingInvite({ event, accessToken }: { accessToken: str
               colorScheme='red'
               isLoading={loading}
             >
-              Leave
+              Decline
             </Button>
           </Stack>
         </AlertDescription>
