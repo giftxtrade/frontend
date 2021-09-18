@@ -149,19 +149,17 @@ export default function Home(props: IHopeProps) {
             />
           ) : <></>}
 
-          <Flex direction='row' alignItems='center' justifyContent='start'>
-            <Heading size='lg' m='0' p='0' mt='1.5'>My Events</Heading>
+          <Flex direction='row' alignItems='center' justifyContent='space-between'>
+            <Heading fontSize='2xl' m='0' p='0' mt='1.5' mr='5'>My Events</Heading>
 
             <Button
-              size='lg'
-              p='0'
-              ml='5'
-              variant="ghost"
+              size='sm'
               colorScheme='blue'
               spacing='sm'
               onClick={onOpen}
+              leftIcon={<Icon as={BsPlusCircle} />}
             >
-              <Icon as={BsPlusCircle} boxSize='1.5em' />
+              New Event
             </Button>
           </Flex>
 
