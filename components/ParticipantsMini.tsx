@@ -12,16 +12,18 @@ function MiniProfile({ user }: { user: User | null }) {
 }
 
 export default function ParticipantsMini({ participants }: { participants: IParticipantUser[] }) {
+  const maxProfiles = 4;
+
   const render = () => {
     const elems = new Array<JSX.Element>();
 
-    if (participants.length <= 3) {
+    if (participants.length <= maxProfiles) {
       participants.forEach(p => elems.push(<MiniProfile user={p.user} />))
     } else {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < maxProfiles; i++) {
         elems.push(<MiniProfile user={participants[i].user} />)
       }
-      elems.push(<span className={styles.mini}>+{participants.length - 3}</span>)
+      elems.push(<span className={styles.mini}>+{participants.length - maxProfiles}</span>)
     }
     return elems;
   }
