@@ -65,14 +65,13 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
   return (
     <>
       <Flex mb='5' direction='row' alignItems='center' justifyContent='start'>
-        <Heading size='md' m='0' p='0' mt='1.5'>My Wishlist</Heading>
+        <Heading size='md' m='0' p='0' mt='1.5' mr='5'>My Wishlist</Heading>
 
         <NextLink href={`/events/${event.id}/${eventNameSlug(event.name)}/wishlist`} passHref>
           <Link>
             <Button
               size='md'
               p='0'
-              ml='5'
               variant="ghost"
               colorScheme='blue'
               spacing='sm'
