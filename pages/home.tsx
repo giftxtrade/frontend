@@ -163,7 +163,11 @@ export default function Home(props: IHopeProps) {
             </Button>
           </Flex>
 
-          <Box mt='5' mb='10'>
+          <Box
+            mt='5' mb='10'
+            shadow='base'
+            rounded='md'
+          >
             {loading ? (
               <Stack spacing={3}>
                 <EventBoxSmLoading />
@@ -185,7 +189,7 @@ export default function Home(props: IHopeProps) {
                 <Stack spacing={3}>
                   {events.map((e, i) => (
                     <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
-                      <LinkBox cursor='pointer'>
+                      <LinkBox cursor='pointer' className='border-bottom-child'>
                         <EventBoxSm
                           event={e}
                           isInvite={false}

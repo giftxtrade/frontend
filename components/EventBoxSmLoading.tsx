@@ -5,9 +5,9 @@ export default function EventBoxSmLoading() {
   return (
     <Box
       maxW="full"
-      borderWidth="1px" borderRadius="lg"
       overflow="hidden"
       p='5'
+      className='border-bottom-child'
     >
       <div className={`skeletonLoading ${styles.title}`}></div>
       <div className={`skeletonLoading ${styles.drawDate}`}></div>

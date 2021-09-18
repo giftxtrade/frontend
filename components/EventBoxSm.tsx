@@ -36,8 +36,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       borderWidth={isInvite ? "1px" : 'none'} borderRadius="lg" borderColor='gray.100'
       overflow="hidden"
       p='5'
-      backgroundColor={isInvite ? '#f9f9f9' : '#fdfdfd'}
-      shadow={isInvite ? 'none' : 'base'}
+      backgroundColor={isInvite ? '#f9f9f9' : 'white'}
     >
       {isInvite ? (
         <Heading size='md'>

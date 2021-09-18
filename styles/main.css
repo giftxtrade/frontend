@@ -27,3 +27,11 @@
 #__next > .fixer {
   padding-bottom: 5rem;
 }
+
+.border-bottom-child {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.border-bottom-child:last-child {
+  border-bottom: 0px;
+}
