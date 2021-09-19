@@ -172,7 +172,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
     )
       .then(data => {
         toast({
-          title: status ? "Participant promoted as an organizer!" : "Participant is no longer an organizer",
+          title: status ? `${participant.name} is now an organizer!` : `${participant.name} is no longer an organizer`,
           status: "success",
           duration: 2000,
           isClosable: true,
