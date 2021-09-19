@@ -165,7 +165,7 @@ export default function Home(props: IHopeProps) {
 
           <Box
             mt='5' mb='10'
-            shadow={error || events.length === 0 ? 'none' : 'base'}
+            shadow={!loading && error || events.length === 0 ? 'none' : 'base'}
             rounded='md'
           >
             {loading ? (
@@ -182,7 +182,7 @@ export default function Home(props: IHopeProps) {
                   justifyContent="center"
                     pt='10' pb='10' pr='5' pl='5'
                 >
-                    <Icon as={BsInboxesFill} fill='gray.700' boxSize='16' mb='8' />
+                    <Icon as={BsInboxesFill} fill='gray.700' boxSize='16' mb='5' />
                     <Heading size='lg' mb='2' color='gray.700'>No Events</Heading>
                     <Text color='gray.500' fontSize='14' size='md' textAlign='center'>
                       You don't have any active events. Create a new event to get started, or join the <NextLink href='/i/gOxFJ7d66kr1KY7' passHref><Link color='blue.400'>Public Event</Link></NextLink> to test out the GiftTrade platform.
