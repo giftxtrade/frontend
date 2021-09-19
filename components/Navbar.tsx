@@ -5,6 +5,7 @@ import { useCookies } from "react-cookie";
 import { useMediaQuery } from '@chakra-ui/react'
 import NextLink from 'next/link';
 import styles from '../styles/Navbar.module.css';
+import { changeProfileSize } from '../util/content';
 
 export default function Navbar({ loggedIn, user, accessToken, gToken }: {
   loggedIn: boolean,
@@ -35,7 +36,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
             router.push('/logout')
           }}
         >
-          <Image src={user.imageUrl} w='35px' mr='2' rounded='md' />
+          <Image src={changeProfileSize(user.imageUrl, 50)} w='35px' mr='2' rounded='md' />
           <Box>
             <Heading size='xs'>{user.name}</Heading>
             {isSmallScreen ? (
