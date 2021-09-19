@@ -79,7 +79,7 @@ export default function SearchOptions({ min, max, globalMax, search, sort, setSe
 
       <Stack direction='row' spacing='1' alignItems='center'>
         <label htmlFor='sortOptions'>
-          <Text fontWeight='bold' fontSize='xs'>Sort</Text>
+          <Text fontWeight='bold' fontSize='xs'>Sort by</Text>
         </label>
 
         <Select

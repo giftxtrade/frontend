@@ -166,7 +166,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   }
 
   return (
-    <Modal size='xl' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+    <Modal size='md' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
       <ModalOverlay />
       {
         main ? (
