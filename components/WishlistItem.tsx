@@ -15,12 +15,12 @@ import StarRatings from 'react-star-ratings';
 export function WishlistLoadingItem() {
   return (
     <Flex maxW='full' h='80px' direction='row' alignItems='flex-start' justifyContent='flex-start'>
-      <Box maxW='full' h='80px' flex='1' bg='gray.200' rounded='md' className='skeletonLoading'></Box>
+      <Box maxW='full' h='80px' flex='1' rounded='md' className='skeletonLoading'></Box>
       <Box maxW='full' h='80px' flex='2' ml='2'>
-        <Box h='20px' bg='gray.200' rounded='xl' mb='3' className='skeletonLoading'></Box>
+        <Box h='20px' rounded='xl' mb='3' className='skeletonLoading'></Box>
 
-        <Box h='10px' bg='gray.200' rounded='md' mb='1.5' className='skeletonLoading'></Box>
-        <Box maxW='60%' h='10px' bg='gray.200' rounded='md' className='skeletonLoading'></Box>
+        <Box h='10px' rounded='md' mb='1.5' className='skeletonLoading'></Box>
+        <Box maxW='60%' h='10px' rounded='md' className='skeletonLoading'></Box>
       </Box>
     </Flex>
   )
