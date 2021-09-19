@@ -1,20 +1,16 @@
-import { Container, Image, Flex, Heading, Text, Link, Button, Box } from "@chakra-ui/react";
-import { User } from '../store/jwt-payload';
+import { Container, Image, Flex, Heading, Text, Link, Box } from "@chakra-ui/react";
+import JwtPayload from '../store/jwt-payload';
 import router from "next/router";
-import { useCookies } from "react-cookie";
 import { useMediaQuery } from '@chakra-ui/react'
 import NextLink from 'next/link';
 import styles from '../styles/Navbar.module.css';
 import { changeProfileSize } from '../util/content';
 
-export default function Navbar({ loggedIn, user, accessToken, gToken }: {
-  loggedIn: boolean,
-  user: User,
-  accessToken: string,
-  gToken: string
-}) {
-  const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
-  const [isMediumScreen] = useMediaQuery('(max-width: 650px)')
+export interface INavbarProps extends JwtPayload {
+  loggedIn: boolean
+}
+
+export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarProps) {
   const [isSmallScreen] = useMediaQuery('(max-width: 370px)')
 
   return (
