@@ -284,7 +284,7 @@ export default function Event(props: IEventProps) {
 
               {
                 event.description ? (
-                  <Text mt='4'>{event.description}</Text>
+                  <Text mt='4' color='gray.700'>{event.description}</Text>
                 ) : <></>
               }
 

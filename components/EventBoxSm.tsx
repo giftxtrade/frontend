@@ -65,7 +65,7 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
 
       {
         event.description ? (
-          <Text>{event.description}</Text>
+          <Text color='gray.600'>{event.description}</Text>
         ) : <></>
       }
 

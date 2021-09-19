@@ -65,7 +65,7 @@ export default function ParticipantUser({ id, name, email, address, organizer, p
                   ) : `${name}`}
                 </LinkOverlay>
               </Heading>
-              <Text fontSize='.7em'>{email}</Text>
+              <Text fontSize='.7em' color='gray.600'>{email}</Text>
             </Box>
           </Stack>
         </LinkBox>

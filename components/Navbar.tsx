@@ -41,7 +41,7 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: {
             {isSmallScreen ? (
               <></>
             ) : (
-                <Text fontSize='10'>{user.email}</Text>
+                <Text fontSize='10' color='gray.600'>{user.email}</Text>
             )}
           </Box>
         </Flex>
