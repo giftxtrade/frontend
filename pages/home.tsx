@@ -16,7 +16,7 @@ import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import { DocumentContext } from "next/document";
 import { serverSideAuth } from "../util/server-side-auth";
-import { BsPlusCircle } from 'react-icons/bs'
+import { BsInboxesFill, BsInboxFill, BsPlusCircle } from 'react-icons/bs'
 import { NewEvent } from "../components/NewEvent";
 import axios from "axios";
 import { api } from "../util/api";
@@ -30,6 +30,7 @@ import NextLink from 'next/link';
 import { eventNameSlug } from '../util/links';
 import EventBoxSmLoading from '../components/EventBoxSmLoading';
 import styles from '../styles/home.module.css'
+import { Link } from '@chakra-ui/react';
 
 export interface IHopeProps {
   accessToken: string,
@@ -154,8 +155,7 @@ export default function Home(props: IHopeProps) {
 
             <Button
               size='sm'
-              colorScheme='blue'
-              spacing='sm'
+              colorScheme='gray'
               onClick={onOpen}
               leftIcon={<Icon as={BsPlusCircle} />}
             >
@@ -165,7 +165,7 @@ export default function Home(props: IHopeProps) {
 
           <Box
             mt='5' mb='10'
-            shadow='base'
+            shadow={error || events.length === 0 ? 'none' : 'base'}
             rounded='md'
           >
             {loading ? (
@@ -174,22 +174,25 @@ export default function Home(props: IHopeProps) {
                 <EventBoxSmLoading />
               </Stack>
             ) : (
-              error || events.length == 0 ? (
+                error || events.length === 0 ? (
                 <Flex
                   direction='column'
                   maxW='full'
                   alignItems="center"
                   justifyContent="center"
-                  pt='10' pb='10' pr='5' pl='5'
-                  fontStyle='italic'
+                    pt='10' pb='10' pr='5' pl='5'
                 >
-                  <Text color='gray.600' size='md' textAlign='center'>You don't have any active events</Text>
+                    <Icon as={BsInboxesFill} fill='gray.700' boxSize='16' mb='8' />
+                    <Heading size='lg' mb='2' color='gray.700'>No Events</Heading>
+                    <Text color='gray.500' fontSize='14' size='md' textAlign='center'>
+                      You don't have any active events. Create a new event to get started, or join the <NextLink href='/i/gOxFJ7d66kr1KY7' passHref><Link color='blue.400'>Public Event</Link></NextLink> to test out the GiftTrade platform.
+                    </Text>
                 </Flex>
               ) : (
                 <Stack spacing={3}>
                   {events.map((e, i) => (
                     <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
-                      <LinkBox cursor='pointer' className='border-bottom-child'>
+                      <LinkBox cursor='pointer' mt='0!important' className='border-bottom-child'>
                         <EventBoxSm
                           event={e}
                           isInvite={false}
