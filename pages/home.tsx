@@ -165,7 +165,7 @@ export default function Home(props: IHopeProps) {
 
           <Box
             mt='5' mb='10'
-            shadow={!loading && error || events.length === 0 ? 'none' : 'base'}
+            shadow={!loading && (error || events.length) === 0 ? 'none' : 'base'}
             rounded='md'
           >
             {loading ? (
