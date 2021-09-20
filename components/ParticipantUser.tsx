@@ -43,7 +43,7 @@ export default function ParticipantUser({ id, name, email, address, organizer, p
               )}
             </Box>
 
-            <Box overflow='hidden'>
+            <Box overflow='hidden' pr='2'>
               {!accepted ? (
                 <Badge
                   borderRadius="full"

@@ -37,6 +37,12 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
       overflow="hidden"
       p='5'
       backgroundColor={isInvite ? '#f9f9f9' : 'white'}
+      _hover={{
+        bg: '#fafafa'
+      }}
+      _focus={{
+        bg: '#f8f8f8'
+      }}
     >
       {isInvite ? (
         <Heading size='md'>

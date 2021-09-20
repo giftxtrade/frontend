@@ -151,7 +151,7 @@ export default function Home(props: IHopeProps) {
           ) : <></>}
 
           <Flex direction='row' alignItems='center' justifyContent='space-between'>
-            <Heading fontSize='2xl' m='0' p='0' mt='1.5' mr='5'>My Events</Heading>
+            <Heading size='md' m='0' p='0' mt='1.5' mr='5'>My Events</Heading>
 
             <Button
               size='sm'
