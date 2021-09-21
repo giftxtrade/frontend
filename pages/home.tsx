@@ -192,7 +192,7 @@ export default function Home(props: IHopeProps) {
                 <Stack spacing={3}>
                   {events.map((e, i) => (
                     <NLink.default href={`/events/${e.id}/${eventNameSlug(e.name)}`}>
-                      <a className='border-bottom-child'>
+                      <a className='border-bottom-child' style={{ marginTop: '0px' }}>
                         <EventBoxSm
                           event={e}
                           isInvite={false}
