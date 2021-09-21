@@ -12,10 +12,10 @@ import {
 } from '@chakra-ui/react'
 import moment from 'moment'
 import { BsCheck, BsX, BsClock } from 'react-icons/bs';
-import { Link } from '@chakra-ui/react';
 import { eventNameSlug } from '../util/links';
 import { User } from '../store/jwt-payload';
 import ParticipantsMini from './ParticipantsMini';
+import Link from 'next/link';
 
 export interface IEventBoxSmProps {
   event: IEventUser
@@ -27,8 +27,8 @@ export interface IEventBoxSmProps {
 }
 
 export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index, user }: IEventBoxSmProps) {
-  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`;
-  const meParticipant = event.participants.find(e => e.email === user?.email);
+  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`
+  const meParticipant = event.participants.find(e => e.email === user?.email)
 
   return (
     <Box
@@ -51,11 +51,9 @@ export default function EventBoxSm({ event, isInvite, handleAccept, handleDeclin
           </Link>
         </Heading>
       ) : (
-          <LinkOverlay href={eventUrl}>
-            <Heading size='md'>
-              {event.name}
-            </Heading>
-          </LinkOverlay>
+          <Heading size='md'>
+            {event.name}
+          </Heading>
       )}
 
       <Text color='gray.500' fontSize='xs' mb='1' title='Draw date'>

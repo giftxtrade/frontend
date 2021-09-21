@@ -10,13 +10,12 @@ import {
   useDisclosure,
   Stack,
   useToast,
-  LinkBox,
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from '../components/Navbar';
 import { DocumentContext } from "next/document";
 import { serverSideAuth } from "../util/server-side-auth";
-import { BsInboxesFill, BsInboxFill, BsPlusCircle } from 'react-icons/bs'
+import { BsInboxesFill, BsPlusCircle } from 'react-icons/bs'
 import { NewEvent } from "../components/NewEvent";
 import axios from "axios";
 import { api } from "../util/api";
@@ -31,6 +30,7 @@ import { eventNameSlug } from '../util/links';
 import EventBoxSmLoading from '../components/EventBoxSmLoading';
 import styles from '../styles/home.module.css'
 import { Link } from '@chakra-ui/react';
+import * as NLink from 'next/link'
 
 export interface IHopeProps {
   accessToken: string,
@@ -191,8 +191,8 @@ export default function Home(props: IHopeProps) {
               ) : (
                 <Stack spacing={3}>
                   {events.map((e, i) => (
-                    <NextLink href={`/events/${e.id}/${eventNameSlug(e.name)}`} passHref>
-                      <LinkBox cursor='pointer' mt='0!important' className='border-bottom-child'>
+                    <NLink.default href={`/events/${e.id}/${eventNameSlug(e.name)}`}>
+                      <a className='border-bottom-child'>
                         <EventBoxSm
                           event={e}
                           isInvite={false}
@@ -202,8 +202,8 @@ export default function Home(props: IHopeProps) {
                           index={i}
                           user={user}
                         />
-                      </LinkBox>
-                    </NextLink>
+                      </a>
+                    </NLink.default>
                   ))}
                 </Stack>
               )
