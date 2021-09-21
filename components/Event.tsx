@@ -32,6 +32,7 @@ import styles from '../styles/eventId.module.css'
 import WishlistNav from "./WishlistNav";
 import EventHeader from "./EventHeader";
 import { IDraw, IDrawParticipant } from '../types/Draw';
+import { useRouter } from "next/router";
 
 export interface IEventProps {
   accessToken: string
@@ -67,6 +68,8 @@ export default function Event(props: IEventProps) {
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
 
+  const router = useRouter()
+
   useEffect(() => {
     axios.get(
       `${api.events}/${props.eventDetails.id}`,
@@ -77,7 +80,7 @@ export default function Event(props: IEventProps) {
           setEvent({ ...data })
           setLink(data.links.length > 0 ? { ...data.links[0] } : undefined)
           setParticipants([...data.participants])
-          setMeParticipant(data.participants.find(p => p.user?.email === user.email))
+          setMeParticipant(data.participants.find(p => p.email === user.email))
         })
 
         axios.get(`${api.draws}/me/${data.id}`, {
@@ -89,21 +92,21 @@ export default function Event(props: IEventProps) {
               setMyDraw(data.drawee)
             })
           })
-          .catch(err => {
-            unstable_batchedUpdates(() => {
-              setLoading(false)
-            })
+          .catch(_ => {
+            setLoading(false)
+
+            console.log(meParticipant);
           })
       })
       .catch(_ => {
-        console.log("Could not load event")
+        router.push('404')
       })
   }, [])
 
 
   const renderModal = () => {
-    if (!event || !meParticipant || !participants)
-      return;
+    if (!event || !participants)
+      return <></>;
 
     if (linkModal) {
       return <GetLinkEvent
@@ -142,7 +145,7 @@ export default function Event(props: IEventProps) {
           </ModalBody>
         </ModalContent>
       )
-    } else if (settingsModal) {
+    } else if (meParticipant && settingsModal) {
       return (
         <Settings
           accessToken={accessToken}
@@ -157,7 +160,7 @@ export default function Event(props: IEventProps) {
           setMyDraw={setMyDraw}
         />
       )
-    } else if (leaveGroupModal) {
+    } else if (meParticipant && leaveGroupModal) {
       return (
         <LeaveGroup
           accessToken={accessToken}
@@ -230,7 +233,7 @@ export default function Event(props: IEventProps) {
                 setLeaveGroupModal={setLeaveGroupModal}
                 onOpen={onOpen}
                 setSettingsModal={setSettingsModal}
-                setLinkModal={setLinkError}
+                setLinkModal={setLinkModal}
                 setLinkError={setLinkError}
                 setLinkLoading={setLinkLoading}
                 setLink={setLink}
