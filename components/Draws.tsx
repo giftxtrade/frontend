@@ -18,25 +18,24 @@ import {
 import axios from 'axios';
 import { IEvent } from '../types/Event';
 import { api } from '../util/api';
-import { IDraw } from '../types/Draw';
+import { IDraw, IDrawParticipant } from '../types/Draw';
 import { unstable_batchedUpdates } from 'react-dom';
 import ParticipantUser from './ParticipantUser';
 import { User } from '../store/jwt-payload';
-import { IParticipant } from '../types/Participant';
+import { IParticipant, IParticipantUser } from '../types/Participant';
 
 export interface IDrawsProps {
   setShowDraw: Dispatch<SetStateAction<boolean>>
-  setMyDraw: Dispatch<SetStateAction<IParticipant | null>>
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
   onClose: () => void
   accessToken: string
   event: IEvent
-  emailToImageMap: Map<string, User | null>
-  meParticipant: IParticipant
+  meParticipant: IParticipantUser | undefined
 }
 
-export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, event, emailToImageMap, meParticipant }: IDrawsProps) {
+export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, event, meParticipant }: IDrawsProps) {
   const [loading, setLoading] = useState(true)
-  const [draws, setDraws] = useState(Array<IDraw>())
+  const [draws, setDraws] = useState(Array<IDrawParticipant>())
   const [confirmDisable, setConfirmDisable] = useState(true);
   const [confirmLoading, setConfirmLoading] = useState(false)
 
@@ -53,7 +52,7 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
 
   useEffect(() => {
     axios.get(`${api.draws}/${event.id}`, { headers: { "Authorization": "Bearer " + accessToken } })
-      .then(({ data }: { data: IDraw[] }) => {
+      .then(({ data }: { data: IDrawParticipant[] }) => {
         unstable_batchedUpdates(() => {
           setLoading(false)
           setDraws(data.sort(sorter))
@@ -76,11 +75,11 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
       { eventId: event.id },
       { headers: { "Authorization": "Bearer " + accessToken } }
     )
-      .then(({ data }: { data: IDraw[] }) => {
+      .then(({ data }: { data: IDrawParticipant[] }) => {
         unstable_batchedUpdates(() => {
           setLoading(false)
           setDraws(data.sort(sorter))
-          const myDraw = data.find(({ drawer }) => drawer.email === meParticipant.email)
+          const myDraw = data.find(({ drawer }) => drawer.email === meParticipant?.email)
           if (myDraw)
             setMyDraw(myDraw.drawee)
           setConfirmDisable(false);
@@ -125,11 +124,11 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
     }
   }
 
-  const drawUser = (user: User | null | undefined, p: IParticipant, key: string) => {
+  const drawUser = (p: IParticipantUser, key: string) => {
     return (
       <Box mb='3' height='50px' overflowY='hidden'>
         <ParticipantUser
-          user={user ? user : null}
+          user={p.user}
           name={p.name}
           email={p.email}
           participates={p.participates}
@@ -175,13 +174,13 @@ export default function Draws({ setShowDraw, onClose, setMyDraw, accessToken, ev
               <Box>
                 <Heading size='sm' mb='3'>Participant</Heading>
 
-                {draws.map(({ drawer }, i) => drawUser(emailToImageMap.get(drawer.email), drawer, `drawer#${i}`))}
+                    {draws.map(({ drawer }, i) => drawUser(drawer, `drawer#${i}`))}
               </Box>
 
               <Box>
                 <Heading size='sm' mb='3'>Draw</Heading>
 
-                {draws.map(({ drawee }, i) => drawUser(emailToImageMap.get(drawee.email), drawee, `drawee#${i}`))}
+                    {draws.map(({ drawee }, i) => drawUser(drawee, `drawee#${i}`))}
               </Box>
             </SimpleGrid>
           </Box>

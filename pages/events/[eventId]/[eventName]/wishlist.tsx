@@ -37,7 +37,7 @@ export default function Wishlist(props: IEventProps) {
   const [accessToken, setAccessToken] = useState(props.accessToken)
   const [gToken, setGToken] = useState(props.gToken)
   const [user, setUser] = useState(props.user)
-  const [event, setEvent] = useState(props.event)
+  const [event, setEvent] = useState(props.eventDetails)
   const [meParticipant, setMeParticipant] = useState(props.meParticipant)
   const [loadingWishes, setLoadingWishes] = useState(true)
   const [wishes, setWishes] = useState(Array<IWish>())

@@ -8,7 +8,7 @@ import {
   Box,
   Stack
 } from '@chakra-ui/react'
-import { IEvent } from '../types/Event'
+import { IEvent, IEventDetails } from '../types/Event'
 import { BsPlusCircle } from 'react-icons/bs';
 import NextLink from 'next/link';
 import { IWish } from '../types/Wish';
@@ -18,23 +18,27 @@ import { api } from '../util/api';
 import { unstable_batchedUpdates } from 'react-dom';
 import { WishlistLoadingItem, WishlistProductItem } from './WishlistItem';
 import { IProduct } from '../types/Product';
-import { IParticipant } from '../types/Participant';
+import { IParticipant, IParticipantUser } from '../types/Participant';
 import AddAddress from './AddAddress';
 import { RiShoppingBag3Fill } from 'react-icons/ri'
 import { eventNameSlug } from '../util/links';
 
 export interface IMyWishlistProps {
-  event: IEvent,
-  meParticipant: IParticipant,
+  event: IEvent | undefined
+  eventDetails: IEventDetails
+  meParticipant: IParticipantUser | undefined
   accessToken: string
 }
 
-export default function MyWishlist({ event, meParticipant, accessToken }: IMyWishlistProps) {
+export default function MyWishlist({ event, eventDetails, meParticipant, accessToken }: IMyWishlistProps) {
   const [wishes, setWishes] = useState(Array<IWish>())
   const [loading, setLoading] = useState(true)
 
+  const id = event?.id ? event.id : eventDetails.id;
+  const name = event?.name ? event.name : eventDetails.name;
+
   useEffect(() => {
-    axios.get(`${api.wishes}/${event.id}`, {
+    axios.get(`${api.wishes}/${id}`, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }: { data: IWish[] }) => {
@@ -53,9 +57,9 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
     axios.delete(api.wishes, {
       headers: { "Authorization": "Bearer " + accessToken },
       data: {
-        eventId: event.id,
+        eventId: id,
         productId: product.id,
-        participantId: meParticipant.id
+        participantId: meParticipant?.id
       }
     })
       .then(({ data }) => { })
@@ -67,7 +71,7 @@ export default function MyWishlist({ event, meParticipant, accessToken }: IMyWis
       <Flex mb='5' direction='row' alignItems='center' justifyContent='start'>
         <Heading size='md' m='0' p='0' mt='1.5' mr='5'>My Wishlist</Heading>
 
-        <NextLink href={`/events/${event.id}/${eventNameSlug(event.name)}/wishlist`} passHref>
+        <NextLink href={`/events/${id}/${eventNameSlug(name)}/wishlist`} passHref>
           <Link>
             <Button
               size='md'

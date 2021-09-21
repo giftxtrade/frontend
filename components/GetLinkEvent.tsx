@@ -18,7 +18,7 @@ import {
 import { Dispatch, SetStateAction } from 'react';
 
 export interface IGetLinkEvent {
-  link: ILink | null
+  link: ILink | undefined
   drawDate: string
   linkLoading: boolean
   linkError: boolean

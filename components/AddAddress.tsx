@@ -27,12 +27,12 @@ import { unstable_batchedUpdates } from 'react-dom';
 import React from 'react';
 
 export interface IAddAddressProps {
-  meParticipant: IParticipant
+  meParticipant: IParticipant | undefined
   accessToken: string
 }
 
 export default function AddAddress({ meParticipant, accessToken }: IAddAddressProps) {
-  const [address, setAddress] = useState(meParticipant.address)
+  const [address, setAddress] = useState(meParticipant?.address ? meParticipant.address : '')
   const [loading, setLoading] = useState(false)
   const [loadingLocation, setLoadingLocation] = useState(false)
   const [error, setError] = useState(false)
@@ -45,7 +45,7 @@ export default function AddAddress({ meParticipant, accessToken }: IAddAddressPr
 
   const updateAddress = (myAddress: string) => {
     setLoading(true)
-    axios.patch(`${api.participants}/${meParticipant.id}`, { address: myAddress }, {
+    axios.patch(`${api.participants}/${meParticipant?.id}`, { address: myAddress }, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
       .then(({ data }) => {

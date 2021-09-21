@@ -38,7 +38,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { IEvent } from '../types/Event';
+import { IEvent, IEventFull } from '../types/Event';
 import { api } from '../util/api';
 import { IDraw } from '../types/Draw';
 import { unstable_batchedUpdates } from 'react-dom';
@@ -53,13 +53,13 @@ export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>
   onClose: () => void
   accessToken: string
-  event: IEvent
+  event: IEventFull
   participants: IParticipantUser[]
-  meParticipant: IParticipant
-  setEvent: Dispatch<SetStateAction<IEvent>>
-  setParticipants: Dispatch<SetStateAction<IParticipantUser[]>>
-  myDraw: IParticipant | null
-  setMyDraw: Dispatch<SetStateAction<IParticipant | null>>
+  meParticipant: IParticipantUser
+  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>
+  setParticipants: Dispatch<SetStateAction<IParticipantUser[] | undefined>>
+  myDraw: IParticipantUser | undefined
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
 }
 
 export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants, myDraw, setMyDraw }: ISettingsProps) {
@@ -83,7 +83,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
     axios.patch(`${api.events}/${event.id}`, { name, description, budget, drawAt: new Date(drawDate) }, {
       headers: { "Authorization": "Bearer " + accessToken }
     })
-      .then(({ data }: { data: IEvent }) => {
+      .then(({ data }: { data: IEventFull }) => {
         toast({
           title: "Event updated!",
           status: "success",
@@ -128,7 +128,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
   const removeParticipant = (i: number, participant: IParticipantUser) => {
     setParticipants(participants.filter(p => p.id !== participant.id))
     if (myDraw?.id === participant.id)
-      setMyDraw(null)
+      setMyDraw(undefined)
 
     axios.delete(
       `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,

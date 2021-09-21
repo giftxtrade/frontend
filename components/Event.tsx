@@ -1,13 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Flex,
   Heading,
-  Text,
-  Button,
   Box,
   Container,
-  Icon,
-  Badge,
   Stack,
   useDisclosure,
   Modal,
@@ -15,17 +11,14 @@ import {
   ModalContent,
   ModalBody,
   ModalCloseButton,
+  useMediaQuery
 } from '@chakra-ui/react';
 import Head from 'next/head';
 import Navbar from './Navbar';
 import axios from 'axios';
 import { api } from '../util/api';
-import { IEvent } from '../types/Event';
-import { useMediaQuery } from '@chakra-ui/react';
-import { IParticipant, IParticipantUser } from '../types/Participant';
-import moment from "moment";
-import numberToCurrency from "../util/currency";
-import { BsBagFill, BsClock, BsFillPeopleFill, BsFillPersonDashFill, BsGearWideConnected, BsLink45Deg, BsShuffle } from "react-icons/bs";
+import { IEventFull, IEventDetails } from '../types/Event';
+import { IParticipantUser } from '../types/Participant';
 import { User } from "../store/jwt-payload";
 import { ILink } from '../types/Link';
 import ParticipantUser from './ParticipantUser';
@@ -35,20 +28,17 @@ import MyWishlist from './MyWishlist';
 import Draws from './Draws';
 import Settings from './Settings';
 import LeaveGroup from './LeaveGroup';
-import PendingInvite from './PendingInvite';
 import styles from '../styles/eventId.module.css'
 import WishlistNav from "./WishlistNav";
+import EventHeader from "./EventHeader";
+import { IDraw, IDrawParticipant } from '../types/Draw';
 
 export interface IEventProps {
   accessToken: string
   user: User
   gToken: string
   loggedIn: boolean
-  event: IEvent
-  participants: IParticipantUser[]
-  link: ILink | null
-  meParticipant: IParticipant
-  myDraw: IParticipant | null
+  eventDetails: IEventDetails
 }
 
 export default function Event(props: IEventProps) {
@@ -56,10 +46,14 @@ export default function Event(props: IEventProps) {
   const [accessToken, setAccessToken] = useState(props.accessToken)
   const [gToken, setGToken] = useState(props.gToken)
   const [user, setUser] = useState(props.user)
-  const [event, setEvent] = useState(props.event)
-  const [meParticipant, setMeParticipant] = useState(props.meParticipant)
-  const [link, setLink] = useState(props.link)
-  const [participants, setParticipants] = useState(props.participants)
+
+  const [event, setEvent] = useState<IEventFull>()
+  const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
+  const [link, setLink] = useState<ILink>()
+  const [participants, setParticipants] = useState<IParticipantUser[]>()
+  const [myDraw, setMyDraw] = useState<IParticipantUser>()
+
+  const [loading, setLoading] = useState(true)
   const [linkLoading, setLinkLoading] = useState(false)
   const [linkError, setLinkError] = useState(false)
   const [wishlist, setWishlist] = useState(false)
@@ -67,45 +61,50 @@ export default function Event(props: IEventProps) {
   const [linkModal, setLinkModal] = useState(false)
   const [settingsModal, setSettingsModal] = useState(false)
   const [leaveGroupModal, setLeaveGroupModal] = useState(true)
-  const [myDraw, setMyDraw] = useState(props.myDraw)
-
-  const emailToImageMap = new Map<string, User | null>()
-  participants.forEach(p => emailToImageMap.set(p.email, p.user?.imageUrl ? p.user : null))
-
-  const totalParticipants = participants.filter(p => p.participates).length
-  const activeParticipants = participants.filter(p => p.participates && p.accepted).length
-  const pendingParticipants = totalParticipants - activeParticipants
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   // Media queries
   const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
-  const [isSmallScreen] = useMediaQuery('(max-width: 565px)')
-  const [isXSmallScreen] = useMediaQuery('(max-width: 365px)')
 
-  const generateLink = () => {
-    setLinkLoading(true);
-    setLinkError(false)
-
-    axios.post(`${api.get_link}/${event.id}`,
-      { expirationDate: new Date(event.drawAt).toString() },
-      { headers: { "Authorization": "Bearer " + accessToken } })
-      .then(({ data }: { data: ILink }) => {
+  useEffect(() => {
+    axios.get(
+      `${api.events}/${props.eventDetails.id}`,
+      { headers: { "Authorization": "Bearer " + accessToken } }
+    )
+      .then(({ data }: { data: IEventFull }) => {
         unstable_batchedUpdates(() => {
-          setLinkError(false)
-          setLinkLoading(false)
-          setLink(data)
+          setEvent({ ...data })
+          setLink(data.links.length > 0 ? { ...data.links[0] } : undefined)
+          setParticipants([...data.participants])
+          setMeParticipant(data.participants.find(p => p.user?.email === user.email))
         })
+
+        axios.get(`${api.draws}/me/${data.id}`, {
+          headers: { "Authorization": "Bearer " + accessToken }
+        })
+          .then(({ data }: { data: IDrawParticipant }) => {
+            unstable_batchedUpdates(() => {
+              setLoading(false)
+              setMyDraw(data.drawee)
+            })
+          })
+          .catch(err => {
+            unstable_batchedUpdates(() => {
+              setLoading(false)
+            })
+          })
       })
       .catch(_ => {
-        unstable_batchedUpdates(() => {
-          setLinkError(true)
-          setLinkLoading(false)
-        })
+        console.log("Could not load event")
       })
-  }
+  }, [])
+
 
   const renderModal = () => {
+    if (!event || !meParticipant || !participants)
+      return;
+
     if (linkModal) {
       return <GetLinkEvent
         link={link}
@@ -122,7 +121,6 @@ export default function Event(props: IEventProps) {
           onClose={onClose}
           accessToken={accessToken}
           event={event}
-          emailToImageMap={emailToImageMap}
           setMyDraw={setMyDraw}
           meParticipant={meParticipant}
         />
@@ -137,6 +135,7 @@ export default function Event(props: IEventProps) {
           <ModalBody>
             <MyWishlist
               event={event}
+              eventDetails={props.eventDetails}
               accessToken={accessToken}
               meParticipant={meParticipant}
             />
@@ -173,14 +172,13 @@ export default function Event(props: IEventProps) {
   }
 
   const renderMyDraw = () => {
-    if (myDraw) {
-      const myDrawUser = emailToImageMap.get(myDraw.email)
+    if (!loading && myDraw && event) {
       return (
         <Box mt='10'>
           <Heading size='md' mb='5'>My Draw</Heading>
           <Box maxW='72'>
             <ParticipantUser
-              user={myDrawUser ? myDrawUser : null}
+              user={myDraw.user}
               name={myDraw.name}
               email={myDraw.email}
               participates={myDraw.participates}
@@ -200,7 +198,13 @@ export default function Event(props: IEventProps) {
   return (
     <>
       <Head>
-        <title>{event.name} - GiftTrade</title>
+        <title>{props.eventDetails.name} - GiftTrade</title>
+
+        {props.eventDetails.description.length > 0 ? (
+          <meta name="description" content={props.eventDetails.description} />
+        ) : (
+          <meta name="description" content={props.eventDetails.name} />
+        )}
       </Head>
 
       <Navbar
@@ -216,182 +220,89 @@ export default function Event(props: IEventProps) {
             flex='2'
             pl='1'
           >
-            {!meParticipant.accepted ? (
-              <Box mb='5'>
-                <PendingInvite
-                  event={event}
-                  accessToken={accessToken}
-                />
-              </Box>
-            ) : <></>}
+            {!loading && event && participants && meParticipant ? (
+              <EventHeader
+                meParticipant={meParticipant}
+                event={event}
+                accessToken={accessToken}
+                participants={participants}
+                link={link}
+                setLeaveGroupModal={setLeaveGroupModal}
+                onOpen={onOpen}
+                setSettingsModal={setSettingsModal}
+                setLinkModal={setLinkError}
+                setLinkError={setLinkError}
+                setLinkLoading={setLinkLoading}
+                setLink={setLink}
+                setShowDraw={setShowDraw}
+              />
+            ) : (
+              <Box>
+                  <Stack direction='row' spacing={2}>
+                    <Box className='skeletonLoading' w='95px' h='18px' rounded='lg'></Box>
+                    <Box className='skeletonLoading' w='95px' h='18px' rounded='lg'></Box>
+                  </Stack>
 
-            <Box>
-              <Stack direction='row' spacing='1' mb='7'>
-                {meParticipant.organizer ? (
-                  <Badge
-                    borderRadius="full"
-                    px="2"
-                    colorScheme="teal"
-                    title={'You are one of the organizers for this event'}
-                  >
-                    Organizer
-                  </Badge>
-                ) : <></>}
+                  <Box className='skeletonLoading' maxW='sm' h='32px' mt='7' rounded='md'></Box>
+                  <Box className='skeletonLoading' w='120px' h='20px' mt='2' rounded='md'></Box>
 
-                {meParticipant.participates ? (
-                  <Badge
-                    borderRadius="full"
-                    px="2"
-                    colorScheme="blue"
-                    title={'You are a participant for this event'}
-                  >
-                    Participant
-                  </Badge>
-                ) : <></>}
-              </Stack>
+                  <Box className='skeletonLoading' maxW='80%' h='17px' mt='3' rounded='md'></Box>
+                  <Box className='skeletonLoading' maxW='57%' h='17px' mt='1' rounded='md'></Box>
 
-              <Heading size='lg'>{event.name}</Heading>
-
-              <Box mt='1' fontSize='.9em' color='gray.600'>
-                <Stack direction='row' spacing='4'>
-                  <Text title='Draw date'>
-                    <Icon as={BsClock} mr='1' />
-                    <span>{moment(event.drawAt).format('ll')}</span>
-                  </Text>
-
-                  <Box>
-                    <Badge
-                      borderRadius="full"
-                      px="2"
-                      colorScheme="teal"
-                      title='Event budget'
-                    >
-                      {numberToCurrency(event.budget)}
-                    </Badge>
-                  </Box>
-
-                  <Box
-                    d='flext'
-                    alignContent='center'
-                    justifyContent='center'
-                    title={`${activeParticipants}/${totalParticipants} active participants`}
-                  >
-                    <Icon as={BsFillPeopleFill} mr='2' boxSize='1.1em' />
-                    <span>{activeParticipants} / {totalParticipants}</span>
-                  </Box>
-                </Stack>
-              </Box>
-
-              {
-                event.description ? (
-                  <Text mt='4' color='gray.700'>{event.description}</Text>
-                ) : <></>
-              }
-
-              <Box mt='5'>
-                <Stack direction='row' spacing='2' justifyContent='flex-end'>
-                  {meParticipant.organizer ? (
-                    <Button
-                      leftIcon={<Icon as={BsShuffle} />}
-                      size={isXSmallScreen ? 'xs' : 'sm'}
-                      colorScheme='blue'
-                      onClick={() => {
-                        setShowDraw(true)
-                        onOpen()
-                      }}
-                      disabled={!participants.map(v => v.accepted).reduce((prev, cur) => prev && cur) || participants.length < 2}
-                    >
-                      Draw
-                    </Button>
-                  ) : <></>}
-
-                  <Button
-                    leftIcon={<Icon as={BsLink45Deg} />}
-                    size={isXSmallScreen ? 'xs' : 'sm'}
-                    colorScheme='teal'
-                    onClick={() => {
-                      setLinkModal(true)
-                      onOpen()
-                      if (!link)
-                        generateLink()
-                    }}
-                  >
-                    Share Link
-                  </Button>
-
-                  {meParticipant.organizer ? (
-                    <Button
-                      leftIcon={<Icon as={BsGearWideConnected} />}
-                      size={isXSmallScreen ? 'xs' : 'sm'}
-                      colorScheme='blackAlpha'
-                      onClick={() => {
-                        setSettingsModal(true)
-                        onOpen()
-                      }}
-                    >
-                      Settings
-                    </Button>
-                  ) : (
-                    <Button
-                      leftIcon={<Icon as={BsFillPersonDashFill} />}
-                      size={isXSmallScreen ? 'xs' : 'sm'}
-                      colorScheme='red'
-                      onClick={() => {
-                        setLeaveGroupModal(true)
-                        onOpen()
-                      }}
-                      variant='ghost'
-                    >
-                      Leave Group
-                    </Button>
-                  )}
-                </Stack>
-              </Box>
-            </Box>
+                  <Stack direction='row' spacing={2} justifyContent='flex-end' mt='5'>
+                    <Box className='skeletonLoading' w='85px' h='28px' rounded='lg'></Box>
+                    <Box className='skeletonLoading' w='85px' h='28px' rounded='lg'></Box>
+                  </Stack>
+                </Box>
+            )}
 
             {renderMyDraw()}
 
             <div className={styles.participantsPanel}>
-              <Box>
-                <Heading size='md' mb='5'>Organizers</Heading>
+              {!loading && event && participants && meParticipant ? (
+                <Box>
+                  <Heading size='md' mb='5'>Organizers</Heading>
 
-                <Stack direction='column' spacing={5}>
-                  {participants.filter(p => p.organizer).map((p, i) => (
-                    <ParticipantUser
-                      user={p.user}
-                      name={p.name}
-                      email={p.email}
-                      participates={p.participates}
-                      accepted={p.accepted}
-                      organizer={p.organizer}
-                      address={p.address}
-                      id={p.id}
-                      event={event}
-                      key={`participant#${i}`}
-                    />
-                  ))}
-                </Stack>
-              </Box>
+                  <Stack direction='column' spacing={5}>
+                    {participants.filter(p => p.organizer).map((p, i) => (
+                      <ParticipantUser
+                        user={p.user}
+                        name={p.name}
+                        email={p.email}
+                        participates={p.participates}
+                        accepted={p.accepted}
+                        organizer={p.organizer}
+                        address={p.address}
+                        id={p.id}
+                        event={event}
+                        key={`participant#${i}`}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              ) : <></>}
 
-              <Box>
-                <Heading size='md' mb='5'>Participants</Heading>
-                <Stack direction='column' spacing={5}>
-                  {participants.filter(p => p.participates).map((p, i) => (
-                    <ParticipantUser
-                      user={p.user}
-                      name={p.name}
-                      email={p.email}
-                      participates={p.participates}
-                      accepted={p.accepted}
-                      organizer={p.organizer}
-                      address={p.address}
-                      id={p.id}
-                      event={event}
-                      key={`participant#${i}`}
-                    />
-                  ))}
-                </Stack>
-              </Box>
+              {!loading && event && participants && meParticipant ? (
+                <Box>
+                  <Heading size='md' mb='5'>Participants</Heading>
+                  <Stack direction='column' spacing={5}>
+                    {participants.filter(p => p.participates).map((p, i) => (
+                      <ParticipantUser
+                        user={p.user}
+                        name={p.name}
+                        email={p.email}
+                        participates={p.participates}
+                        accepted={p.accepted}
+                        organizer={p.organizer}
+                        address={p.address}
+                        id={p.id}
+                        event={event}
+                        key={`participant#${i}`}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              ) : <></>}
             </div>
           </Container>
 
@@ -405,6 +316,7 @@ export default function Event(props: IEventProps) {
             >
               <MyWishlist
                 event={event}
+                  eventDetails={props.eventDetails}
                 accessToken={accessToken}
                 meParticipant={meParticipant}
               />

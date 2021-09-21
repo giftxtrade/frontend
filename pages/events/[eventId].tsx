@@ -1,5 +1,5 @@
 import { DocumentContext } from "next/document";
-import eventFetch, { fetchMyDraw } from "../../util/ss-event-fetch";
+import eventFetch from "../../util/ss-event-fetch";
 import Event, { IEventProps } from "../../components/Event";
 
 export default function EventIdPage(props: IEventProps) {
@@ -8,11 +8,7 @@ export default function EventIdPage(props: IEventProps) {
     user={props.user}
     gToken={props.gToken}
     loggedIn={props.loggedIn}
-    event={props.event}
-    participants={props.participants}
-    link={props.link}
-    meParticipant={props.meParticipant}
-    myDraw={props.myDraw}
+    eventDetails={props.eventDetails}
   />
 }
 
@@ -28,10 +24,7 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
     }
   }
 
-  if (notFound || !props?.event || !props?.accessToken) {
+  if (notFound || !props?.eventDetails || !props?.accessToken) {
     return { notFound: true }
   }
-
-  const myDraw = await fetchMyDraw(props.event.id, props.accessToken)
-  return { props: { ...props, myDraw } }
 };
