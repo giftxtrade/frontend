@@ -3,13 +3,7 @@ import eventFetch from "../../util/ss-event-fetch";
 import Event, { IEventProps } from "../../components/Event";
 
 export default function EventIdPage(props: IEventProps) {
-  return <Event
-    accessToken={props.accessToken}
-    user={props.user}
-    gToken={props.gToken}
-    loggedIn={props.loggedIn}
-    eventDetails={props.eventDetails}
-  />
+  return <></>;
 }
 
 export const getServerSideProps = async (ctx: DocumentContext) => {
