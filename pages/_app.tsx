@@ -9,15 +9,21 @@ import '../styles/main.css';
 import '../public/fonts/fonts.css';
 import Footer from '../components/Footer';
 import '../styles/main.css'
+import { useRouter } from "next/dist/client/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
-    const authFunc = async () => {
-      setLoggedIn(await authenticate())
+    if (!loggedIn) {
+      const authFunc = async () => {
+        setLoggedIn(await authenticate());
+      };
+      authFunc();
+      console.log("Fired!");
     }
-    authFunc()
-  })
+  });
 
   return (
     <>
@@ -28,7 +34,10 @@ function MyApp({ Component, pageProps }: AppProps) {
 
         <meta name="description" content={content.DESCRIPTION} />
 
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${content.GTAG}`} />
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${content.GTAG}`}
+        />
 
         <script
           dangerouslySetInnerHTML={{
@@ -49,6 +58,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
       <Footer />
     </>
-  )
+  );
 }
 export default MyApp
