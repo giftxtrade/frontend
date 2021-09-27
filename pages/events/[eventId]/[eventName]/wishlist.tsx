@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Flex, Container, Icon, Spinner } from "@chakra-ui/react";
 import Head from "next/head";
 import Navbar from "../../../../components/Navbar";
-import axios from "axios";
-import { api } from "../../../../util/api";
 import { useRouter } from "next/router";
 import { IEventFull } from "../../../../types/Event";
 import { AuthState } from "../../../../store/jwt-payload";
 import { authStore } from "../../../../store/auth-store";
 import { IParticipantUser } from "../../../../types/Participant";
-import { IDrawParticipant } from "../../../../types/Draw";
 import ErrorBlock from "../../../../components/ErrorBlock";
 import { BsExclamationCircle } from "react-icons/bs";
 import Wishlist from "../../../../components/Wishlist/Wishlist";
+import { fetchEvent } from "../[eventName]";
 
 export default function WishlistPage() {
   const [loading, setLoading] = useState(true); // Loading state for the event page
@@ -27,37 +25,16 @@ export default function WishlistPage() {
   const { eventId } = router.query;
 
   useEffect(() => {
-    setError(false);
-    authStore.subscribe(() => setAuthState(authStore.getState()));
-
-    if (!authState.loggedIn || !eventId) return;
-
-    axios
-      .get(`${api.events}/${eventId}`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
-      })
-      .then(({ data }: { data: IEventFull }) => {
-        setEvent(data);
-        setMeParticipant(
-          data.participants.find((p) => p.email === authState.user.email)
-        );
-
-        axios
-          .get(`${api.draws}/me/${data.id}`, {
-            headers: { Authorization: "Bearer " + authState.accessToken },
-          })
-          .then(({ data }: { data: IDrawParticipant }) => {
-            setLoading(false);
-            setMyDraw(data.drawee);
-          })
-          .catch((_) => {
-            setLoading(false);
-          });
-      })
-      .catch((_) => {
-        setLoading(false);
-        setError(true);
-      });
+    fetchEvent(
+      eventId,
+      authState,
+      setAuthState,
+      setEvent,
+      setMeParticipant,
+      setError,
+      setLoading,
+      () => setLoading(false)
+    );
   }, [authState]);
 
   const renderWishlistBlock = () => {

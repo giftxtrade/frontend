@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Navbar from "../../../components/Navbar";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { authStore } from "../../../store/auth-store";
 import { IEventFull } from "../../../types/Event";
 import { useRouter } from "next/router";
@@ -30,23 +30,17 @@ export default function EventPage() {
   const { eventId } = router.query;
 
   useEffect(() => {
-    setError(false);
-    authStore.subscribe(() => setAuthState(authStore.getState()));
-
-    if (!authState.loggedIn || !eventId) return;
-
-    axios
-      .get(`${api.events}/${eventId}`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
-      })
-      .then(({ data }: { data: IEventFull }) => {
-        setEvent(data);
-        setMeParticipant(
-          data.participants.find((p) => p.email === authState.user.email)
-        );
-
+    fetchEvent(
+      eventId,
+      authState,
+      setAuthState,
+      setEvent,
+      setMeParticipant,
+      setError,
+      setLoading,
+      () => {
         axios
-          .get(`${api.draws}/me/${data.id}`, {
+          .get(`${api.draws}/me/${eventId}`, {
             headers: { Authorization: "Bearer " + authState.accessToken },
           })
           .then(({ data }: { data: IDrawParticipant }) => {
@@ -56,11 +50,8 @@ export default function EventPage() {
           .catch((_) => {
             setLoading(false);
           });
-      })
-      .catch((_) => {
-        setLoading(false);
-        setError(true);
-      });
+      }
+    );
   }, [authState]);
 
   const renderEventBlock = () => {
