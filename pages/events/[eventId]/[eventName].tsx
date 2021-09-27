@@ -122,3 +122,36 @@ export default function EventPage() {
     </>
   );
 }
+
+export function fetchEvent(
+  eventId: number | string | string[] | undefined,
+  authState: AuthState,
+  setAuthState: Dispatch<SetStateAction<AuthState>>,
+  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>,
+  setMeParticipant: Dispatch<SetStateAction<IParticipantUser | undefined>>,
+  setError: Dispatch<SetStateAction<boolean>>,
+  setLoading: Dispatch<SetStateAction<boolean>>,
+  callback: () => any
+) {
+  setError(false);
+  authStore.subscribe(() => setAuthState(authStore.getState()));
+
+  if (!authState.loggedIn || !eventId) return;
+
+  axios
+    .get(`${api.events}/${eventId}`, {
+      headers: { Authorization: "Bearer " + authState.accessToken },
+    })
+    .then(({ data }: { data: IEventFull }) => {
+      setEvent(data);
+      setMeParticipant(
+        data.participants.find((p) => p.email === authState.user.email)
+      );
+
+      if (callback) callback();
+    })
+    .catch((_) => {
+      setLoading(false);
+      setError(true);
+    });
+}
