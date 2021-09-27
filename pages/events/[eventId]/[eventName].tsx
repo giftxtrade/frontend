@@ -15,6 +15,7 @@ import EventContainer from "../../../components/Event/EventContainer";
 import EventLoading from "../../../components/Event/EventLoading";
 import { IParticipantUser } from "../../../types/Participant";
 import { IDrawParticipant } from "../../../types/Draw";
+import EventSidebar from "../../../components/Event/EventSidebar";
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true); // Loading state for the event page
@@ -26,7 +27,7 @@ export default function EventPage() {
   const [myDraw, setMyDraw] = useState<IParticipantUser>();
 
   const router = useRouter();
-  const { eventId, eventName } = router.query;
+  const { eventId } = router.query;
 
   useEffect(() => {
     setError(false);
@@ -78,7 +79,13 @@ export default function EventPage() {
               setMyDraw={setMyDraw}
             />
           }
-          sidebar={<></>}
+          sidebar={
+            <EventSidebar
+              event={event}
+              meParticipant={meParticipant}
+              authState={authState}
+            />
+          }
         />
       );
     } else if (error) {

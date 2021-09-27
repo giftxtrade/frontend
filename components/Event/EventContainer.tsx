@@ -17,13 +17,9 @@ export default function EventContainer({
         {primary}
       </Container>
 
-      {isMediumScreen ? (
-        <></>
-      ) : (
-        <Container flex="1" pl="2" pr="0">
-          {sidebar}
-        </Container>
-      )}
+      <Container flex="1" pl="2" pr="0">
+        {sidebar}
+      </Container>
     </Flex>
   );
 }
