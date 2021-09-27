@@ -8,7 +8,7 @@ import {
 
 export interface IErrorBlockProps {
   message: string;
-  icon: ComponentWithAs<"svg", IconProps>;
+  icon: JSX.Element;
 }
 
 export default function ErrorBlock({ message, icon }: IErrorBlockProps) {
