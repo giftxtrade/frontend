@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   ModalContent,
   ModalHeader,
@@ -9,7 +9,6 @@ import {
   Button,
   Flex,
   Stack,
-  Spinner,
   Heading,
   Box,
   FormControl,
@@ -36,170 +35,205 @@ import {
   PopoverCloseButton,
   ButtonGroup,
   useDisclosure,
-} from '@chakra-ui/react'
-import axios from 'axios';
-import { IEvent, IEventFull } from '../types/Event';
-import { api } from '../util/api';
-import { IDraw } from '../types/Draw';
-import { unstable_batchedUpdates } from 'react-dom';
-import ParticipantUser from './ParticipantUser';
-import { User } from '../store/jwt-payload';
-import { IParticipantUser, IParticipant } from '../types/Participant';
-import { useRouter } from 'next/router';
-import { ManageParticipant } from './ManageParticipant';
-import { eventNameSlug } from '../util/links';
+} from "@chakra-ui/react";
+import axios from "axios";
+import { IEvent, IEventFull } from "../types/Event";
+import { api } from "../util/api";
+import { unstable_batchedUpdates } from "react-dom";
+import { IParticipantUser, IParticipant } from "../types/Participant";
+import { useRouter } from "next/router";
+import { ManageParticipant } from "./ManageParticipant";
+import { eventNameSlug } from "../util/links";
 
 export interface ISettingsProps {
-  setSettingsModal: Dispatch<SetStateAction<boolean>>
-  onClose: () => void
-  accessToken: string
-  event: IEventFull
-  participants: IParticipantUser[]
-  meParticipant: IParticipantUser
-  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>
-  setParticipants: Dispatch<SetStateAction<IParticipantUser[] | undefined>>
-  myDraw: IParticipantUser | undefined
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
+  setSettingsModal: Dispatch<SetStateAction<boolean>>;
+  onClose: () => void;
+  accessToken: string;
+  event: IEventFull;
+  meParticipant: IParticipantUser;
+  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
+  myDraw: IParticipantUser | undefined;
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>;
 }
 
-export default function Settings({ setSettingsModal, onClose, accessToken, event, participants, meParticipant, setEvent, setParticipants, myDraw, setMyDraw }: ISettingsProps) {
-  const [invalidTitle, setInvalidTitle] = useState(eventNameSlug(event.name) === '' ? true : false)
-  const [loading, setLoading] = useState(true)
-  const [name, setName] = useState(event.name)
-  const [description, setDescription] = useState(event.description)
-  const [budget, setBudget] = useState(event.budget)
-  const [drawDate, setDrawDate] = useState(new Date(event.drawAt).toISOString().substr(0, 10))
+export default function Settings({
+  setSettingsModal,
+  onClose,
+  accessToken,
+  event,
+  meParticipant,
+  setEvent,
+  myDraw,
+  setMyDraw,
+}: ISettingsProps) {
+  const [invalidTitle, setInvalidTitle] = useState(
+    eventNameSlug(event.name) === "" ? true : false
+  );
+  const [loading, setLoading] = useState(true);
+  const [name, setName] = useState(event.name);
+  const [description, setDescription] = useState(event.description);
+  const [budget, setBudget] = useState(event.budget);
+  const [drawDate, setDrawDate] = useState(
+    new Date(event.drawAt).toISOString().substr(0, 10)
+  );
   const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [errorUpdate, setErrorUpdate] = useState(false)
-  const [loadingDelete, setLoadingDelete] = useState(false)
-  const toast = useToast()
+  const [errorUpdate, setErrorUpdate] = useState(false);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+  const toast = useToast();
 
-  const popover = useDisclosure()
+  const popover = useDisclosure();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const updateEvent = (e: any) => {
-    setLoadingUpdate(true)
-    axios.patch(`${api.events}/${event.id}`, { name, description, budget, drawAt: new Date(drawDate) }, {
-      headers: { "Authorization": "Bearer " + accessToken }
-    })
+    setLoadingUpdate(true);
+    axios
+      .patch(
+        `${api.events}/${event.id}`,
+        { name, description, budget, drawAt: new Date(drawDate) },
+        {
+          headers: { Authorization: "Bearer " + accessToken },
+        }
+      )
       .then(({ data }: { data: IEventFull }) => {
         toast({
           title: "Event updated!",
           status: "success",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
-        onClose()
+          variant: "subtle",
+        });
+        onClose();
         unstable_batchedUpdates(() => {
-          setLoadingUpdate(false)
-          setEvent(data)
-        })
+          setLoadingUpdate(false);
+          setEvent(data);
+        });
       })
-      .catch(err => {
-        setLoadingUpdate(false)
-      })
+      .catch((err) => {
+        setLoadingUpdate(false);
+      });
     e.preventDefault();
-  }
+  };
 
   const deleteEvent = () => {
-    setLoadingDelete(true)
-    axios.delete(`${api.events}/${event.id}`, {
-      headers: { "Authorization": "Bearer " + accessToken }
-    })
+    setLoadingDelete(true);
+    axios
+      .delete(`${api.events}/${event.id}`, {
+        headers: { Authorization: "Bearer " + accessToken },
+      })
       .then(({ data }: { data: IEvent }) => {
-        setLoadingDelete(false)
+        setLoadingDelete(false);
         toast({
           title: "Event deleted!",
           status: "info",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
-        onClose()
-        router.push('/home')
+          variant: "subtle",
+        });
+        onClose();
+        router.push("/home");
       })
-      .catch(err => {
-        setLoadingDelete(false)
-      })
-  }
+      .catch((err) => {
+        setLoadingDelete(false);
+      });
+  };
 
   const removeParticipant = (i: number, participant: IParticipantUser) => {
-    setParticipants(participants.filter(p => p.id !== participant.id))
-    if (myDraw?.id === participant.id)
-      setMyDraw(undefined)
+    const newEvent = { ...event };
+    newEvent.participants = event.participants.filter(
+      (p) => p.id !== participant.id
+    );
+    setEvent(newEvent);
 
-    axios.delete(
-      `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
-      { headers: { "Authorization": "Bearer " + accessToken } }
-    )
-      .then(data => {
+    if (myDraw?.id === participant.id) setMyDraw(undefined);
+
+    axios
+      .delete(
+        `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+        { headers: { Authorization: "Bearer " + accessToken } }
+      )
+      .then((data) => {
         toast({
           title: "Participant removed successully!",
           status: "success",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
+          variant: "subtle",
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         toast({
           title: "Could not remove participant",
-          description: 'Something went wrong while trying to delete the participant. Please reload and try again.',
-          status: 'error',
+          description:
+            "Something went wrong while trying to delete the participant. Please reload and try again.",
+          status: "error",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
-      })
-  }
+          variant: "subtle",
+        });
+      });
+  };
 
-  const updateOrganizerStatus = (i: number, participant: IParticipantUser, status: boolean) => {
-    const newParticipant = participant
-    newParticipant.organizer = status
-    const updatedParticipants = participants.filter(p => p.id !== participant.id)
-    setParticipants([
+  const updateOrganizerStatus = (
+    i: number,
+    participant: IParticipantUser,
+    status: boolean
+  ) => {
+    const newParticipant = participant;
+    newParticipant.organizer = status;
+    const updatedParticipants = event.participants.filter(
+      (p) => p.id !== participant.id
+    );
+
+    const newEvent = { ...event };
+    newEvent.participants = [
       ...updatedParticipants.slice(0, i),
       newParticipant,
-      ...updatedParticipants.slice(i)
-    ])
+      ...updatedParticipants.slice(i),
+    ];
+    setEvent(newEvent);
 
-    axios.patch(
-      `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
-      { organizer: status },
-      { headers: { "Authorization": "Bearer " + accessToken } }
-    )
-      .then(data => {
+    axios
+      .patch(
+        `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+        { organizer: status },
+        { headers: { Authorization: "Bearer " + accessToken } }
+      )
+      .then((data) => {
         toast({
-          title: status ? `${participant.name} is now an organizer!` : `${participant.name} is no longer an organizer`,
+          title: status
+            ? `${participant.name} is now an organizer!`
+            : `${participant.name} is no longer an organizer`,
           status: "success",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
+          variant: "subtle",
+        });
       })
-      .catch(err => {
+      .catch((err) => {
         toast({
           title: "Could not update participant",
-          description: 'Something went wrong while trying to update the participant. Please reload and try again.',
-          status: 'error',
+          description:
+            "Something went wrong while trying to update the participant. Please reload and try again.",
+          status: "error",
           duration: 2000,
           isClosable: true,
-          variant: 'subtle'
-        })
-      })
-  }
+          variant: "subtle",
+        });
+      });
+  };
 
   return (
     <ModalContent>
       <ModalHeader>Settings</ModalHeader>
-      <ModalCloseButton onClick={() => {
-        setSettingsModal(false)
-        onClose()
-      }} />
+      <ModalCloseButton
+        onClick={() => {
+          setSettingsModal(false);
+          onClose();
+        }}
+      />
 
-      <ModalBody pl='0' pr='0'>
+      <ModalBody pl="0" pr="0">
         <Tabs>
           <TabList>
             <Tab>Details</Tab>
@@ -208,31 +242,36 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
 
           <TabPanels>
             <TabPanel>
-              <Stack spacing='5'>
+              <Stack spacing="5">
                 <FormControl id="name">
                   <FormLabel>Event Name</FormLabel>
                   <Input
-                    placeholder='Ex. Eid 2021 Gift Exchange'
-                    type='text'
-                    name='name'
+                    placeholder="Ex. Eid 2021 Gift Exchange"
+                    type="text"
+                    name="name"
                     value={name}
                     onChange={(e: any) => {
-                      const val = e.target.value
-                      setName(val)
+                      const val = e.target.value;
+                      setName(val);
 
-                      if (eventNameSlug(val) === '') {
-                        setInvalidTitle(true)
+                      if (eventNameSlug(val) === "") {
+                        setInvalidTitle(true);
                       } else {
-                        setInvalidTitle(false)
+                        setInvalidTitle(false);
                       }
                     }}
                     isInvalid={invalidTitle}
-                    focusBorderColor={invalidTitle ? 'red' : 'blue.500'}
+                    focusBorderColor={invalidTitle ? "red" : "blue.500"}
                   />
                   {invalidTitle ? (
-                    <FormHelperText color='red'>Invalid title. Make sure your title isn't just symbols</FormHelperText>
+                    <FormHelperText color="red">
+                      Invalid title. Make sure your title isn't just symbols
+                    </FormHelperText>
                   ) : (
-                    <FormHelperText>This will help you and the participants to identify an event</FormHelperText>
+                    <FormHelperText>
+                      This will help you and the participants to identify an
+                      event
+                    </FormHelperText>
                   )}
                 </FormControl>
 
@@ -240,7 +279,7 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                   <FormLabel>Description</FormLabel>
                   <Textarea
                     placeholder="Describe your event"
-                    name='description'
+                    name="description"
                     value={description}
                     onChange={(e: any) => setDescription(e.target.value)}
                   />
@@ -258,10 +297,12 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                       />
                       <Input
                         placeholder="Enter amount"
-                        type='number'
+                        type="number"
                         value={budget}
-                        name='budget'
-                        onChange={(e: any) => setBudget(parseFloat(e.target.value))}
+                        name="budget"
+                        onChange={(e: any) =>
+                          setBudget(parseFloat(e.target.value))
+                        }
                       />
                     </InputGroup>
                   </FormControl>
@@ -270,9 +311,9 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     <FormLabel>Draw Date</FormLabel>
                     <Input
                       placeholder="Date"
-                      type='date'
+                      type="date"
                       value={drawDate}
-                      name='drawDate'
+                      name="drawDate"
                       onChange={(e: any) => setDrawDate(e.target.value)}
                     />
                   </FormControl>
@@ -280,9 +321,9 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
               </Stack>
 
               <Box>
-                <Flex mt='8' justifyContent='flex-end'>
+                <Flex mt="8" justifyContent="flex-end">
                   <Button
-                    type='submit'
+                    type="submit"
                     colorScheme="blue"
                     onClick={updateEvent}
                     isLoading={loadingUpdate}
@@ -293,13 +334,20 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                 </Flex>
               </Box>
 
-              <Divider mt='7' mb='10' />
+              <Divider mt="7" mb="10" />
 
               <Box>
-                <Stack direction='row' justifyContent='space-between' spacing='2'>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  spacing="2"
+                >
                   <Box>
-                    <Heading size='sm'>Delete this event</Heading>
-                    <Text fontSize='.8em'>Once you delete an event, there is no going back. Please be certain. </Text>
+                    <Heading size="sm">Delete this event</Heading>
+                    <Text fontSize=".8em">
+                      Once you delete an event, there is no going back. Please
+                      be certain.{" "}
+                    </Text>
                   </Box>
 
                   <Popover
@@ -310,9 +358,10 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                   >
                     <PopoverTrigger>
                       <Button
-                        colorScheme='red'
-                        size='sm'
-                        pl='5' pr='5'
+                        colorScheme="red"
+                        size="sm"
+                        pl="5"
+                        pr="5"
                         isLoading={loadingDelete}
                       >
                         Delete Event
@@ -323,10 +372,15 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                       <PopoverArrow />
                       <PopoverCloseButton />
                       <PopoverHeader>Confirmation</PopoverHeader>
-                      <PopoverBody>Are you sure you want to <i>permanently delete</i> this event?</PopoverBody>
+                      <PopoverBody>
+                        Are you sure you want to <i>permanently delete</i> this
+                        event?
+                      </PopoverBody>
                       <PopoverFooter d="flex" justifyContent="flex-end">
                         <ButtonGroup size="sm">
-                          <Button variant="outline" onClick={popover.onClose}>Cancel</Button>
+                          <Button variant="outline" onClick={popover.onClose}>
+                            Cancel
+                          </Button>
 
                           <Button
                             colorScheme="red"
@@ -343,13 +397,12 @@ export default function Settings({ setSettingsModal, onClose, accessToken, event
                     </PopoverContent>
                   </Popover>
                 </Stack>
-
               </Box>
             </TabPanel>
 
             <TabPanel>
-              <Stack direction='column' spacing='10'>
-                {participants.map((p, i) => (
+              <Stack direction="column" spacing="10">
+                {event.participants.map((p, i) => (
                   <ManageParticipant
                     id={i + 1}
                     p={p}

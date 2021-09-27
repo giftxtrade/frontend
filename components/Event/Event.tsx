@@ -30,7 +30,7 @@ import { ILink } from "../../types/Link";
 import { unstable_batchedUpdates } from "react-dom";
 import ParticipantUser from "../ParticipantUser";
 import styles from "../../styles/eventId.module.css";
-import { IDrawParticipant } from "../../types/Draw";
+import EventOptionsModal from "./EventOptionsModal";
 
 export interface IEventProps {
   event: IEventFull;
@@ -38,6 +38,7 @@ export interface IEventProps {
   meParticipant: IParticipantUser;
   setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
   myDraw: IParticipantUser | undefined;
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>;
 }
 
 export default function Event({
@@ -46,6 +47,7 @@ export default function Event({
   meParticipant,
   setEvent,
   myDraw,
+  setMyDraw,
 }: IEventProps) {
   const [showDraw, setShowDraw] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
@@ -91,32 +93,6 @@ export default function Event({
           setLinkLoading(false);
         });
       });
-  };
-
-  const renderMyDraw = () => {
-    if (myDraw) {
-      return (
-        <Box mt="10">
-          <Heading size="md" mb="5">
-            My Draw
-          </Heading>
-          <Box maxW="72">
-            <ParticipantUser
-              user={myDraw.user}
-              name={myDraw.name}
-              email={myDraw.email}
-              participates={myDraw.participates}
-              accepted={myDraw.accepted}
-              organizer={myDraw.organizer}
-              address={myDraw.address}
-              id={myDraw.id}
-              event={event}
-            />
-          </Box>
-        </Box>
-      );
-    }
-    return <></>;
   };
 
   return (
@@ -267,7 +243,28 @@ export default function Event({
         </Box>
       </Box>
 
-      {renderMyDraw()}
+      {myDraw ? (
+        <Box mt="10">
+          <Heading size="md" mb="5">
+            My Draw
+          </Heading>
+          <Box maxW="72">
+            <ParticipantUser
+              user={myDraw.user}
+              name={myDraw.name}
+              email={myDraw.email}
+              participates={myDraw.participates}
+              accepted={myDraw.accepted}
+              organizer={myDraw.organizer}
+              address={myDraw.address}
+              id={myDraw.id}
+              event={event}
+            />
+          </Box>
+        </Box>
+      ) : (
+        <></>
+      )}
 
       <div className={styles.participantsPanel}>
         <Box>
@@ -319,6 +316,27 @@ export default function Event({
           </Stack>
         </Box>
       </div>
+
+      <EventOptionsModal
+        event={event}
+        setEvent={setEvent}
+        meParticipant={meParticipant}
+        authState={authState}
+        myDraw={myDraw}
+        setMyDraw={setMyDraw}
+        linkModal={linkModal}
+        linkLoading={false}
+        linkError={false}
+        setLinkModal={setLinkModal}
+        onClose={onClose}
+        showDraw={showDraw}
+        setShowDraw={setShowDraw}
+        settingsModal={settingsModal}
+        setSettingsModal={setSettingsModal}
+        leaveGroupModal={leaveGroupModal}
+        setLeaveGroupModal={setLeaveGroupModal}
+        isOpen={isOpen}
+      />
     </>
   );
 }

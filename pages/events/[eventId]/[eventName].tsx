@@ -75,6 +75,7 @@ export default function EventPage() {
               meParticipant={meParticipant}
               setEvent={setEvent}
               myDraw={myDraw}
+              setMyDraw={setMyDraw}
             />
           }
           sidebar={<></>}
