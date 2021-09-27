@@ -16,13 +16,13 @@ import {
   useToast
 } from '@chakra-ui/react'
 import axios from 'axios';
-import { IEvent } from '../types/Event';
-import { api } from '../util/api';
-import { IDraw, IDrawParticipant } from '../types/Draw';
-import { unstable_batchedUpdates } from 'react-dom';
-import ParticipantUser from './ParticipantUser';
-import { User } from '../store/jwt-payload';
-import { IParticipant, IParticipantUser } from '../types/Participant';
+import { IEvent } from "../../types/Event";
+import { api } from "../../util/api";
+import { IDraw, IDrawParticipant } from "../../types/Draw";
+import { unstable_batchedUpdates } from "react-dom";
+import ParticipantUser from "./../ParticipantUser";
+import { User } from "../../store/jwt-payload";
+import { IParticipant, IParticipantUser } from "../../types/Participant";
 
 export interface IDrawsProps {
   setShowDraw: Dispatch<SetStateAction<boolean>>

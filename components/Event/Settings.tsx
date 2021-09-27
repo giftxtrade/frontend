@@ -37,13 +37,13 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { IEvent, IEventFull } from "../types/Event";
-import { api } from "../util/api";
+import { IEvent, IEventFull } from "../../types/Event";
+import { api } from "../../util/api";
 import { unstable_batchedUpdates } from "react-dom";
-import { IParticipantUser, IParticipant } from "../types/Participant";
+import { IParticipantUser, IParticipant } from "../../types/Participant";
 import { useRouter } from "next/router";
-import { ManageParticipant } from "./ManageParticipant";
-import { eventNameSlug } from "../util/links";
+import { ManageParticipant } from "../ManageParticipant";
+import { eventNameSlug } from "../../util/links";
 
 export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>;

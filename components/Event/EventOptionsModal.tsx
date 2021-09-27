@@ -1,8 +1,8 @@
 import { IEventFull } from "../../types/Event";
 import { IParticipantUser } from "../../types/Participant";
-import GetLinkEvent from "../GetLinkEvent";
-import Draws from "../Draws";
-import Settings from "../Settings";
+import GetLinkEvent from "./GetLinkEvent";
+import Draws from "./Draws";
+import Settings from "./Settings";
 import LeaveGroup from "../LeaveGroup";
 import { AuthState } from "../../store/jwt-payload";
 import React, { Dispatch, SetStateAction } from "react";
