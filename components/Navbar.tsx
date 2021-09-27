@@ -14,9 +14,9 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarP
   const [isSmallScreen] = useMediaQuery('(max-width: 370px)')
 
   return (
-    <Container maxW='4xl' p='5' mb='10'>
-      <Flex direction='row' justifyContent='space-between' alignItems='center'>
-        <NextLink href='/home' passHref>
+    <Container maxW="4xl" p="5" mb="10">
+      <Flex direction="row" justifyContent="space-between" alignItems="center">
+        <NextLink href="/home" passHref>
           <Link>
             <span className={styles.logo}></span>
           </Link>
@@ -25,24 +25,35 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarP
         <Flex
           direction="row"
           alignItems="center"
-          justifyContent='start'
-          cursor='pointer'
-          ml='2'
+          justifyContent="start"
+          cursor="pointer"
+          ml="2"
           onClick={() => {
-            router.push('/logout')
+            router.push("/logout");
           }}
         >
-          <Image src={changeProfileSize(user.imageUrl, 50)} w='35px' mr='2' rounded='md' />
+          <Image
+            src={
+              user?.imageUrl
+                ? changeProfileSize(user.imageUrl, 50)
+                : "default.jpg"
+            }
+            w="35px"
+            mr="2"
+            rounded="md"
+          />
           <Box>
-            <Heading size='xs'>{user.name}</Heading>
+            <Heading size="xs">{user?.name}</Heading>
             {isSmallScreen ? (
               <></>
             ) : (
-                <Text fontSize='10' color='gray.600'>{user.email}</Text>
+              <Text fontSize="10" color="gray.600">
+                {user?.email}
+              </Text>
             )}
           </Box>
         </Flex>
       </Flex>
     </Container>
-  )
+  );
 }
