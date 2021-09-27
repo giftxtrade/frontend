@@ -1,284 +1,115 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Flex,
-  Heading,
-  Text,
-  Box,
-  Container,
-  useDisclosure,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalOverlay,
-  ModalCloseButton,
-  ModalHeader
-} from '@chakra-ui/react';
-import Head from 'next/head';
-import Navbar from '../../../../components/Navbar';
-import { DocumentContext } from "next/document";
-import Search from "../../../../components/Search";
-import eventFetch from "../../../../util/ss-event-fetch";
-import { useMediaQuery } from '@chakra-ui/react';
-import { WishlistLoadingItem } from '../../../../components/WishlistItem';
-import { IWish } from '../../../../types/Wish';
-import axios from 'axios';
-import { api } from '../../../../util/api';
-import { unstable_batchedUpdates } from 'react-dom';
-import { IProduct } from '../../../../types/Product';
-import PendingInvite from '../../../../components/PendingInvite';
-import WishlistItemSelect from '../../../../components/WishlistItemSelect';
-import WishlistTotal from '../../../../components/WishlistTotal';
-import styles from '../../../../styles/ParticipantWishlist.module.css'
-import { IEventProps } from '../../../../components/Event';
-import WishlistNav from '../../../../components/WishlistNav';
+import { Flex, Container, Icon, Spinner } from "@chakra-ui/react";
+import Head from "next/head";
+import Navbar from "../../../../components/Navbar";
+import axios from "axios";
+import { api } from "../../../../util/api";
+import { useRouter } from "next/router";
+import { IEventFull } from "../../../../types/Event";
+import { AuthState } from "../../../../store/jwt-payload";
+import { authStore } from "../../../../store/auth-store";
+import { IParticipantUser } from "../../../../types/Participant";
+import { IDrawParticipant } from "../../../../types/Draw";
+import ErrorBlock from "../../../../components/ErrorBlock";
+import { BsExclamationCircle } from "react-icons/bs";
+import Wishlist from "../../../../components/Wishlist/Wishlist";
 
-export default function Wishlist(props: IEventProps) {
-  const [loggedIn, setLoggedIn] = useState(props.loggedIn)
-  const [accessToken, setAccessToken] = useState(props.accessToken)
-  const [gToken, setGToken] = useState(props.gToken)
-  const [user, setUser] = useState(props.user)
-  const [event, setEvent] = useState(props.eventDetails)
-  const [meParticipant, setMeParticipant] = useState(props.meParticipant)
-  const [loadingWishes, setLoadingWishes] = useState(true)
-  const [wishes, setWishes] = useState(Array<IWish>())
-  const [wishProductIds, setWishProductIds] = useState(new Set<number>())
-  const [showWishlist, setShowWishlist] = useState(false)
-  const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>())
+export default function WishlistPage() {
+  const [loading, setLoading] = useState(true); // Loading state for the event page
+  const [error, setError] = useState(false);
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
+  const [event, setEvent] = useState<IEventFull>();
+  const [meParticipant, setMeParticipant] = useState<IParticipantUser>();
+  const [myDraw, setMyDraw] = useState<IParticipantUser>();
+
+  const router = useRouter();
+  const { eventId } = router.query;
 
   useEffect(() => {
-    axios.get(`${api.wishes}/${event.id}`, {
-      headers: { "Authorization": "Bearer " + accessToken }
-    })
-      .then(({ data }: { data: IWish[] }) => {
-        const productIdSet = new Set<number>()
-        data.forEach(({ product }) => productIdSet.add(product.id))
+    setError(false);
+    authStore.subscribe(() => setAuthState(authStore.getState()));
 
-        unstable_batchedUpdates(() => {
-          setWishes(data)
-          setLoadingWishes(false)
-          setWishProductIds(productIdSet)
-          setSelectedProducts(data.map<IProduct>(w => w.product))
-        })
-      })
-      .catch(err => {
-        setLoadingWishes(false)
-      })
-  }, [])
+    if (!authState.loggedIn || !eventId) return;
 
-  const addWish = (product: IProduct) => {
-    setWishProductIds(wishProductIds.add(product.id))
-    axios.post(api.wishes,
-      {
-        eventId: event.id,
-        productId: product.id,
-        participantId: meParticipant.id
-      },
-      {
-        headers: { "Authorization": "Bearer " + accessToken }
+    axios
+      .get(`${api.events}/${eventId}`, {
+        headers: { Authorization: "Bearer " + authState.accessToken },
       })
-      .then(({ data }: { data: IWish }) => {
-        setWishes([data, ...wishes])
-        setSelectedProducts([...selectedProducts, data.product])
-      })
-      .catch(_ => console.log("Could not add wish"))
-  }
+      .then(({ data }: { data: IEventFull }) => {
+        setEvent(data);
+        setMeParticipant(
+          data.participants.find((p) => p.email === authState.user.email)
+        );
 
-  const removeWish = (product: IProduct) => {
-    wishProductIds.delete(product.id)
-    setWishProductIds(wishProductIds)
-    setWishes(wishes.filter(w => w.product.id !== product.id))
-    axios.delete(api.wishes, {
-      headers: { "Authorization": "Bearer " + accessToken },
-      data: {
-        eventId: event.id,
-        productId: product.id,
-        participantId: meParticipant.id
-      }
-    })
-      .then(({ data }) => {
-        setSelectedProducts(selectedProducts.filter(p => p.id !== product.id))
+        axios
+          .get(`${api.draws}/me/${data.id}`, {
+            headers: { Authorization: "Bearer " + authState.accessToken },
+          })
+          .then(({ data }: { data: IDrawParticipant }) => {
+            setLoading(false);
+            setMyDraw(data.drawee);
+          })
+          .catch((_) => {
+            setLoading(false);
+          });
       })
-      .catch(_ => { })
-  }
+      .catch((_) => {
+        setLoading(false);
+        setError(true);
+      });
+  }, [authState]);
 
-  // Media queries
-  const [isMediumScreen] = useMediaQuery('(max-width: 900px)')
+  const renderWishlistBlock = () => {
+    if (loading) {
+      return (
+        <Flex
+          direction="column"
+          maxW="full"
+          alignItems="center"
+          justifyContent="center"
+          p="10"
+        >
+          <Spinner size="xl" />
+        </Flex>
+      );
+    } else if (event && meParticipant) {
+      return (
+        <Wishlist
+          event={event}
+          meParticipant={meParticipant}
+          authStore={authState}
+        />
+      );
+    } else if (error) {
+      return (
+        <ErrorBlock
+          message="Event could not be found"
+          icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
+        />
+      );
+    }
+  };
 
   return (
     <>
       <Head>
-        <title>My Wishlist | {event.name} - GiftTrade</title>
+        <title>
+          {event ? `My Wishlist for ${event.name} - GiftTrade` : "GiftTrade"}
+        </title>
       </Head>
 
       <Navbar
-        loggedIn={loggedIn}
-        accessToken={accessToken}
-        user={user}
-        gToken={gToken}
+        loggedIn={authState.loggedIn}
+        accessToken={authState.accessToken}
+        user={authState.user}
+        gToken={authState.gToken}
       />
 
-      <Container maxW='4xl' mb='20'>
-        <Flex direction='row'>
-          <Container
-            flex='2'
-            pl='0'
-          >
-            {!meParticipant.accepted ? (
-              <Box mb='5'>
-                <PendingInvite
-                  event={event}
-                  accessToken={accessToken}
-                />
-              </Box>
-            ) : <></>}
-
-            <Search
-              accessToken={accessToken}
-              minPrice={1}
-              maxPrice={event.budget}
-              pageLimit={50}
-              event={event}
-
-              addWish={addWish}
-              removeWish={removeWish}
-              productSet={wishProductIds}
-            />
-          </Container>
-
-          {isMediumScreen ? (
-            <></>
-          ) : (
-            <Container
-              flex='1'
-              pl='2'
-              pr='0'
-            >
-              <Box position='sticky' top='2'>
-                <Box
-                  pt='3' pb='3' pl='4' pr='4'
-                  bg='white'
-                  className={styles.cartReveal}
-                >
-                  <Heading size='md' mb='3' color='gray.700'>
-                    My Wishlist
-                  </Heading>
-
-                  <WishlistTotal
-                    selectedProducts={selectedProducts}
-                    showAddToCart={false}
-                  />
-                </Box>
-
-                <Box h='90vh' pt='4' pb='7' overflowY='auto' overflowX='hidden'>
-                  {
-                    loadingWishes ? [1, 2].map((p, i) => (
-                      <Box mb='5' key={`loading#${i}`}>
-                        <WishlistLoadingItem />
-                      </Box>
-                    )) : (
-                      wishes.length === 0 ? (
-                        <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
-                      ) : (
-                        wishes.map(({ product }, i) => (
-                          <Box mb='5' key={`wishItem#${i}`}>
-                            <WishlistItemSelect
-                              product={product}
-                              selectedProducts={selectedProducts}
-                              setSelectedProducts={setSelectedProducts}
-                              removeWish={(pr: IProduct) => {
-                                setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
-                                removeWish(pr)
-                              }}
-                            />
-                          </Box>
-                        ))
-                      )
-                    )
-                  }
-                </Box>
-              </Box>
-            </Container>
-          )}
-        </Flex>
+      <Container maxW="4xl" mb="20">
+        {renderWishlistBlock()}
+        {/* <Flex direction="row"></Flex> */}
       </Container>
-
-      {isMediumScreen ? (
-        <Modal
-          isOpen={isOpen}
-          onClose={onClose}
-          size={'md'}
-          scrollBehavior='inside'
-        >
-          <ModalOverlay />
-
-          <ModalContent>
-            <ModalHeader>My Wishlist</ModalHeader>
-            <ModalCloseButton />
-
-            <Box pl='6' pr='6' mb='3'>
-              <WishlistTotal
-                selectedProducts={selectedProducts}
-                showAddToCart={false}
-              />
-            </Box>
-
-            <ModalBody>
-              {
-                loadingWishes ? [1, 2].map((p, i) => (
-                  <Box mb='5' key={`loading#${i}`}>
-                    <WishlistLoadingItem />
-                  </Box>
-                )) : (
-                  wishes.length === 0 ? (
-                    <Text textAlign='center' color='gray.400'>Your wishlist is empty</Text>
-                  ) : (
-                    wishes.map(({ product }, i) => (
-                      <Box mb='5' key={`wishItemMd#${i}`}>
-                        <WishlistItemSelect
-                          product={product}
-                          selectedProducts={selectedProducts}
-                          setSelectedProducts={setSelectedProducts}
-                          removeWish={(pr: IProduct) => {
-                            setSelectedProducts(selectedProducts.filter(p => p.id !== pr.id))
-                            removeWish(pr)
-                          }}
-                        />
-                      </Box>
-                    ))
-                  )
-                )
-              }
-            </ModalBody>
-          </ModalContent>
-        </Modal>
-      ) : <></>}
-
-      <WishlistNav
-        setWishlist={setShowWishlist}
-        onOpen={onOpen}
-        numWishes={wishes.length}
-      />
     </>
-  )
+  );
 }
-
-export const getServerSideProps = async (ctx: DocumentContext) => {
-  const { props, notFound, redirect } = await eventFetch(ctx)
-
-  if (redirect) {
-    return {
-      redirect: {
-        destination: `${redirect.destination}/wishlist`,
-        permanent: false
-      }
-    }
-  }
-
-  if (notFound || !props?.event || !props?.accessToken) {
-    return { notFound: true }
-  }
-
-  return { props }
-};
