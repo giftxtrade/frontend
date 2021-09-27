@@ -143,78 +143,77 @@ export default function Wishlist({
           </>
         }
         sidebar={
-          isMediumScreen ? (
-            <Modal
-              isOpen={isOpen}
-              onClose={onClose}
-              size={"md"}
-              scrollBehavior="inside"
+          <Box position="sticky" top="2">
+            <Box
+              pt="3"
+              pb="3"
+              pl="4"
+              pr="4"
+              bg="white"
+              className={styles.cartReveal}
             >
-              <ModalOverlay />
+              <Heading size="md" mb="3" color="gray.700">
+                My Wishlist
+              </Heading>
 
-              <ModalContent>
-                <ModalHeader>My Wishlist</ModalHeader>
-                <ModalCloseButton />
+              <WishlistTotal
+                selectedProducts={selectedProducts}
+                showAddToCart={false}
+              />
+            </Box>
 
-                <Box pl="6" pr="6" mb="3">
-                  <WishlistTotal
-                    selectedProducts={selectedProducts}
-                    showAddToCart={false}
-                  />
-                </Box>
+            <Box h="90vh" pt="4" pb="7" overflowY="auto" overflowX="hidden">
+              {loadingWishes ? (
+                [1, 2].map((p, i) => (
+                  <Box mb="5" key={`loading#${i}`}>
+                    <WishlistLoadingItem />
+                  </Box>
+                ))
+              ) : wishes.length === 0 ? (
+                <Text textAlign="center" color="gray.400">
+                  Your wishlist is empty
+                </Text>
+              ) : (
+                wishes.map(({ product }, i) => (
+                  <Box mb="5" key={`wishItem#${i}`}>
+                    <WishlistItemSelect
+                      product={product}
+                      selectedProducts={selectedProducts}
+                      setSelectedProducts={setSelectedProducts}
+                      removeWish={(pr: IProduct) => {
+                        setSelectedProducts(
+                          selectedProducts.filter((p) => p.id !== pr.id)
+                        );
+                        removeWish(pr);
+                      }}
+                    />
+                  </Box>
+                ))
+              )}
+            </Box>
+          </Box>
+        }
+        sidebarMed={
+          <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            size={"md"}
+            scrollBehavior="inside"
+          >
+            <ModalOverlay />
 
-                <ModalBody>
-                  {loadingWishes ? (
-                    [1, 2].map((p, i) => (
-                      <Box mb="5" key={`loading#${i}`}>
-                        <WishlistLoadingItem />
-                      </Box>
-                    ))
-                  ) : wishes.length === 0 ? (
-                    <Text textAlign="center" color="gray.400">
-                      Your wishlist is empty
-                    </Text>
-                  ) : (
-                    wishes.map(({ product }, i) => (
-                      <Box mb="5" key={`wishItemMd#${i}`}>
-                        <WishlistItemSelect
-                          product={product}
-                          selectedProducts={selectedProducts}
-                          setSelectedProducts={setSelectedProducts}
-                          removeWish={(pr: IProduct) => {
-                            setSelectedProducts(
-                              selectedProducts.filter((p) => p.id !== pr.id)
-                            );
-                            removeWish(pr);
-                          }}
-                        />
-                      </Box>
-                    ))
-                  )}
-                </ModalBody>
-              </ModalContent>
-            </Modal>
-          ) : (
-            <Box position="sticky" top="2">
-              <Box
-                pt="3"
-                pb="3"
-                pl="4"
-                pr="4"
-                bg="white"
-                className={styles.cartReveal}
-              >
-                <Heading size="md" mb="3" color="gray.700">
-                  My Wishlist
-                </Heading>
+            <ModalContent>
+              <ModalHeader>My Wishlist</ModalHeader>
+              <ModalCloseButton />
 
+              <Box pl="6" pr="6" mb="3">
                 <WishlistTotal
                   selectedProducts={selectedProducts}
                   showAddToCart={false}
                 />
               </Box>
 
-              <Box h="90vh" pt="4" pb="7" overflowY="auto" overflowX="hidden">
+              <ModalBody>
                 {loadingWishes ? (
                   [1, 2].map((p, i) => (
                     <Box mb="5" key={`loading#${i}`}>
@@ -227,7 +226,7 @@ export default function Wishlist({
                   </Text>
                 ) : (
                   wishes.map(({ product }, i) => (
-                    <Box mb="5" key={`wishItem#${i}`}>
+                    <Box mb="5" key={`wishItemMd#${i}`}>
                       <WishlistItemSelect
                         product={product}
                         selectedProducts={selectedProducts}
@@ -242,9 +241,9 @@ export default function Wishlist({
                     </Box>
                   ))
                 )}
-              </Box>
-            </Box>
-          )
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         }
       />
 

@@ -15,7 +15,8 @@ import EventContainer from "../../../components/Event/EventContainer";
 import EventLoading from "../../../components/Event/EventLoading";
 import { IParticipantUser } from "../../../types/Participant";
 import { IDrawParticipant } from "../../../types/Draw";
-import EventSidebar from "../../../components/Event/EventSidebar";
+import MyWishlist from "../../../components/MyWishlist";
+import EventSidebarMedium from "../../../components/Event/EventSidebarMedium";
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true); // Loading state for the event page
@@ -56,7 +57,7 @@ export default function EventPage() {
 
   const renderEventBlock = () => {
     if (loading) {
-      return <EventContainer primary={<EventLoading />} sidebar={<></>} />;
+      return <EventContainer primary={<EventLoading />} />;
     } else if (event && meParticipant) {
       return (
         <EventContainer
@@ -71,10 +72,17 @@ export default function EventPage() {
             />
           }
           sidebar={
-            <EventSidebar
+            <MyWishlist
               event={event}
+              accessToken={authState.accessToken}
               meParticipant={meParticipant}
+            />
+          }
+          sidebarMed={
+            <EventSidebarMedium
+              event={event}
               authState={authState}
+              meParticipant={meParticipant}
             />
           }
         />
@@ -92,7 +100,7 @@ export default function EventPage() {
   return (
     <>
       <Head>
-        <title>{event ? `${event.name} - ` : ""} GiftTrade</title>
+        <title>{event ? `${event.name} - GiftTrade` : "GiftTrade"}</title>
 
         <meta
           name="description"
