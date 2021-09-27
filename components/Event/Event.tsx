@@ -28,12 +28,16 @@ import axios from "axios";
 import { api } from "../../util/api";
 import { ILink } from "../../types/Link";
 import { unstable_batchedUpdates } from "react-dom";
+import ParticipantUser from "../ParticipantUser";
+import styles from "../../styles/eventId.module.css";
+import { IDrawParticipant } from "../../types/Draw";
 
 export interface IEventProps {
   event: IEventFull;
   authState: AuthState;
   meParticipant: IParticipantUser;
   setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
+  myDraw: IParticipantUser | undefined;
 }
 
 export default function Event({
@@ -41,6 +45,7 @@ export default function Event({
   authState,
   meParticipant,
   setEvent,
+  myDraw,
 }: IEventProps) {
   const [showDraw, setShowDraw] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
@@ -86,6 +91,32 @@ export default function Event({
           setLinkLoading(false);
         });
       });
+  };
+
+  const renderMyDraw = () => {
+    if (myDraw) {
+      return (
+        <Box mt="10">
+          <Heading size="md" mb="5">
+            My Draw
+          </Heading>
+          <Box maxW="72">
+            <ParticipantUser
+              user={myDraw.user}
+              name={myDraw.name}
+              email={myDraw.email}
+              participates={myDraw.participates}
+              accepted={myDraw.accepted}
+              organizer={myDraw.organizer}
+              address={myDraw.address}
+              id={myDraw.id}
+              event={event}
+            />
+          </Box>
+        </Box>
+      );
+    }
+    return <></>;
   };
 
   return (
@@ -235,6 +266,59 @@ export default function Event({
           </Stack>
         </Box>
       </Box>
+
+      {renderMyDraw()}
+
+      <div className={styles.participantsPanel}>
+        <Box>
+          <Heading size="md" mb="5">
+            Organizers
+          </Heading>
+
+          <Stack direction="column" spacing={5}>
+            {event.participants
+              .filter((p) => p.organizer)
+              .map((p, i) => (
+                <ParticipantUser
+                  user={p.user}
+                  name={p.name}
+                  email={p.email}
+                  participates={p.participates}
+                  accepted={p.accepted}
+                  organizer={p.organizer}
+                  address={p.address}
+                  id={p.id}
+                  event={event}
+                  key={`participant#${i}`}
+                />
+              ))}
+          </Stack>
+        </Box>
+
+        <Box>
+          <Heading size="md" mb="5">
+            Participants
+          </Heading>
+          <Stack direction="column" spacing={5}>
+            {event.participants
+              .filter((p) => p.participates)
+              .map((p, i) => (
+                <ParticipantUser
+                  user={p.user}
+                  name={p.name}
+                  email={p.email}
+                  participates={p.participates}
+                  accepted={p.accepted}
+                  organizer={p.organizer}
+                  address={p.address}
+                  id={p.id}
+                  event={event}
+                  key={`participant#${i}`}
+                />
+              ))}
+          </Stack>
+        </Box>
+      </div>
     </>
   );
 }
