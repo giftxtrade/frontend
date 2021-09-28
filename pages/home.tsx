@@ -33,6 +33,7 @@ import { authStore } from "../store/auth-store";
 
 export default function Home() {
   const [authState, setAuthState] = useState<AuthState>(authStore.getState());
+  const [tryAgainToggle, setTryAgainToggle] = useState(true);
 
   const [invites, setInvites] = useState(Array<IEventUser>());
   const [events, setEvents] = useState(Array<IEventUser>());
@@ -54,7 +55,10 @@ export default function Home() {
       setAuthState(authStore.getState());
     });
 
-    if (!authState.loggedIn) return;
+    if (!authState.loggedIn) {
+      setTryAgainToggle(!tryAgainToggle);
+      return;
+    }
 
     axios
       .get(`${api.events}?user=true`, {
@@ -102,7 +106,7 @@ export default function Home() {
           setLoading(false);
         });
       });
-  }, [authState]);
+  }, [tryAgainToggle]);
 
   const handleAccept = (eventId: number, index: number) => {
     setEvents([invites[index], ...events]);
