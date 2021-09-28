@@ -1,0 +1,35 @@
+{
+    "short_name": "GiftTrade",
+    "name": "GiftTrade - Online Gift Exchange",
+    "icons": [
+        {
+            "src": "/icons/icons-192.png",
+            "type": "image/png",
+            "sizes": "192x192"
+        },
+        {
+            "src": "/icons/icons-512.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "start_url": "/",
+    "background_color": "#c13a38",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#c13a38",
+    "shortcuts": [],
+    "description": "Make your Gift Exhange and Secret Santa simple and secure with GiftTrade",
+    "screenshots": [
+        {
+            "src": "/images/screenshot1.png",
+            "type": "image/png",
+            "sizes": "540x720"
+        },
+        {
+            "src": "/images/screenshot2.jpg",
+            "type": "image/jpg",
+            "sizes": "540x720"
+        }
+    ]
+}

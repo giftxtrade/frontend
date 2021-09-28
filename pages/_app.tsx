@@ -24,6 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>{content.BASE_TITLE}</title>
 
         <link rel="icon" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
 
         <meta name="description" content={content.DESCRIPTION} />
 
