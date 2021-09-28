@@ -17,3 +17,10 @@ export default interface JwtPayload {
   gToken: string;
   accessToken: string;
 }
+
+export interface JwtAuthReturn {
+  loggedIn: boolean;
+  user: User;
+  accessToken: string;
+  gToken: string;
+}
