@@ -1,8 +1,8 @@
 import type { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useEffect, useState } from 'react';
-import authenticate from '../util/authenticate';
-import Head from 'next/head';
+import { useEffect } from "react";
+import authenticate from "../util/authenticate";
+import Head from "next/head";
 import { content } from "../util/content";
 import "../styles/main.css";
 import "../public/fonts/fonts.css";
@@ -10,13 +10,12 @@ import Footer from "../components/Footer";
 import "../styles/main.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
     const authFunc = async () => {
-      setLoggedIn(await authenticate());
+      const loggedIn = await authenticate();
     };
     authFunc();
-  });
+  }, []);
 
   return (
     <>
@@ -24,9 +23,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>{content.BASE_TITLE}</title>
 
         <link rel="icon" href="/favicon.ico" />
-        <link rel="manifest" href="/manifest.json" />
-
         <meta name="description" content={content.DESCRIPTION} />
+
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#c13a38" />
+        <link rel="apple-touch-icon" href="/icons/icons-96x96.png" />
+        <meta name="apple-mobile-web-app-status-bar" content="#c13a38" />
 
         <script
           async
