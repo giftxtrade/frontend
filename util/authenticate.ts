@@ -4,8 +4,10 @@ import { authStore, login, logout } from '../store/auth-store';
 
 export default async function authenticate() {
   const accessToken = localStorage.getItem('access_token')
-  if (!accessToken || accessToken.trim() === '')
-    return false
+  if (!accessToken || accessToken.trim() === "") {
+    authStore.dispatch(logout());
+    return false;
+  }
 
   let loggedIn = false
 
