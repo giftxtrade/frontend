@@ -53,9 +53,7 @@ export default function LandingPage() {
               <div className={styles.right}>
                 <Link href={link}>
                   <a>
-                    <div className={styles.navLogin}>
-                      {loggedIn ? "Login" : "Create Account"}
-                    </div>
+                    <div className={styles.navLogin}>Login</div>
                   </a>
                 </Link>
               </div>
