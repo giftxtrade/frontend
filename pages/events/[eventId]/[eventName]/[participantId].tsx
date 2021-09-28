@@ -57,6 +57,8 @@ export default function ParticipantPage() {
       setMeParticipant,
       setError,
       setLoading,
+      router,
+      window.location.pathname,
       () => {
         axios
           .get(`${api.participants}/${eventId}/${participantId}`, {

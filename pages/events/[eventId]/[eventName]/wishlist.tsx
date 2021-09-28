@@ -33,6 +33,8 @@ export default function WishlistPage() {
       setMeParticipant,
       setError,
       setLoading,
+      router,
+      window.location.pathname,
       () => setLoading(false)
     );
   }, [authState]);

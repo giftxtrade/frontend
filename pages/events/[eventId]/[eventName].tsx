@@ -3,7 +3,7 @@ import Navbar from "../../../components/Navbar";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
 import { authStore } from "../../../store/auth-store";
 import { IEventFull } from "../../../types/Event";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import { api } from "../../../util/api";
 import axios from "axios";
 import { Container, Icon } from "@chakra-ui/react";
@@ -40,6 +40,8 @@ export default function EventPage() {
       setMeParticipant,
       setError,
       setLoading,
+      router,
+      window.location.pathname,
       () => {
         axios
           .get(`${api.draws}/me/${eventId}`, {
@@ -131,10 +133,17 @@ export function fetchEvent(
   setMeParticipant: Dispatch<SetStateAction<IParticipantUser | undefined>>,
   setError: Dispatch<SetStateAction<boolean>>,
   setLoading: Dispatch<SetStateAction<boolean>>,
+  router: NextRouter,
+  currentPath: string,
   callback: () => any
 ) {
   setError(false);
-  authStore.subscribe(() => setAuthState(authStore.getState()));
+  authStore.subscribe(() => {
+    if (!authStore.getState().loggedIn) {
+      router.push(`/login?redirect=${currentPath}`);
+    }
+    setAuthState(authStore.getState());
+  });
 
   if (!authState.loggedIn || !eventId) return;
 
