@@ -110,7 +110,7 @@ export default function ParticipantPage() {
           <Spinner size="xl" />
         </Flex>
       );
-    } else if (event && meParticipant && participant && myDraw) {
+    } else if (event && meParticipant && participant) {
       const isMyDraw = myDraw ? myDraw.id === participant.id : false;
 
       return (
