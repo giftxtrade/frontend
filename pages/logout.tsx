@@ -11,7 +11,9 @@ export default function Logout() {
   const [cookie, setCookie, removeCookie] = useCookies(['access_token'])
   useEffect(() => {
     authStore.dispatch(logout())
-    setTimeout(() => router.push('/'), 1000)
+    localStorage.removeItem("inviteCode");
+    localStorage.removeItem("redirect");
+    router.push("/");
   }, [])
 
   return (
