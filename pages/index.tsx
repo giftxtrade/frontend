@@ -11,6 +11,7 @@ import Aos from "aos";
 import "aos/dist/aos.css";
 
 export default function LandingPage() {
+  const [loggedIn, setLoggedIn] = useState(authStore.getState().loggedIn);
   const [tryAgainToggle, setTryAgainToggle] = useState(true);
   const router = useRouter();
 
@@ -18,10 +19,11 @@ export default function LandingPage() {
     Aos.init({ duration: 500 });
 
     authStore.subscribe(() => {
-      const isLoggedIn = authStore.getState().loggedIn;
-      if (isLoggedIn) router.push("/home");
+      setLoggedIn(authStore.getState().loggedIn);
     });
-  }, [tryAgainToggle]);
+  }, []);
+
+  const link = loggedIn ? `/home` : "/login";
 
   return (
     <>
@@ -50,7 +52,7 @@ export default function LandingPage() {
               </div>
 
               <div className={styles.right}>
-                <Link href="/login">
+                <Link href={link}>
                   <a>
                     <div className={styles.navLogin}>Login</div>
                   </a>
@@ -66,7 +68,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className={styles.button}>
-                  <Link href="/login">
+                  <Link href={link}>
                     <a>
                       <div className={styles.loginButton}>
                         Start your Gift Exchange
@@ -182,7 +184,7 @@ export default function LandingPage() {
             </h2>
 
             <div className={styles.button}>
-              <Link href="/login">
+              <Link href={link}>
                 <a>
                   <div className={styles.loginButton}>Start Today!</div>
                 </a>

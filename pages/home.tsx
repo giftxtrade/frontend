@@ -49,10 +49,11 @@ export default function Home() {
   useEffect(() => {
     setError(false);
     authStore.subscribe(() => {
-      if (!authStore.getState().loggedIn) {
-        router.push(`/login`);
-      }
       setAuthState(authStore.getState());
+
+      if (!authStore.getState().loggedIn) {
+        router.push(`/`);
+      }
     });
 
     if (!authState.loggedIn) {
@@ -240,6 +241,7 @@ export default function Home() {
                 {events.map((e, i) => (
                   <NLink.default
                     href={`/events/${e.id}/${eventNameSlug(e.name)}`}
+                    key={`event#${i}`}
                   >
                     <a
                       className="border-bottom-child"
@@ -248,7 +250,6 @@ export default function Home() {
                       <EventBoxSm
                         event={e}
                         isInvite={false}
-                        key={`event#${i}`}
                         handleAccept={handleAccept}
                         handleDecline={handleDecline}
                         index={i}
