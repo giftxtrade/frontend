@@ -22,37 +22,38 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarP
           </Link>
         </NextLink>
 
-        <Flex
-          direction="row"
-          alignItems="center"
-          justifyContent="start"
-          cursor="pointer"
-          ml="2"
-          onClick={() => {
-            router.push("/logout");
-          }}
-        >
-          <Image
-            src={
-              user?.imageUrl
-                ? changeProfileSize(user.imageUrl, 50)
-                : "default.jpg"
-            }
-            w="35px"
-            mr="2"
-            rounded="md"
-          />
-          <Box>
-            <Heading size="xs">{user?.name}</Heading>
-            {isSmallScreen ? (
-              <></>
-            ) : (
-              <Text fontSize="10" color="gray.600">
-                {user?.email}
-              </Text>
-            )}
-          </Box>
-        </Flex>
+        <NextLink href="/logout">
+          <a>
+            <Flex
+              direction="row"
+              alignItems="center"
+              justifyContent="start"
+              cursor="pointer"
+              ml="2"
+            >
+              <Image
+                src={
+                  user?.imageUrl
+                    ? changeProfileSize(user.imageUrl, 50)
+                    : "default.jpg"
+                }
+                w="35px"
+                mr="2"
+                rounded="md"
+              />
+              <Box>
+                <Heading size="xs">{user?.name}</Heading>
+                {isSmallScreen ? (
+                  <></>
+                ) : (
+                  <Text fontSize="10" color="gray.600">
+                    {user?.email}
+                  </Text>
+                )}
+              </Box>
+            </Flex>
+          </a>
+        </NextLink>
       </Flex>
     </Container>
   );
