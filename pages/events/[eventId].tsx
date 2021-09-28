@@ -1,8 +1,7 @@
 import { DocumentContext } from "next/document";
 import eventFetch from "../../util/ss-event-fetch";
-import Event, { IEventProps } from "../../components/Event";
 
-export default function EventIdPage(props: IEventProps) {
+export default function EventIdPage(props: any) {
   return <></>;
 }
 
