@@ -17,6 +17,7 @@ import { IParticipantUser } from "../../../types/Participant";
 import { IDrawParticipant } from "../../../types/Draw";
 import MyWishlist from "../../../components/MyWishlist";
 import EventSidebarMedium from "../../../components/Event/EventSidebarMedium";
+import { unstable_batchedUpdates } from "react-dom";
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true); // Loading state for the event page
@@ -142,10 +143,12 @@ export function fetchEvent(
       headers: { Authorization: "Bearer " + authState.accessToken },
     })
     .then(({ data }: { data: IEventFull }) => {
-      setEvent(data);
-      setMeParticipant(
-        data.participants.find((p) => p.email === authState.user.email)
-      );
+      unstable_batchedUpdates(() => {
+        setEvent(data);
+        setMeParticipant(
+          data.participants.find((p) => p.email === authState.user.email)
+        );
+      });
 
       if (callback) callback();
     })
