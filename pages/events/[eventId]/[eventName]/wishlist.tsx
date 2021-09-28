@@ -85,7 +85,6 @@ export default function WishlistPage() {
 
       <Container maxW="4xl" mb="20">
         {renderWishlistBlock()}
-        {/* <Flex direction="row"></Flex> */}
       </Container>
     </>
   );
