@@ -32,7 +32,7 @@ export default function EventPage() {
   const { eventId } = router.query;
 
   useEffect(() => {
-    fetchEvent(
+    return fetchEvent(
       eventId,
       authState,
       setAuthState,
@@ -138,7 +138,7 @@ export function fetchEvent(
   callback: () => any
 ) {
   setError(false);
-  authStore.subscribe(() => {
+  const unsubscribe = authStore.subscribe(() => {
     if (!authStore.getState().loggedIn) {
       router.push(`/login?redirect=${currentPath}`);
     }
@@ -165,4 +165,6 @@ export function fetchEvent(
       setLoading(false);
       setError(true);
     });
+
+  return () => unsubscribe();
 }

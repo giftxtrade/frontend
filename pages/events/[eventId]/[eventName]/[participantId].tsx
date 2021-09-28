@@ -49,7 +49,7 @@ export default function ParticipantPage() {
   const [myDraw, setMyDraw] = useState<IParticipantUser>();
 
   useEffect(() => {
-    fetchEvent(
+    return fetchEvent(
       eventId,
       authState,
       setAuthState,

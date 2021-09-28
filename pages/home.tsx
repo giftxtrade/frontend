@@ -48,7 +48,7 @@ export default function Home() {
 
   useEffect(() => {
     setError(false);
-    authStore.subscribe(() => {
+    const unsubscribe = authStore.subscribe(() => {
       setAuthState(authStore.getState());
 
       if (!authStore.getState().loggedIn) {
@@ -107,6 +107,8 @@ export default function Home() {
           setLoading(false);
         });
       });
+
+    return () => unsubscribe();
   }, [tryAgainToggle]);
 
   const handleAccept = (eventId: number, index: number) => {

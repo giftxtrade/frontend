@@ -25,7 +25,7 @@ export default function WishlistPage() {
   const { eventId } = router.query;
 
   useEffect(() => {
-    fetchEvent(
+    return fetchEvent(
       eventId,
       authState,
       setAuthState,

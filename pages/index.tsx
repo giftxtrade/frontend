@@ -1,4 +1,3 @@
-import { useRouter } from "next/dist/client/router";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { authStore } from "../store/auth-store";
@@ -12,15 +11,15 @@ import "aos/dist/aos.css";
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(authStore.getState().loggedIn);
-  const [tryAgainToggle, setTryAgainToggle] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     Aos.init({ duration: 500 });
 
-    authStore.subscribe(() => {
+    const unsubscribe = authStore.subscribe(() => {
       setLoggedIn(authStore.getState().loggedIn);
     });
+
+    return () => unsubscribe();
   }, []);
 
   const link = loggedIn ? `/home` : "/login";
@@ -54,7 +53,9 @@ export default function LandingPage() {
               <div className={styles.right}>
                 <Link href={link}>
                   <a>
-                    <div className={styles.navLogin}>Login</div>
+                    <div className={styles.navLogin}>
+                      {loggedIn ? "Login" : "Create Account"}
+                    </div>
                   </a>
                 </Link>
               </div>
