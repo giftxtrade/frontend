@@ -19,7 +19,7 @@ export default function Invite(props: { details: { name: string, description: st
     if (details) {
       axios.get(`${api.verify_invite_code}/${inviteCode}`)
         .then(({ data }) => {
-          localStorage.setItem('invite_code', data.code)
+          sessionStorage.setItem("invite_code", data.code);
           router.push(api.google)
         })
         .catch(_ => setError(true))

@@ -7,9 +7,9 @@ import { useEffect } from "react";
 export default function Logout() {
   useEffect(() => {
     authStore.dispatch(logout());
-    localStorage.removeItem("invite_code");
-    localStorage.removeItem("redirect");
     localStorage.removeItem("access_token");
+    sessionStorage.removeItem("invite_code");
+    sessionStorage.removeItem("redirect");
     router.push("/");
   }, []);
 

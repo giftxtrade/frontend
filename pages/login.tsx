@@ -11,7 +11,7 @@ export default function Login(props: { redirect: string | null }) {
 
   useEffect(() => {
     if (props.redirect) {
-      localStorage.setItem('redirect', props.redirect);
+      sessionStorage.setItem("redirect", props.redirect);
     }
     router.push(api.google)
   }, [])
