@@ -18,10 +18,15 @@ export default function ParticipantsMini({ participants }: { participants: IPart
     const elems = new Array<JSX.Element>();
 
     if (participants.length <= maxProfiles) {
-      participants.forEach(p => elems.push(<MiniProfile user={p.user} />))
+      participants.forEach((p, i) => elems.push(<MiniProfile user={p.user} key={`participantMini#${i}`} />))
     } else {
       for (let i = 0; i < maxProfiles; i++) {
-        elems.push(<MiniProfile user={participants[i].user} />)
+        elems.push(
+          <MiniProfile
+            user={participants[i].user}
+            key={`participantMini#${i}`}
+          />
+        );
       }
       elems.push(<span className={styles.mini}>+{participants.length - maxProfiles}</span>)
     }
