@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react"
 import {
   Flex,
   Heading,
@@ -10,55 +10,55 @@ import {
   useDisclosure,
   Stack,
   useToast,
-} from '@chakra-ui/react';
-import Head from 'next/head';
-import Navbar from "../components/Navbar";
-import { BsInboxesFill, BsPlusCircle } from "react-icons/bs";
-import { NewEvent } from "../components/NewEvent";
-import axios from "axios";
-import { api } from "../util/api";
-import { IEventUser } from "../types/Event";
-import { AuthState } from "../store/jwt-payload";
-import Invites from "../components/Invites";
-import { unstable_batchedUpdates } from "react-dom";
-import EventBoxSm from "../components/EventBoxSm";
-import { useRouter } from "next/router";
-import NextLink from "next/link";
-import { eventNameSlug } from "../util/links";
-import EventBoxSmLoading from "../components/EventBoxSmLoading";
-import styles from "../styles/home.module.css";
-import { Link } from "@chakra-ui/react";
-import * as NLink from "next/link";
-import { authStore } from "../store/auth-store";
+} from "@chakra-ui/react"
+import Head from "next/head"
+import Navbar from "../components/Navbar"
+import { BsInboxesFill, BsPlusCircle } from "react-icons/bs"
+import { NewEvent } from "../components/NewEvent"
+import axios from "axios"
+import { api } from "../util/api"
+import { IEventUser } from "../types/Event"
+import { AuthState } from "../store/jwt-payload"
+import Invites from "../components/Invites"
+import { unstable_batchedUpdates } from "react-dom"
+import EventBoxSm from "../components/EventBoxSm"
+import { useRouter } from "next/router"
+import NextLink from "next/link"
+import { eventNameSlug } from "../util/links"
+import EventBoxSmLoading from "../components/EventBoxSmLoading"
+import styles from "../styles/home.module.css"
+import { Link } from "@chakra-ui/react"
+import * as NLink from "next/link"
+import { authStore } from "../store/auth-store"
 
 export default function Home() {
-  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
-  const [tryAgainToggle, setTryAgainToggle] = useState(true);
+  const [authState, setAuthState] = useState<AuthState>(authStore.getState())
+  const [tryAgainToggle, setTryAgainToggle] = useState(true)
 
-  const [invites, setInvites] = useState(Array<IEventUser>());
-  const [events, setEvents] = useState(Array<IEventUser>());
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [invites, setInvites] = useState(Array<IEventUser>())
+  const [events, setEvents] = useState(Array<IEventUser>())
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
-  const router = useRouter();
-  const toast = useToast();
+  const router = useRouter()
+  const toast = useToast()
 
   // Modal
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
-    setError(false);
+    setError(false)
     const unsubscribe = authStore.subscribe(() => {
-      setAuthState(authStore.getState());
+      setAuthState(authStore.getState())
 
       if (!authStore.getState().loggedIn) {
-        router.push(`/`);
+        router.push("/login")
       }
-    });
+    })
 
     if (!authState.loggedIn) {
-      setTryAgainToggle(!tryAgainToggle);
-      return;
+      setTryAgainToggle(!tryAgainToggle)
+      return
     }
 
     axios
@@ -67,15 +67,15 @@ export default function Home() {
       })
       .then(({ data }: { data: IEventUser[] }) => {
         unstable_batchedUpdates(() => {
-          setEvents(data);
-          setLoading(false);
-        });
+          setEvents(data)
+          setLoading(false)
+        })
       })
       .catch((err) => {
         unstable_batchedUpdates(() => {
-          setLoading(false);
-        });
-      });
+          setLoading(false)
+        })
+      })
 
     axios
       .get(`${api.invites}`, {
@@ -83,10 +83,10 @@ export default function Home() {
       })
       .then(({ data }: { data: IEventUser[] }) => {
         unstable_batchedUpdates(() => {
-          setInvites(data);
-        });
+          setInvites(data)
+        })
 
-        const numInvites = data.length;
+        const numInvites = data.length
         if (numInvites > 0) {
           toast({
             title:
@@ -99,56 +99,56 @@ export default function Home() {
             duration: 2000,
             isClosable: true,
             variant: "subtle",
-          });
+          })
         }
       })
       .catch((err) => {
         unstable_batchedUpdates(() => {
-          setLoading(false);
-        });
-      });
+          setLoading(false)
+        })
+      })
 
-    return () => unsubscribe();
-  }, [tryAgainToggle]);
+    return () => unsubscribe()
+  }, [tryAgainToggle])
 
   const handleAccept = (eventId: number, index: number) => {
-    setEvents([invites[index], ...events]);
-    setInvites(invites.filter((_, i) => i !== index));
+    setEvents([invites[index], ...events])
+    setInvites(invites.filter((_, i) => i !== index))
     toast({
       title: "Invite accepted!",
       status: "info",
       duration: 2000,
       isClosable: true,
       variant: "subtle",
-    });
+    })
 
     axios
       .get(`${api.accept_invite}/${eventId}`, {
         headers: { Authorization: "Bearer " + authState.accessToken },
       })
       .then(({ data }) => {
-        router.push(`/events/${data.id}/${eventNameSlug(data.name)}`);
+        router.push(`/events/${data.id}/${eventNameSlug(data.name)}`)
       })
-      .catch((err) => console.log(err));
-  };
+      .catch((err) => console.log(err))
+  }
 
   const handleDecline = (eventId: number, index: number) => {
-    setInvites(invites.filter((_, i) => i !== index));
+    setInvites(invites.filter((_, i) => i !== index))
     toast({
       title: "Invite declined!",
       status: "info",
       duration: 2000,
       isClosable: true,
       variant: "subtle",
-    });
+    })
 
     axios
       .get(`${api.decline_invite}/${eventId}`, {
         headers: { Authorization: "Bearer " + authState.accessToken },
       })
       .then(({ data }) => {})
-      .catch((err) => console.log(err));
-  };
+      .catch((err) => console.log(err))
+  }
 
   return (
     <>
@@ -278,5 +278,5 @@ export default function Home() {
         />
       )}
     </>
-  );
+  )
 }

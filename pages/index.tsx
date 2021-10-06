@@ -8,21 +8,28 @@ import Link from "next/link";
 import PhoneHolder from "../components/PhoneHolder";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import { useRouter } from "next/router"
 
 export default function LandingPage() {
-  const [loggedIn, setLoggedIn] = useState(authStore.getState().loggedIn);
+  const [loggedIn, setLoggedIn] = useState(authStore.getState().loggedIn)
+  const router = useRouter()
 
   useEffect(() => {
-    Aos.init({ duration: 500 });
+    Aos.init({ duration: 500 })
 
     const unsubscribe = authStore.subscribe(() => {
-      setLoggedIn(authStore.getState().loggedIn);
-    });
+      setLoggedIn(authStore.getState().loggedIn)
+      router.push("/home")
+    })
 
-    return () => unsubscribe();
-  }, []);
+    if (loggedIn) {
+      router.push("/home")
+    }
 
-  const link = loggedIn ? `/home` : "/login";
+    return () => unsubscribe()
+  }, [])
+
+  const link = loggedIn ? `/home` : "/login"
 
   return (
     <>
@@ -193,5 +200,5 @@ export default function LandingPage() {
         </div>
       </div>
     </>
-  );
+  )
 }
