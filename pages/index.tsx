@@ -19,15 +19,18 @@ export default function LandingPage() {
 
     const unsubscribe = authStore.subscribe(() => {
       setLoggedIn(authStore.getState().loggedIn)
-      router.push("/home")
     })
 
-    if (loggedIn) {
+    if (loggedIn && authStore.getState().loggedIn) {
+      console.log("If statement inside useEffect called!")
       router.push("/home")
+      return () => {
+        unsubscribe()
+      }
     }
 
     return () => unsubscribe()
-  }, [])
+  }, [loggedIn])
 
   const link = loggedIn ? `/home` : "/login"
 
