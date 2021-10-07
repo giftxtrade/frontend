@@ -135,17 +135,23 @@ export function fetchEvent(
   setLoading: Dispatch<SetStateAction<boolean>>,
   router: NextRouter,
   currentPath: string,
-  callback: () => any
+  callback: () => any,
 ) {
-  setError(false);
+  setError(false)
   const unsubscribe = authStore.subscribe(() => {
     if (!authStore.getState().loggedIn) {
-      router.push(`/login?redirect=${currentPath}`);
+      router.push(`/login?redirect=${currentPath}`)
     }
-    setAuthState(authStore.getState());
-  });
+    setAuthState(authStore.getState())
+  })
 
-  if (!authState.loggedIn || !eventId) return;
+  if (!authState.loggedIn || !eventId) {
+    if (!authState.loggedIn) {
+      router.push(`/login?redirect=${currentPath}`)
+      return () => unsubscribe()
+    }
+    return () => unsubscribe()
+  }
 
   axios
     .get(`${api.events}/${eventId}`, {
@@ -153,18 +159,18 @@ export function fetchEvent(
     })
     .then(({ data }: { data: IEventFull }) => {
       unstable_batchedUpdates(() => {
-        setEvent(data);
+        setEvent(data)
         setMeParticipant(
-          data.participants.find((p) => p.email === authState.user.email)
-        );
-      });
+          data.participants.find((p) => p.email === authState.user.email),
+        )
+      })
 
-      if (callback) callback();
+      if (callback) callback()
     })
     .catch((_) => {
-      setLoading(false);
-      setError(true);
-    });
+      setLoading(false)
+      setError(true)
+    })
 
-  return () => unsubscribe();
+  return () => unsubscribe()
 }

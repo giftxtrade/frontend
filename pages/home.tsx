@@ -58,7 +58,7 @@ export default function Home() {
 
     if (!authState.loggedIn) {
       setTryAgainToggle(!tryAgainToggle)
-      return
+      return () => unsubscribe()
     }
 
     axios
@@ -110,6 +110,11 @@ export default function Home() {
 
     return () => unsubscribe()
   }, [tryAgainToggle])
+
+  if (!authState.loggedIn) {
+    router.push("/login")
+    return <></>
+  }
 
   const handleAccept = (eventId: number, index: number) => {
     setEvents([invites[index], ...events])
