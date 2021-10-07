@@ -1,21 +1,32 @@
 import type { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
-import { useEffect } from "react";
-import authenticate from "../util/authenticate";
-import Head from "next/head";
-import { content } from "../util/content";
-import "../styles/main.css";
-import "../public/fonts/fonts.css";
-import Footer from "../components/Footer";
-import "../styles/main.css";
+import { useEffect, useState } from "react"
+import authenticate from "../util/authenticate"
+import Head from "next/head"
+import { content } from "../util/content"
+import "../styles/main.css"
+import "../public/fonts/fonts.css"
+import Footer from "../components/Footer"
+import "../styles/main.css"
+import LoadingScreen from "../components/LoadingScreen"
 
 function MyApp({ Component, pageProps }: AppProps) {
+  // Set true if auth state is initialized
+  const [init, setInit] = useState(false)
+
   useEffect(() => {
     const authFunc = async () => {
-      const loggedIn = await authenticate();
-    };
-    authFunc();
-  }, []);
+      if (!init) {
+        await authenticate()
+        setInit(true)
+      }
+    }
+    authFunc()
+  }, [])
+
+  if (!init) {
+    return <LoadingScreen />
+  }
 
   return (
     <>
