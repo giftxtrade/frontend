@@ -61,14 +61,14 @@
     "description": "Make your Gift Exhange and Secret Santa simple and secure with GiftTrade",
     "screenshots": [
         {
-            "src": "/images/screenshot1.png",
+            "src": "/screenshots/screenshot1.png",
             "type": "image/png",
-            "sizes": "540x720"
+            "sizes": "600x1299"
         },
         {
-            "src": "/images/screenshot2.jpg",
+            "src": "/screenshots/screenshot2.jpg",
             "type": "image/jpg",
-            "sizes": "540x720"
+            "sizes": "600x1299"
         }
     ]
 }
