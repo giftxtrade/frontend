@@ -55,7 +55,7 @@
     "background_color": "#c13a38",
     "display": "standalone",
     "scope": "/",
-    "theme_color": "#c13a38",
+    "theme_color": "#ffffff",
     "orientation": "portrait-primary",
     "shortcuts": [],
     "description": "Make your Gift Exhange and Secret Santa simple and secure with GiftTrade",
