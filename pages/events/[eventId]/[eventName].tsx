@@ -18,18 +18,19 @@ import { IDrawParticipant } from "../../../types/Draw";
 import MyWishlist from "../../../components/MyWishlist";
 import EventSidebarMedium from "../../../components/Event/EventSidebarMedium";
 import { unstable_batchedUpdates } from "react-dom";
+import { eventNameSlug } from "../../../util/links"
 
 export default function EventPage() {
-  const [loading, setLoading] = useState(true); // Loading state for the event page
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true) // Loading state for the event page
+  const [error, setError] = useState(false)
 
-  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
-  const [event, setEvent] = useState<IEventFull>();
-  const [meParticipant, setMeParticipant] = useState<IParticipantUser>();
-  const [myDraw, setMyDraw] = useState<IParticipantUser>();
+  const [authState, setAuthState] = useState<AuthState>(authStore.getState())
+  const [event, setEvent] = useState<IEventFull>()
+  const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
+  const [myDraw, setMyDraw] = useState<IParticipantUser>()
 
-  const router = useRouter();
-  const { eventId } = router.query;
+  const router = useRouter()
+  const { eventId, eventName } = router.query
 
   useEffect(() => {
     return fetchEvent(
@@ -48,19 +49,29 @@ export default function EventPage() {
             headers: { Authorization: "Bearer " + authState.accessToken },
           })
           .then(({ data }: { data: IDrawParticipant }) => {
-            setLoading(false);
-            setMyDraw(data.drawee);
+            setLoading(false)
+            setMyDraw(data.drawee)
           })
           .catch((_) => {
-            setLoading(false);
-          });
+            setLoading(false)
+          })
+      },
+    )
+  }, [authState])
+
+  useEffect(() => {
+    if (event && eventName) {
+      const properSlug = eventNameSlug(event.name)
+      if (eventName != properSlug) {
+        console.log("Update to new slug " + properSlug)
+        window.history.pushState({}, "", `/events/${eventId}/${eventName}`)
       }
-    );
-  }, [authState]);
+    }
+  }, [event])
 
   const renderEventBlock = () => {
     if (loading) {
-      return <EventContainer primary={<EventLoading />} />;
+      return <EventContainer primary={<EventLoading />} />
     } else if (event && meParticipant) {
       return (
         <EventContainer
@@ -89,16 +100,16 @@ export default function EventPage() {
             />
           }
         />
-      );
+      )
     } else if (error) {
       return (
         <ErrorBlock
           message="Event could not be found"
           icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
         />
-      );
+      )
     }
-  };
+  }
 
   return (
     <>
@@ -122,7 +133,7 @@ export default function EventPage() {
         {renderEventBlock()}
       </Container>
     </>
-  );
+  )
 }
 
 export function fetchEvent(

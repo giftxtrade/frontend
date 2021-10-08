@@ -37,9 +37,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <meta name="description" content={content.DESCRIPTION} />
 
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#c13a38" />
+        <meta name="theme-color" content="#ffffff" />
         <link rel="apple-touch-icon" href="/icons/maskable_icon_x96.png" />
-        <meta name="apple-mobile-web-app-status-bar" content="#c13a38" />
+        <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
 
         <script
           async
