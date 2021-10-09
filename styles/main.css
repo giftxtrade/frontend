@@ -43,6 +43,16 @@ body {
   padding-bottom: 5rem;
 }
 
+@media screen and (max-width: 900px) {
+  #__next > .footer {
+    display: none;
+  }
+
+  #__next > .fixer {
+    display: none;
+  }
+}
+
 .border-bottom-child {
   border-bottom: 1px solid #f0f0f0;
 }

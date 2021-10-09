@@ -4,6 +4,7 @@
   color: rgb(77, 77, 77);
   text-align: center;
 }
+/* Media queires for .footer in main.css */
 
 .footerInfo {
   display: flex;
@@ -23,12 +24,6 @@
   font-size: 0.8em;
 
   --li-margin: 10px;
-}
-
-@media screen and (max-width: 400px) {
-  .links {
-    --li-margin: 7px!important;
-  }
 }
 
 .links > li {
