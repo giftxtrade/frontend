@@ -7,26 +7,22 @@ import { content } from "../util/content"
 import "../styles/main.css"
 import "../public/fonts/fonts.css"
 import Footer from "../components/Footer"
-import "../styles/main.css"
 import LoadingScreen from "../components/LoadingScreen"
 
 function MyApp({ Component, pageProps }: AppProps) {
   // Set true if auth state is initialized
   const [init, setInit] = useState(false)
 
-  useEffect(() => {
-    const authFunc = async () => {
-      if (!init) {
-        await authenticate()
-        setInit(true)
-      }
+  const authFunc = async () => {
+    if (!init) {
+      await authenticate()
+      setInit(true)
     }
+  }
+
+  useEffect(() => {
     authFunc()
   }, [])
-
-  if (!init) {
-    return <LoadingScreen />
-  }
 
   return (
     <>
@@ -59,11 +55,17 @@ function MyApp({ Component, pageProps }: AppProps) {
         />
       </Head>
 
-      <ChakraProvider>
-        <Component {...pageProps} />
-      </ChakraProvider>
+      {init ? (
+        <>
+          <ChakraProvider>
+            <Component {...pageProps} />
+          </ChakraProvider>
 
-      <Footer />
+          <Footer />
+        </>
+      ) : (
+        <LoadingScreen />
+      )}
     </>
   )
 }
