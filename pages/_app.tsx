@@ -24,13 +24,27 @@ function MyApp({ Component, pageProps }: AppProps) {
     authFunc()
   }, [])
 
+  const invitePageDescription =
+    pageProps.details?.description !== ""
+      ? pageProps.details?.description
+      : `Click the link to join ${pageProps.details?.name} with simple one click login.`
+
   return (
     <>
       <Head>
-        <title>{content.BASE_TITLE}</title>
+        {pageProps?.details ? (
+          <title>{pageProps.details?.name} Invite - GiftTrade</title>
+        ) : (
+          <title>{content.BASE_TITLE}</title>
+        )}
 
         <link rel="icon" href="/favicon.ico" />
-        <meta name="description" content={content.DESCRIPTION} />
+
+        {pageProps?.details ? (
+          <meta name="description" content={invitePageDescription} />
+        ) : (
+          <meta name="description" content={content.DESCRIPTION} />
+        )}
 
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#ffffff" />
