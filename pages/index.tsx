@@ -121,7 +121,9 @@ export default function LandingPage() {
             <div
               className={`${styles.demoContainer} ${styles.newEvent} ${styles.imageDemo}`}
             >
-              <img src="/screenshots/new_event.png" loading="lazy" />
+              <div className={styles.featureImgHolder}>
+                <img src="/screenshots/new_event.png" loading="lazy" />
+              </div>
 
               <div className={styles.details}>
                 <h3>Create an Event</h3>
@@ -141,12 +143,14 @@ export default function LandingPage() {
                 <div className={styles.detailInfo}>
                   <Link href="/i/gOxFJ7d66kr1KY7">
                     <a>
-                      <img
-                        src="/screenshots/get_link.png"
-                        loading="lazy"
-                        alt="Join this event to explore GiftTrade"
-                        title="Click to join this public event and explore GiftTrade!"
-                      />
+                      <div className={styles.featureImgHolder}>
+                        <img
+                          src="/screenshots/get_link.png"
+                          loading="lazy"
+                          alt="Join this event to explore GiftTrade"
+                          title="Click to join this public event and explore GiftTrade!"
+                        />
+                      </div>
                     </a>
                   </Link>
                   <p>
@@ -174,7 +178,9 @@ export default function LandingPage() {
             <div
               className={`${styles.demoContainer} ${styles.drawSection} ${styles.imageDemo}`}
             >
-              <img src="/screenshots/draw.png" loading="lazy" />
+              <div className={styles.featureImgHolder}>
+                <img src="/screenshots/draw.png" loading="lazy" />
+              </div>
 
               <div className={styles.details}>
                 <h3>Draw participants</h3>

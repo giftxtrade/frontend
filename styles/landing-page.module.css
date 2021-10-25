@@ -349,11 +349,20 @@
   flex-direction: row-reverse;
 }
 
-.newEvent > img {
+.newEvent .featureImgHolder {
   max-width: 450px;
 }
 
-.drawSection > img {
+.featureImgHolder {
+  padding: 30px;
+}
+.featureImgHolder > img {
+  box-shadow: 0px 10px 73px rgba(0,0,0,0.2);
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+.drawSection .featureImgHolder {
   max-width: 450px;
 }
 
@@ -425,9 +434,11 @@
   align-items: center;
   width: 100%;
 }
-.detailInfo img {
-  width: 550px;
-  max-width: 100%;
+.detailInfo .featureImgHolder {
+  margin-bottom: 30px;
+}
+.detailInfo .featureImgHolder {
+  max-width: 550px;
 }
 
 
