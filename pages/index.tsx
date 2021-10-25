@@ -122,7 +122,7 @@ export default function LandingPage() {
               className={`${styles.demoContainer} ${styles.newEvent} ${styles.imageDemo}`}
             >
               <div className={styles.featureImgHolder}>
-                <img src="/screenshots/new_event.png" loading="lazy" />
+                <img src="/screenshots/new_event.webp" loading="lazy" />
               </div>
 
               <div className={styles.details}>
@@ -145,7 +145,7 @@ export default function LandingPage() {
                     <a>
                       <div className={styles.featureImgHolder}>
                         <img
-                          src="/screenshots/get_link.png"
+                          src="/screenshots/get_link.webp"
                           loading="lazy"
                           alt="Join this event to explore GiftTrade"
                           title="Click to join this public event and explore GiftTrade!"
@@ -179,7 +179,7 @@ export default function LandingPage() {
               className={`${styles.demoContainer} ${styles.drawSection} ${styles.imageDemo}`}
             >
               <div className={styles.featureImgHolder}>
-                <img src="/screenshots/draw.png" loading="lazy" />
+                <img src="/screenshots/draw.webp" loading="lazy" />
               </div>
 
               <div className={styles.details}>
