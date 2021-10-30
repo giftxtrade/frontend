@@ -9,6 +9,7 @@ import PhoneHolder from "../components/PhoneHolder";
 import Aos from "aos";
 import "aos/dist/aos.css";
 import { useRouter } from "next/router"
+import NextGenImg from "../components/NextGenImg"
 
 export default function LandingPage() {
   const [loggedIn, setLoggedIn] = useState(authStore.getState().loggedIn)
@@ -122,7 +123,16 @@ export default function LandingPage() {
               className={`${styles.demoContainer} ${styles.newEvent} ${styles.imageDemo}`}
             >
               <div className={styles.featureImgHolder}>
-                <img src="/screenshots/new_event.webp" loading="lazy" />
+                <NextGenImg
+                  nextGenSources={[
+                    {
+                      srcSet: "/screenshots/new_event.webp",
+                      type: "image/webp",
+                    },
+                  ]}
+                  src="/screenshots/new_event.png"
+                  loading="lazy"
+                />
               </div>
 
               <div className={styles.details}>
@@ -144,8 +154,14 @@ export default function LandingPage() {
                   <Link href="/i/gOxFJ7d66kr1KY7">
                     <a>
                       <div className={styles.featureImgHolder}>
-                        <img
-                          src="/screenshots/get_link.webp"
+                        <NextGenImg
+                          nextGenSources={[
+                            {
+                              srcSet: "/screenshots/get_link.webp",
+                              type: "image/webp",
+                            },
+                          ]}
+                          src="/screenshots/get_link.png"
                           loading="lazy"
                           alt="Join this event to explore GiftTrade"
                           title="Click to join this public event and explore GiftTrade!"
@@ -179,7 +195,16 @@ export default function LandingPage() {
               className={`${styles.demoContainer} ${styles.drawSection} ${styles.imageDemo}`}
             >
               <div className={styles.featureImgHolder}>
-                <img src="/screenshots/draw.webp" loading="lazy" />
+                <NextGenImg
+                  nextGenSources={[
+                    {
+                      srcSet: "/screenshots/draw.webp",
+                      type: "image/webp",
+                    },
+                  ]}
+                  src="/screenshots/draw.png"
+                  loading="lazy"
+                />
               </div>
 
               <div className={styles.details}>
