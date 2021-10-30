@@ -356,7 +356,7 @@
 .featureImgHolder {
   padding: 30px;
 }
-.featureImgHolder > img {
+.featureImgHolder img {
   box-shadow: 0px 10px 73px rgba(0,0,0,0.2);
   background-color: transparent;
   border-radius: 10px;
