@@ -9,6 +9,8 @@ export interface INextGenImgProps {
   className?: string
   id?: string
   alt?: string
+  loading?: "lazy" | "eager"
+  title?: string
   nextGenSources?: INextGenSources[]
 }
 
@@ -25,6 +27,8 @@ const NextGenImg = ({
   className,
   id,
   alt,
+  loading,
+  title,
   nextGenSources,
 }: INextGenImgProps) => {
   return (
@@ -38,7 +42,14 @@ const NextGenImg = ({
         />
       ))}
 
-      <img src={src} className={className} id={id} alt={alt} />
+      <img
+        src={src}
+        className={className}
+        id={id}
+        alt={alt}
+        title={title}
+        loading={loading}
+      />
     </picture>
   )
 }
