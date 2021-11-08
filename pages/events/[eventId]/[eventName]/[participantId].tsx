@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Flex,
   Heading,
   Text,
   Box,
@@ -9,7 +8,6 @@ import {
   Icon,
   Badge,
   Image,
-  Spinner,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import Navbar from "../../../../components/Navbar";
@@ -34,19 +32,20 @@ import ErrorBlock from "../../../../components/ErrorBlock";
 import { BsExclamationCircle } from "react-icons/bs";
 import EventContainer from "../../../../components/Event/EventContainer";
 import { IDrawParticipant } from "../../../../types/Draw";
+import EventProfileLoading from "../../../../components/Event/EventProfileLoading"
 
 export default function ParticipantPage() {
-  const router = useRouter();
-  const { eventId, participantId } = router.query;
+  const router = useRouter()
+  const { eventId, participantId } = router.query
 
-  const [loading, setLoading] = useState(true); // Loading state for the event page
-  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true) // Loading state for the event page
+  const [error, setError] = useState(false)
 
-  const [authState, setAuthState] = useState<AuthState>(authStore.getState());
-  const [event, setEvent] = useState<IEventFull>();
-  const [meParticipant, setMeParticipant] = useState<IParticipantUser>();
-  const [participant, setParticipant] = useState<IParticipantUserWishes>();
-  const [myDraw, setMyDraw] = useState<IParticipantUser>();
+  const [authState, setAuthState] = useState<AuthState>(authStore.getState())
+  const [event, setEvent] = useState<IEventFull>()
+  const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
+  const [participant, setParticipant] = useState<IParticipantUserWishes>()
+  const [myDraw, setMyDraw] = useState<IParticipantUser>()
 
   useEffect(() => {
     return fetchEvent(
@@ -65,32 +64,32 @@ export default function ParticipantPage() {
             headers: { Authorization: "Bearer " + authState.accessToken },
           })
           .then(({ data }: { data: IParticipantUserWishes }) => {
-            setParticipant({ ...data });
-            setLoading(false);
+            setParticipant({ ...data })
+            setLoading(false)
           })
           .catch((_) => {
-            setLoading(false);
-            setError(true);
-          });
+            setLoading(false)
+            setError(true)
+          })
 
         axios
           .get(`${api.draws}/me/${eventId}`, {
             headers: { Authorization: "Bearer " + authState.accessToken },
           })
           .then(({ data }: { data: IDrawParticipant }) => {
-            setMyDraw(data.drawee);
+            setMyDraw(data.drawee)
           })
-          .catch((_) => {});
-      }
-    );
-  }, [authState]);
+          .catch((_) => {})
+      },
+    )
+  }, [authState])
 
   // Media queries
-  const [isMediumScreen] = useMediaQuery("(max-width: 900px)");
-  const [isSmallScreen] = useMediaQuery("(max-width: 500px)");
+  const [isMediumScreen] = useMediaQuery("(max-width: 900px)")
+  const [isSmallScreen] = useMediaQuery("(max-width: 500px)")
 
-  const name = participant?.user?.name;
-  const avatarSize = isSmallScreen ? "70px" : "100px";
+  const name = participant?.user?.name
+  const avatarSize = isSmallScreen ? "70px" : "100px"
 
   const renderParticipantBlock = () => {
     if (error) {
@@ -99,21 +98,11 @@ export default function ParticipantPage() {
           message="Something went wrong. Could not fetch data"
           icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
         />
-      );
+      )
     } else if (loading || !participant) {
-      return (
-        <Flex
-          direction="column"
-          maxW="full"
-          alignItems="center"
-          justifyContent="center"
-          p="10"
-        >
-          <Spinner size="xl" />
-        </Flex>
-      );
+      return <EventProfileLoading />
     } else if (event && meParticipant && participant) {
-      const isMyDraw = myDraw ? myDraw.id === participant.id : false;
+      const isMyDraw = myDraw ? myDraw.id === participant.id : false
 
       return (
         <EventContainer
@@ -237,9 +226,9 @@ export default function ParticipantPage() {
             </Container>
           }
         />
-      );
+      )
     }
-  };
+  }
 
   return (
     <>
@@ -262,5 +251,5 @@ export default function ParticipantPage() {
         {renderParticipantBlock()}
       </Container>
     </>
-  );
+  )
 }
