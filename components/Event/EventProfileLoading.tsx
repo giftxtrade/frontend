@@ -1,4 +1,4 @@
-import EventContainer from "./EventContainer"
+import ContentWrapper from "../ContentWrapper"
 import { Box, Stack, useMediaQuery } from "@chakra-ui/react"
 import { WishlistLoadingItem } from "../WishlistItem"
 
@@ -25,7 +25,7 @@ const EventProfileLoading = () => {
   const avatarSize = isSmallScreen ? "70px" : "100px"
 
   return (
-    <EventContainer
+    <ContentWrapper
       primary={
         <>
           <Box

@@ -11,7 +11,7 @@ import { AuthState } from "../../../store/jwt-payload"
 import Event from "../../../components/Event/Event"
 import { BsExclamationCircle } from "react-icons/bs"
 import ErrorBlock from "../../../components/ErrorBlock"
-import EventContainer from "../../../components/Event/EventContainer"
+import ContentWrapper from "../../../components/ContentWrapper"
 import EventLoading from "../../../components/Event/EventLoading"
 import { IParticipantUser } from "../../../types/Participant"
 import { IDrawParticipant } from "../../../types/Draw"
@@ -73,14 +73,14 @@ export default function EventPage() {
   const renderEventBlock = () => {
     if (loading) {
       return (
-        <EventContainer
+        <ContentWrapper
           primary={<EventLoading />}
           sidebar={<EventSidebarLoading />}
         />
       )
     } else if (event && meParticipant) {
       return (
-        <EventContainer
+        <ContentWrapper
           primary={
             <Event
               event={event}
