@@ -6,19 +6,20 @@ import { IEventFull } from "../../../types/Event";
 import { NextRouter, useRouter } from "next/router";
 import { api } from "../../../util/api";
 import axios from "axios";
-import { Container, Icon } from "@chakra-ui/react";
-import { AuthState } from "../../../store/jwt-payload";
-import Event from "../../../components/Event/Event";
-import { BsExclamationCircle } from "react-icons/bs";
-import ErrorBlock from "../../../components/ErrorBlock";
-import EventContainer from "../../../components/Event/EventContainer";
-import EventLoading from "../../../components/Event/EventLoading";
-import { IParticipantUser } from "../../../types/Participant";
-import { IDrawParticipant } from "../../../types/Draw";
-import MyWishlist from "../../../components/MyWishlist";
-import EventSidebarMedium from "../../../components/Event/EventSidebarMedium";
-import { unstable_batchedUpdates } from "react-dom";
+import { Container, Icon } from "@chakra-ui/react"
+import { AuthState } from "../../../store/jwt-payload"
+import Event from "../../../components/Event/Event"
+import { BsExclamationCircle } from "react-icons/bs"
+import ErrorBlock from "../../../components/ErrorBlock"
+import EventContainer from "../../../components/Event/EventContainer"
+import EventLoading from "../../../components/Event/EventLoading"
+import { IParticipantUser } from "../../../types/Participant"
+import { IDrawParticipant } from "../../../types/Draw"
+import MyWishlist from "../../../components/MyWishlist"
+import EventSidebarMedium from "../../../components/Event/EventSidebarMedium"
+import { unstable_batchedUpdates } from "react-dom"
 import { eventNameSlug } from "../../../util/links"
+import EventSidebarLoading from "../../../components/Event/EventSidebarLoading"
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true) // Loading state for the event page
@@ -71,7 +72,12 @@ export default function EventPage() {
 
   const renderEventBlock = () => {
     if (loading) {
-      return <EventContainer primary={<EventLoading />} />
+      return (
+        <EventContainer
+          primary={<EventLoading />}
+          sidebar={<EventSidebarLoading />}
+        />
+      )
     } else if (event && meParticipant) {
       return (
         <EventContainer
