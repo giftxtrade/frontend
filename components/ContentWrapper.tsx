@@ -1,17 +1,17 @@
-import { Flex, Container, useMediaQuery } from "@chakra-ui/react";
+import { Flex, Container, useMediaQuery } from "@chakra-ui/react"
 
-export interface IEventContainerProps {
-  primary: JSX.Element;
-  sidebar?: JSX.Element;
-  sidebarMed?: JSX.Element;
+export interface IContentWrapperProps {
+  primary: JSX.Element
+  sidebar?: JSX.Element
+  sidebarMed?: JSX.Element
 }
 
-export default function EventContainer({
+export default function ContentWrapper({
   primary,
   sidebar,
   sidebarMed,
-}: IEventContainerProps) {
-  const [isMediumScreen] = useMediaQuery("(max-width: 900px)");
+}: IContentWrapperProps) {
+  const [isMediumScreen] = useMediaQuery("(max-width: 900px)")
 
   return (
     <Flex direction="row">
@@ -27,5 +27,5 @@ export default function EventContainer({
         </Container>
       )}
     </Flex>
-  );
+  )
 }

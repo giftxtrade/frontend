@@ -27,12 +27,12 @@ import WishlistTotal from "../WishlistTotal";
 import { WishlistLoadingItem } from "../WishlistItem";
 import WishlistItemSelect from "../WishlistItemSelect";
 import WishlistNav from "../WishlistNav";
-import EventContainer from "../Event/EventContainer";
+import ContentWrapper from "../ContentWrapper"
 
 export interface IWishlistProps {
-  event: IEventFull;
-  meParticipant: IParticipantUser;
-  authStore: AuthState;
+  event: IEventFull
+  meParticipant: IParticipantUser
+  authStore: AuthState
 }
 
 export default function Wishlist({
@@ -40,13 +40,13 @@ export default function Wishlist({
   meParticipant,
   authStore,
 }: IWishlistProps) {
-  const [loadingWishes, setLoadingWishes] = useState(true);
-  const [wishes, setWishes] = useState(Array<IWish>());
-  const [wishProductIds, setWishProductIds] = useState(new Set<number>());
-  const [showWishlist, setShowWishlist] = useState(false);
-  const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>());
+  const [loadingWishes, setLoadingWishes] = useState(true)
+  const [wishes, setWishes] = useState(Array<IWish>())
+  const [wishProductIds, setWishProductIds] = useState(new Set<number>())
+  const [showWishlist, setShowWishlist] = useState(false)
+  const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>())
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     axios
@@ -54,23 +54,23 @@ export default function Wishlist({
         headers: { Authorization: "Bearer " + authStore.accessToken },
       })
       .then(({ data }: { data: IWish[] }) => {
-        const productIdSet = new Set<number>();
-        data.forEach(({ product }) => productIdSet.add(product.id));
+        const productIdSet = new Set<number>()
+        data.forEach(({ product }) => productIdSet.add(product.id))
 
         unstable_batchedUpdates(() => {
-          setWishes(data);
-          setLoadingWishes(false);
-          setWishProductIds(productIdSet);
-          setSelectedProducts(data.map<IProduct>((w) => w.product));
-        });
+          setWishes(data)
+          setLoadingWishes(false)
+          setWishProductIds(productIdSet)
+          setSelectedProducts(data.map<IProduct>((w) => w.product))
+        })
       })
       .catch((err) => {
-        setLoadingWishes(false);
-      });
-  }, []);
+        setLoadingWishes(false)
+      })
+  }, [])
 
   const addWish = (product: IProduct) => {
-    setWishProductIds(wishProductIds.add(product.id));
+    setWishProductIds(wishProductIds.add(product.id))
     axios
       .post(
         api.wishes,
@@ -81,19 +81,19 @@ export default function Wishlist({
         },
         {
           headers: { Authorization: "Bearer " + authStore.accessToken },
-        }
+        },
       )
       .then(({ data }: { data: IWish }) => {
-        setWishes([data, ...wishes]);
-        setSelectedProducts([...selectedProducts, data.product]);
+        setWishes([data, ...wishes])
+        setSelectedProducts([...selectedProducts, data.product])
       })
-      .catch((_) => console.log("Could not add wish"));
-  };
+      .catch((_) => console.log("Could not add wish"))
+  }
 
   const removeWish = (product: IProduct) => {
-    wishProductIds.delete(product.id);
-    setWishProductIds(wishProductIds);
-    setWishes(wishes.filter((w) => w.product.id !== product.id));
+    wishProductIds.delete(product.id)
+    setWishProductIds(wishProductIds)
+    setWishes(wishes.filter((w) => w.product.id !== product.id))
     axios
       .delete(api.wishes, {
         headers: { Authorization: "Bearer " + authStore.accessToken },
@@ -104,19 +104,17 @@ export default function Wishlist({
         },
       })
       .then(({ data }) => {
-        setSelectedProducts(
-          selectedProducts.filter((p) => p.id !== product.id)
-        );
+        setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id))
       })
-      .catch((_) => {});
-  };
+      .catch((_) => {})
+  }
 
   // Media queries
-  const [isMediumScreen] = useMediaQuery("(max-width: 900px)");
+  const [isMediumScreen] = useMediaQuery("(max-width: 900px)")
 
   return (
     <>
-      <EventContainer
+      <ContentWrapper
         primary={
           <>
             {!meParticipant.accepted ? (
@@ -182,9 +180,9 @@ export default function Wishlist({
                       setSelectedProducts={setSelectedProducts}
                       removeWish={(pr: IProduct) => {
                         setSelectedProducts(
-                          selectedProducts.filter((p) => p.id !== pr.id)
-                        );
-                        removeWish(pr);
+                          selectedProducts.filter((p) => p.id !== pr.id),
+                        )
+                        removeWish(pr)
                       }}
                     />
                   </Box>
@@ -233,9 +231,9 @@ export default function Wishlist({
                         setSelectedProducts={setSelectedProducts}
                         removeWish={(pr: IProduct) => {
                           setSelectedProducts(
-                            selectedProducts.filter((p) => p.id !== pr.id)
-                          );
-                          removeWish(pr);
+                            selectedProducts.filter((p) => p.id !== pr.id),
+                          )
+                          removeWish(pr)
                         }}
                       />
                     </Box>
@@ -249,5 +247,5 @@ export default function Wishlist({
 
       <WishlistNav onOpen={onOpen} numWishes={wishes.length} />
     </>
-  );
+  )
 }

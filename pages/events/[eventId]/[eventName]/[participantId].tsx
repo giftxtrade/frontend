@@ -30,8 +30,8 @@ import { authStore } from "../../../../store/auth-store";
 import { fetchEvent } from "../[eventName]";
 import ErrorBlock from "../../../../components/ErrorBlock";
 import { BsExclamationCircle } from "react-icons/bs";
-import EventContainer from "../../../../components/Event/EventContainer";
-import { IDrawParticipant } from "../../../../types/Draw";
+import ContentWrapper from "../../../../components/ContentWrapper"
+import { IDrawParticipant } from "../../../../types/Draw"
 import EventProfileLoading from "../../../../components/Event/EventProfileLoading"
 
 export default function ParticipantPage() {
@@ -105,7 +105,7 @@ export default function ParticipantPage() {
       const isMyDraw = myDraw ? myDraw.id === participant.id : false
 
       return (
-        <EventContainer
+        <ContentWrapper
           primary={
             <>
               {!meParticipant.accepted ? (
