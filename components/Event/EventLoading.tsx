@@ -1,4 +1,6 @@
 import { Box, Stack } from "@chakra-ui/react";
+import styles from "../../styles/eventId.module.css"
+import ParticipantUserLoading from "../ParticipantUserLoading"
 
 export default function EventLoading() {
   return (
@@ -30,6 +32,39 @@ export default function EventLoading() {
         <Box className="skeletonLoading" w="85px" h="28px" rounded="lg" />
         <Box className="skeletonLoading" w="85px" h="28px" rounded="lg" />
       </Stack>
+
+      <div className={styles.participantsPanel}>
+        <Box>
+          <Box
+            className="skeletonLoading"
+            w="105px"
+            h="21px"
+            mb="5"
+            rounded="lg"
+          />
+
+          <Stack direction="column" spacing={5}>
+            <ParticipantUserLoading />
+          </Stack>
+        </Box>
+
+        <Box>
+          <Box
+            className="skeletonLoading"
+            w="115px"
+            h="21px"
+            mb="5"
+            rounded="lg"
+          />
+
+          <Stack direction="column" spacing={5}>
+            <ParticipantUserLoading />
+            <ParticipantUserLoading />
+            <ParticipantUserLoading />
+            <ParticipantUserLoading />
+          </Stack>
+        </Box>
+      </div>
     </Box>
   )
 }
