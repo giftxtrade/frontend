@@ -30,6 +30,7 @@ import styles from "../styles/home.module.css"
 import { Link } from "@chakra-ui/react"
 import * as NLink from "next/link"
 import { authStore } from "../store/auth-store"
+import ContentWrapper from "../components/ContentWrapper"
 
 export default function Home() {
   const [authState, setAuthState] = useState<AuthState>(authStore.getState())
@@ -168,107 +169,116 @@ export default function Home() {
         gToken={authState.gToken}
       />
 
-      <Container maxW="4xl">
-        <Box className={styles.sideContainer} p="1">
-          {invites.length > 0 ? (
-            <Invites
-              invites={invites}
-              handleAccept={handleAccept}
-              handleDecline={handleDecline}
-              user={authState.user}
-            />
-          ) : (
-            <></>
-          )}
+      <Container maxW="4xl" mb="20">
+        <ContentWrapper
+          primary={
+            <Box>
+              {invites.length > 0 ? (
+                <Invites
+                  invites={invites}
+                  handleAccept={handleAccept}
+                  handleDecline={handleDecline}
+                  user={authState.user}
+                />
+              ) : (
+                <></>
+              )}
 
-          <Flex
-            direction="row"
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Heading size="md" m="0" p="0" mt="1.5" mr="5">
-              My Events
-            </Heading>
-
-            <Button
-              size="sm"
-              colorScheme="gray"
-              onClick={onOpen}
-              leftIcon={<Icon as={BsPlusCircle} />}
-              disabled={loading}
-            >
-              New Event
-            </Button>
-          </Flex>
-
-          <Box
-            mt="5"
-            mb="10"
-            shadow={
-              !loading && (error || events.length) === 0 ? "none" : "base"
-            }
-            rounded="md"
-          >
-            {loading ? (
-              <Stack spacing={3}>
-                <EventBoxSmLoading />
-                <EventBoxSmLoading />
-              </Stack>
-            ) : error || events.length === 0 ? (
               <Flex
-                direction="column"
-                maxW="full"
+                direction="row"
                 alignItems="center"
-                justifyContent="center"
-                pt="10"
-                pb="10"
-                pr="5"
-                pl="5"
+                justifyContent="space-between"
               >
-                <Icon as={BsInboxesFill} fill="gray.700" boxSize="16" mb="5" />
-                <Heading size="lg" mb="2" color="gray.700">
-                  No Events
+                <Heading size="md" m="0" p="0" mt="1.5" mr="5">
+                  My Events
                 </Heading>
-                <Text
-                  color="gray.500"
-                  fontSize="14"
-                  size="md"
-                  textAlign="center"
+
+                <Button
+                  size="sm"
+                  colorScheme="gray"
+                  onClick={onOpen}
+                  leftIcon={<Icon as={BsPlusCircle} />}
+                  disabled={loading}
                 >
-                  You don't have any active events. Create a new event to get
-                  started, or join the{" "}
-                  <NextLink href="/i/gOxFJ7d66kr1KY7" passHref>
-                    <Link color="blue.400">Public Event</Link>
-                  </NextLink>{" "}
-                  to test out the GiftTrade platform.
-                </Text>
+                  New Event
+                </Button>
               </Flex>
-            ) : (
-              <Stack spacing={3}>
-                {events.map((e, i) => (
-                  <NLink.default
-                    href={`/events/${e.id}/${eventNameSlug(e.name)}`}
-                    key={`event#${i}`}
+
+              <Box
+                mt="5"
+                mb="10"
+                shadow={
+                  !loading && (error || events.length) === 0 ? "none" : "base"
+                }
+                rounded="md"
+              >
+                {loading ? (
+                  <Stack spacing={3}>
+                    <EventBoxSmLoading />
+                    <EventBoxSmLoading />
+                  </Stack>
+                ) : error || events.length === 0 ? (
+                  <Flex
+                    direction="column"
+                    maxW="full"
+                    alignItems="center"
+                    justifyContent="center"
+                    pt="10"
+                    pb="10"
+                    pr="5"
+                    pl="5"
                   >
-                    <a
-                      className="border-bottom-child"
-                      style={{ marginTop: "0px" }}
+                    <Icon
+                      as={BsInboxesFill}
+                      fill="gray.700"
+                      boxSize="16"
+                      mb="5"
+                    />
+                    <Heading size="lg" mb="2" color="gray.700">
+                      No Events
+                    </Heading>
+                    <Text
+                      color="gray.500"
+                      fontSize="14"
+                      size="md"
+                      textAlign="center"
                     >
-                      <EventBoxSm
-                        event={e}
-                        isInvite={false}
-                        handleAccept={handleAccept}
-                        handleDecline={handleDecline}
-                        index={i}
-                        user={authState.user}
-                      />
-                    </a>
-                  </NLink.default>
-                ))}
-              </Stack>
-            )}
-          </Box>
-        </Box>
+                      You don't have any active events. Create a new event to
+                      get started, or join the{" "}
+                      <NextLink href="/i/gOxFJ7d66kr1KY7" passHref>
+                        <Link color="blue.400">Public Event</Link>
+                      </NextLink>{" "}
+                      to test out the GiftTrade platform.
+                    </Text>
+                  </Flex>
+                ) : (
+                  <Stack spacing={3}>
+                    {events.map((e, i) => (
+                      <NLink.default
+                        href={`/events/${e.id}/${eventNameSlug(e.name)}`}
+                        key={`event#${i}`}
+                      >
+                        <a
+                          className="border-bottom-child"
+                          style={{ marginTop: "0px" }}
+                        >
+                          <EventBoxSm
+                            event={e}
+                            isInvite={false}
+                            handleAccept={handleAccept}
+                            handleDecline={handleDecline}
+                            index={i}
+                            user={authState.user}
+                          />
+                        </a>
+                      </NLink.default>
+                    ))}
+                  </Stack>
+                )}
+              </Box>
+            </Box>
+          }
+        />
       </Container>
 
       {loading ? (
