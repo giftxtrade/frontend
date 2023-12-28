@@ -1,4 +1,3 @@
-import { IEvent, IEventUser } from '../types/Event'
 import {
   Box,
   Heading,
@@ -6,19 +5,17 @@ import {
   Button,
   Badge,
   Stack,
-  Flex,
   Icon,
-  LinkOverlay
-} from '@chakra-ui/react'
-import moment from 'moment'
-import { BsCheck, BsX, BsClock } from 'react-icons/bs';
-import { eventNameSlug } from '../util/links';
-import { User } from '../store/jwt-payload';
-import ParticipantsMini from './ParticipantsMini';
-import Link from 'next/link';
+} from "@chakra-ui/react"
+import moment from "moment"
+import { BsCheck, BsX, BsClock } from "react-icons/bs"
+import { eventNameSlug } from "../util/links"
+import ParticipantsMini from "./ParticipantsMini"
+import Link from "next/link"
+import { User, Event } from "@giftxtrade/api-types"
 
 export interface IEventBoxSmProps {
-  event: IEventUser
+  event: Event
   isInvite: boolean
   index: number
   user: User
@@ -26,101 +23,130 @@ export interface IEventBoxSmProps {
   handleDecline: (eventId: number, index: number) => void
 }
 
-export default function EventBoxSm({ event, isInvite, handleAccept, handleDecline, index, user }: IEventBoxSmProps) {
+export default function EventBoxSm({
+  event,
+  isInvite,
+  handleAccept,
+  handleDecline,
+  index,
+  user,
+}: IEventBoxSmProps) {
   const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`
-  const meParticipant = event.participants.find(e => e.email === user?.email)
+  const meParticipant = event.participants?.find(
+    (e) => e.email === user.email && user.id == e.userId,
+  )
 
   return (
     <Box
       maxW="full"
-      borderWidth={isInvite ? "1px" : 'none'} borderRadius="lg" borderColor='gray.100'
+      borderWidth={isInvite ? "1px" : "none"}
+      borderRadius="lg"
+      borderColor="gray.100"
       overflow="hidden"
-      p='5'
-      backgroundColor={isInvite ? '#f9f9f9' : 'white'}
+      p="5"
+      backgroundColor={isInvite ? "#f9f9f9" : "white"}
       _hover={{
-        bg: '#fafafa'
+        bg: "#fafafa",
       }}
       _focus={{
-        bg: '#f8f8f8'
+        bg: "#f8f8f8",
       }}
     >
       {isInvite ? (
-        <Heading size='md'>
-          <Link href={eventUrl}>
-            {event.name}
-          </Link>
+        <Heading size="md">
+          <Link href={eventUrl}>{event.name}</Link>
         </Heading>
       ) : (
-          <Heading size='md'>
-            {event.name}
-          </Heading>
+        <Heading size="md">{event.name}</Heading>
       )}
 
-      <Text color='gray.500' fontSize='xs' mb='1' title='Draw date'>
-        <Icon as={BsClock} mr='1' />
-        <span>{moment(event.drawAt).format('ll')}</span>
+      <Text color="gray.500" fontSize="xs" mb="1" title="Draw date">
+        <Icon as={BsClock} mr="1" />
+        <span>{moment(event.drawAt).format("ll")}</span>
       </Text>
 
-      {isInvite || event.participants.length <= 1 ? <></> : (
-        <Box mt='1' mb='3'>
+      {isInvite || !event.participants || event.participants?.length <= 1 ? (
+        <></>
+      ) : (
+        <Box mt="1" mb="3">
           <ParticipantsMini participants={event?.participants} />
         </Box>
       )}
 
-      {
-        event.description ? (
-          <Text color='gray.600'>{event.description}</Text>
-        ) : <></>
-      }
+      {event.description ? (
+        <Text color="gray.600">{event.description}</Text>
+      ) : (
+        <></>
+      )}
 
-      <Stack direction='row' spacing='1' mt='2'>
+      <Stack direction="row" spacing="1" mt="2">
         {meParticipant?.organizer ? (
           <Badge
             borderRadius="full"
             px="2"
             colorScheme="teal"
-            title={'You ' + (isInvite ? 'will be' : 'are') + ' one of the organizers for this event'}
+            title={
+              "You " +
+              (isInvite ? "will be" : "are") +
+              " one of the organizers for this event"
+            }
           >
             Organizer
           </Badge>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
 
         {meParticipant?.participates ? (
           <Badge
             borderRadius="full"
             px="2"
             colorScheme="blue"
-            title={'You ' + (isInvite ? 'will be a' : 'are a') + ' participant for this event'}
+            title={
+              "You " +
+              (isInvite ? "will be a" : "are a") +
+              " participant for this event"
+            }
           >
             Participant
           </Badge>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
       </Stack>
 
       {isInvite ? (
-        <Stack direction='row' alignItems='center' justifyContent='flex-end' spacing='3' mt='4'>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="flex-end"
+          spacing="3"
+          mt="4"
+        >
           <Button
-            size='xs'
-            colorScheme='green'
-            title='Accept this event invite'
+            size="xs"
+            colorScheme="green"
+            title="Accept this event invite"
             onClick={() => handleAccept(event.id, index)}
-            leftIcon={<Icon as={BsCheck} boxSize='4' />}
+            leftIcon={<Icon as={BsCheck} boxSize="4" />}
           >
             Accept
           </Button>
 
           <Button
-            size='xs'
-            colorScheme='red'
-            variant='ghost'
-            title='Decline this event invite'
+            size="xs"
+            colorScheme="red"
+            variant="ghost"
+            title="Decline this event invite"
             onClick={() => handleDecline(event.id, index)}
-            leftIcon={<Icon as={BsX} boxSize='4' />}
+            leftIcon={<Icon as={BsX} boxSize="4" />}
           >
             Decline
           </Button>
         </Stack>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
     </Box>
   )
 }

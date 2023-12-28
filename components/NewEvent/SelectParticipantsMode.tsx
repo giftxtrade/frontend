@@ -17,7 +17,7 @@ import {
 import { IParticipantForm } from '../NewEvent';
 import { Dispatch, SetStateAction } from 'react';
 import { ParticipantForm } from '../ParticipantForm';
-import { IEventUser } from '../../types/Event';
+import { Event } from "@giftxtrade/api-types"
 
 export interface ISelectParticipantsMode {
   setMain: Dispatch<SetStateAction<boolean>>
@@ -30,7 +30,7 @@ export interface ISelectParticipantsMode {
   handleCreateEvent: (redirect: boolean) => void
   handleGenerateLink: () => void
 
-  redirectToEvent: (event: IEventUser) => void
+  redirectToEvent: (event: Event) => void
 }
 
 export default function SelectParticipantsMode({ name, forms, setForms, error, loading, setMain, handleGenerateLink, handleCreateEvent }: ISelectParticipantsMode) {

@@ -1,17 +1,21 @@
-import { Container, Image, Flex, Heading, Text, Link, Box } from "@chakra-ui/react";
-import JwtPayload from '../store/jwt-payload';
-import router from "next/router";
-import { useMediaQuery } from '@chakra-ui/react'
-import NextLink from 'next/link';
-import styles from '../styles/Navbar.module.css';
-import { changeProfileSize } from '../util/content';
+import {
+  Container,
+  Image,
+  Flex,
+  Heading,
+  Text,
+  Link,
+  Box,
+} from "@chakra-ui/react"
+import { useMediaQuery } from "@chakra-ui/react"
+import NextLink from "next/link"
+import styles from "../styles/Navbar.module.css"
+import { changeProfileSize } from "../util/content"
+import { authStore } from "../store/auth-store"
 
-export interface INavbarProps extends JwtPayload {
-  loggedIn: boolean
-}
-
-export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarProps) {
-  const [isSmallScreen] = useMediaQuery('(max-width: 370px)')
+export default function Navbar() {
+  const [isSmallScreen] = useMediaQuery("(max-width: 370px)")
+  const { user } = authStore.getState()
 
   return (
     <Container maxW="4xl" p="5" mb="10">
@@ -56,5 +60,5 @@ export default function Navbar({ loggedIn, user, accessToken, gToken }: INavbarP
         </NextLink>
       </Flex>
     </Container>
-  );
+  )
 }

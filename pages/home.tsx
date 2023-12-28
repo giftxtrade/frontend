@@ -15,7 +15,7 @@ import Head from "next/head"
 import Navbar from "../components/Navbar"
 import { BsInboxesFill, BsPlusCircle } from "react-icons/bs"
 import { NewEvent } from "../components/NewEvent"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { api } from "../util/api"
 import { IEventUser } from "../types/Event"
 import { AuthState } from "../store/jwt-payload"
@@ -30,13 +30,14 @@ import { Link } from "@chakra-ui/react"
 import * as NLink from "next/link"
 import { authStore } from "../store/auth-store"
 import ContentWrapper from "../components/ContentWrapper"
+import { Event } from "@giftxtrade/api-types"
 
 export default function Home() {
   const [authState, setAuthState] = useState<AuthState>(authStore.getState())
   const [tryAgainToggle, setTryAgainToggle] = useState(true)
 
-  const [invites, setInvites] = useState(Array<IEventUser>())
-  const [events, setEvents] = useState(Array<IEventUser>())
+  const [invites, setInvites] = useState(Array<Event>())
+  const [events, setEvents] = useState(Array<Event>())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -62,10 +63,10 @@ export default function Home() {
     }
 
     axios
-      .get(`${api.events}?user=true`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
+      .get(api.events, {
+        headers: { Authorization: "Bearer " + authState.token },
       })
-      .then(({ data }: { data: IEventUser[] }) => {
+      .then(({ data }: AxiosResponse<Event[]>) => {
         unstable_batchedUpdates(() => {
           setEvents(data)
           setLoading(false)
@@ -79,9 +80,9 @@ export default function Home() {
 
     axios
       .get(`${api.invites}`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
+        headers: { Authorization: "Bearer " + authState.token },
       })
-      .then(({ data }: { data: IEventUser[] }) => {
+      .then(({ data }: AxiosResponse<Event[]>) => {
         unstable_batchedUpdates(() => {
           setInvites(data)
         })
@@ -129,7 +130,7 @@ export default function Home() {
 
     axios
       .get(`${api.accept_invite}/${eventId}`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
+        headers: { Authorization: "Bearer " + authState.token },
       })
       .then(({ data }) => {
         router.push(`/events/${data.id}/${eventNameSlug(data.name)}`)
@@ -149,7 +150,7 @@ export default function Home() {
 
     axios
       .get(`${api.decline_invite}/${eventId}`, {
-        headers: { Authorization: "Bearer " + authState.accessToken },
+        headers: { Authorization: "Bearer " + authState.token },
       })
       .then(({ data }) => {})
       .catch((err) => console.log(err))
@@ -161,12 +162,7 @@ export default function Home() {
         <title>Home - GiftTrade</title>
       </Head>
 
-      <Navbar
-        loggedIn={authState.loggedIn}
-        accessToken={authState.accessToken}
-        user={authState.user}
-        gToken={authState.gToken}
-      />
+      <Navbar />
 
       <Container maxW="4xl" mb="20">
         <ContentWrapper
@@ -286,9 +282,9 @@ export default function Home() {
         <NewEvent
           isOpen={isOpen}
           onClose={onClose}
-          accessToken={authState.accessToken}
+          accessToken={authState.token}
           user={authState.user}
-          addEvent={(e: IEventUser) => setEvents([e, ...events])}
+          addEvent={(e: Event) => setEvents([e, ...events])}
         />
       )}
     </>

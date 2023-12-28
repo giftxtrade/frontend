@@ -45,7 +45,7 @@ export default function Login(props: { redirect: string | null }) {
             router.push(redirect ? redirect : "/home")
           }
         })
-        .catch((err) => console.error(err))
+        .catch((_) => setError(true))
     },
   })
 
@@ -66,7 +66,12 @@ export default function Login(props: { redirect: string | null }) {
         <Flex alignItems="center" justifyContent="center" p="20">
           <p>
             Something went wrong, please try logging in{" "}
-            <Link color="blue.600" href={api.google} fontWeight="bold">
+            <Link
+              color="blue.600"
+              href="#"
+              fontWeight="bold"
+              onClick={() => oauth()}
+            >
               again
             </Link>
           </p>

@@ -2,17 +2,17 @@ import {
   Modal,
   ModalOverlay,
 } from '@chakra-ui/react';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import { User } from '../store/jwt-payload';
-import { api } from '../util/api';
-import { unstable_batchedUpdates } from 'react-dom';
-import { IEvent, IEventUser } from '../types/Event';
-import MainMode from './NewEvent/MainMode';
-import SelectParticipantsMode from './NewEvent/SelectParticipantsMode';
-import GetLinkMode from './NewEvent/GetLinkMode';
-import { useRouter } from 'next/router';
-import { eventNameSlug } from '../util/links';
+import axios, { AxiosResponse } from "axios"
+import { useState, useEffect } from "react"
+import { api } from "../util/api"
+import { unstable_batchedUpdates } from "react-dom"
+import MainMode from "./NewEvent/MainMode"
+import SelectParticipantsMode from "./NewEvent/SelectParticipantsMode"
+import GetLinkMode from "./NewEvent/GetLinkMode"
+import { useRouter } from "next/router"
+import { eventNameSlug } from "../util/links"
+import { Event, User } from "@giftxtrade/api-types"
+import { CreateEvent, CreateParticipant } from "../../api/ts_types/types"
 
 export interface IParticipantForm {
   creator: boolean
@@ -27,10 +27,16 @@ export interface INewEventProps {
   onClose: () => void
   accessToken: string
   user: User
-  addEvent: (e: IEventUser) => void
+  addEvent: (e: Event) => void
 }
 
-export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewEventProps) {
+export function NewEvent({
+  isOpen,
+  onClose,
+  accessToken,
+  user,
+  addEvent,
+}: INewEventProps) {
   const [main, setMain] = useState(true)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
@@ -42,32 +48,35 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   const [reset, setReset] = useState(false)
   const [getLink, setGetLink] = useState(false)
   const [linkLoading, setLinkLoading] = useState(false)
-  const [link, setLink] = useState('')
-  const [event, setEvent] = useState<IEventUser>()
+  const [link, setLink] = useState("")
+  const [event, setEvent] = useState<Event>()
 
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
-    setForms([{
+    setForms([
+      {
         name: user.name,
         email: user.email,
         creator: true,
         organizer: true,
         participates: true,
-    }])
+      },
+    ])
   }, [reset])
 
-  const getData = () => {
-    const participants: any[] = forms.map(f => {
-      return {
-        name: f.name,
-        email: f.email,
-        address: "",
-        organizer: f.creator ? true : f.organizer,
-        participates: f.participates,
-        accepted: f.creator ? true : false
-      }
-    })
+  const getData = (): CreateEvent => {
+    const participants = forms.map(
+      (f) =>
+        ({
+          name: f.name,
+          email: f.email,
+          address: "",
+          organizer: f.creator ? true : f.organizer,
+          participates: f.participates,
+          accepted: f.creator ? true : false,
+        } as CreateParticipant),
+    )
 
     const drawDateF = new Date(drawDate)
     const closeDateF = new Date(drawDate)
@@ -77,10 +86,10 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
       name: name,
       description: description,
       budget: budget,
-      invitationMessage: "",
-      drawAt: drawDateF.toString(),
-      closeAt: closeDateF.toString(),
-      participants: participants
+      // invitationMessage: "",
+      drawAt: drawDateF.toISOString(),
+      closeAt: closeDateF.toISOString(),
+      participants: participants,
     }
   }
 
@@ -88,21 +97,22 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
     setLoading(true)
     setError(false)
 
-    axios.post(api.events, getData(), {
-      headers: {
-        "Authorization": "Bearer " + accessToken
-      }
-    })
-      .then(({ data }: { data: IEventUser }) => {
+    axios
+      .post(api.events, getData(), {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .then(({ data }: AxiosResponse<Event>) => {
         if (redirect) {
           redirectToEvent(data)
         } else {
           unstable_batchedUpdates(() => {
             setMain(true)
-            setName('')
-            setDescription('')
+            setName("")
+            setDescription("")
             setBudget(0)
-            setDrawDate('')
+            setDrawDate("")
             setReset(true)
             setLoading(false)
             addEvent(data)
@@ -110,7 +120,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
           })
         }
       })
-      .catch(err => {
+      .catch((err) => {
         unstable_batchedUpdates(() => {
           setError(true)
           setLoading(false)
@@ -118,7 +128,7 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
       })
   }
 
-  const redirectToEvent = (event: IEventUser) => {
+  const redirectToEvent = (event: Event) => {
     router.push(`/events/${event.id}/${eventNameSlug(event.name)}`)
   }
 
@@ -126,23 +136,26 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
     setGetLink(true)
     setLinkLoading(true)
 
-    axios.post(api.events, getData(), {
-      headers: {
-        "Authorization": "Bearer " + accessToken
-      }
-    })
-      .then(({ data }: { data: IEventUser }) => {
+    axios
+      .post(api.events, getData(), {
+        headers: {
+          Authorization: "Bearer " + accessToken,
+        },
+      })
+      .then(({ data }: AxiosResponse<Event>) => {
         addEvent(data)
         setEvent(data)
 
-        axios.post(
-          `${api.get_link}/${data.id}`,
-          {
-            expirationDate: new Date(drawDate).toString()
-          },
-          {
-            headers: { "Authorization": "Bearer " + accessToken }
-          })
+        axios
+          .post(
+            `${api.get_link}/${data.id}`,
+            {
+              expirationDate: new Date(drawDate).toString(),
+            },
+            {
+              headers: { Authorization: "Bearer " + accessToken },
+            },
+          )
           .then(({ data }) => {
             unstable_batchedUpdates(() => {
               setError(false)
@@ -150,14 +163,14 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
               setLink(data.code)
             })
           })
-          .catch(err => {
+          .catch((err) => {
             unstable_batchedUpdates(() => {
               setLinkLoading(false)
               setError(true)
             })
           })
       })
-      .catch(err => {
+      .catch((err) => {
         unstable_batchedUpdates(() => {
           setError(true)
           setLoading(false)
@@ -166,55 +179,56 @@ export function NewEvent({ isOpen, onClose, accessToken, user, addEvent }: INewE
   }
 
   return (
-    <Modal size='md' isOpen={isOpen} onClose={onClose} closeOnOverlayClick={false}>
+    <Modal
+      size="md"
+      isOpen={isOpen}
+      onClose={onClose}
+      closeOnOverlayClick={false}
+    >
       <ModalOverlay />
-      {
-        main ? (
-          <MainMode
-            name={name}
-            description={description}
-            budget={budget}
-            drawDate={drawDate}
-            setName={setName}
-            setDescription={setDescription}
-            setBudget={setBudget}
-            setDrawDate={setDrawDate}
-            onClose={onClose}
-            setMain={setMain}
-          />
-        ) : (
-            !getLink ? (
-              <SelectParticipantsMode
-                name={name}
-                forms={forms}
-                setForms={setForms}
-                error={error}
-                loading={loading}
-                setMain={setMain}
-                handleGenerateLink={handleGenerateLink}
-                handleCreateEvent={handleCreateEvent}
-                redirectToEvent={redirectToEvent}
-              />
-            ) : (
-                <GetLinkMode
-                  linkLoading={linkLoading}
-                  error={error}
-                  link={link}
-                  drawDate={drawDate}
-                  setMain={setMain}
-                  setGetLink={setGetLink}
-                  setBudget={setBudget}
-                  setName={setName}
-                  setDrawDate={setDrawDate}
-                  setDescription={setDescription}
-                  setReset={setReset}
-                  onClose={onClose}
-                  event={event}
-                  redirectToEvent={redirectToEvent}
-                />
-            )
-          )
-      }
+      {main ? (
+        <MainMode
+          name={name}
+          description={description}
+          budget={budget}
+          drawDate={drawDate}
+          setName={setName}
+          setDescription={setDescription}
+          setBudget={setBudget}
+          setDrawDate={setDrawDate}
+          onClose={onClose}
+          setMain={setMain}
+        />
+      ) : !getLink ? (
+        <SelectParticipantsMode
+          name={name}
+          forms={forms}
+          setForms={setForms}
+          error={error}
+          loading={loading}
+          setMain={setMain}
+          handleGenerateLink={handleGenerateLink}
+          handleCreateEvent={handleCreateEvent}
+          redirectToEvent={redirectToEvent}
+        />
+      ) : (
+        <GetLinkMode
+          linkLoading={linkLoading}
+          error={error}
+          link={link}
+          drawDate={drawDate}
+          setMain={setMain}
+          setGetLink={setGetLink}
+          setBudget={setBudget}
+          setName={setName}
+          setDrawDate={setDrawDate}
+          setDescription={setDescription}
+          setReset={setReset}
+          onClose={onClose}
+          event={event}
+          redirectToEvent={redirectToEvent}
+        />
+      )}
     </Modal>
   )
 }

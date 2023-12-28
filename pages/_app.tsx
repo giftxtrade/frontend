@@ -75,7 +75,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       {init ? (
         <>
           <ChakraProvider>
-            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID || ""}>
               <Component {...pageProps} />
             </GoogleOAuthProvider>
           </ChakraProvider>

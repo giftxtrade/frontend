@@ -2,6 +2,8 @@ import { createSlice, configureStore } from '@reduxjs/toolkit'
 import { AuthState } from "./jwt-payload";
 import { Auth } from '@giftxtrade/api-types';
 
+export const ACCESS_TOKEN_KEY = "access_token"
+
 export const authSlice = createSlice({
   name: "auth",
   initialState: {} as AuthState,
@@ -14,9 +16,11 @@ export const authSlice = createSlice({
       state.user = {
         ...payload.user
       };
+
+      localStorage.setItem(ACCESS_TOKEN_KEY, state.token)
     },
     logout: (state) => {
-      localStorage.removeItem("access_token");
+      localStorage.removeItem(ACCESS_TOKEN_KEY);
 
       state.loggedIn = false;
       state.user = { id: 0, name: "", email: "", imageUrl: "", active: false };

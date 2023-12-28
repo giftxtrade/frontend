@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import GetLink from '../GetLink';
-import { IEventUser } from '../../types/Event';
+import { Event } from "@giftxtrade/api-types"
 
 export interface IGetLinkMode {
   setMain: Dispatch<SetStateAction<boolean>>
@@ -31,8 +31,8 @@ export interface IGetLinkMode {
   link: string
   onClose: () => void
 
-  redirectToEvent: (event: IEventUser) => void
-  event: IEventUser | undefined
+  redirectToEvent: (event: Event) => void
+  event: Event | undefined
 }
 
 export default function GetLinkMode({ linkLoading, error, link, drawDate, setMain, setGetLink, setBudget, setName, setDrawDate, setDescription, setReset, onClose, redirectToEvent, event }: IGetLinkMode) {
