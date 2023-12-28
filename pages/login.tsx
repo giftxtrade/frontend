@@ -8,8 +8,8 @@ import { toStringOrNull } from '../util/content';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios, { AxiosResponse } from "axios"
 import { authStore, login } from "../store/auth-store"
-import { AuthUser } from "../store/jwt-payload"
 import { Flex, Link } from "@chakra-ui/react"
+import { Auth } from "@giftxtrade/api-types"
 
 export default function Login(props: { redirect: string | null }) {
   const router = useRouter()
@@ -21,11 +21,11 @@ export default function Login(props: { redirect: string | null }) {
 
       axios
         .get(requestUri)
-        .then(({ data, status }: AxiosResponse<AuthUser>) => {
+        .then(({ data }: AxiosResponse<Auth>) => {
           authStore.dispatch(
             login({
               user: data.user,
-              accessToken: data.token,
+              token: data.token,
             }),
           )
 

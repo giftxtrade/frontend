@@ -1,15 +1,16 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit'
-import JwtPayload, { AuthState } from "./jwt-payload";
+import { AuthState } from "./jwt-payload";
+import { Auth } from '@giftxtrade/api-types';
 
 export const authSlice = createSlice({
   name: "auth",
   initialState: {} as AuthState,
   reducers: {
-    login: (state, { payload }: { payload: JwtPayload }) => {
-      if (!payload.accessToken || payload.accessToken.trim() === "") return;
+    login: (state, { payload }: { payload: Auth }) => {
+      if (!payload.token || payload.token.trim() === "") return;
 
       state.loggedIn = true;
-      state.accessToken = payload.accessToken;
+      state.token = payload.token;
       state.user = {
         ...payload.user
       };
@@ -19,7 +20,7 @@ export const authSlice = createSlice({
 
       state.loggedIn = false;
       state.user = { id: 0, name: "", email: "", imageUrl: "", active: false };
-      state.accessToken = "";
+      state.token = "";
     },
   },
 });
