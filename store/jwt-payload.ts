@@ -1,20 +1,26 @@
 export interface User {
   id: number;
   name: string;
+  phone?: string;
   email: string;
   imageUrl: string;
+  active: boolean;
+  admin?: boolean;
+}
+
+export interface AuthUser {
+  user: User;
+  token: string;
 }
 
 export interface AuthState {
   accessToken: string;
   user: User;
-  gToken: string;
   loggedIn: boolean;
 }
 
 export default interface JwtPayload {
   user: User;
-  gToken: string;
   accessToken: string;
 }
 
@@ -22,5 +28,4 @@ export interface JwtAuthReturn {
   loggedIn: boolean;
   user: User;
   accessToken: string;
-  gToken: string;
 }

@@ -7,7 +7,8 @@ export const base = make_base()
 export const api = {
   home: base,
   google: base + 'auth/google',
-  google_redirect: base + 'auth/google/redirect',
+  google_redirect: base + 'auth/google/callback',
+  google_verify: base + 'auth/google/verify',
   profile: base + 'auth/profile', // Auth required
   products: base + 'products', // GET -> Params: limit, page, min_price, max_price, search
   events: base + 'events', // Auth required [POST], [GET]

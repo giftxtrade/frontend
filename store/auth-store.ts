@@ -1,5 +1,5 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit'
-import JwtPayload, { AuthState, User } from "./jwt-payload";
+import JwtPayload, { AuthState } from "./jwt-payload";
 
 export const authSlice = createSlice({
   name: "auth",
@@ -10,20 +10,15 @@ export const authSlice = createSlice({
 
       state.loggedIn = true;
       state.accessToken = payload.accessToken;
-      state.gToken = payload.gToken;
       state.user = {
-        id: payload.user.id,
-        name: payload.user.name,
-        email: payload.user.email,
-        imageUrl: payload.user.imageUrl,
+        ...payload.user
       };
     },
     logout: (state) => {
       localStorage.removeItem("access_token");
 
       state.loggedIn = false;
-      state.user = { id: 0, name: "", email: "", imageUrl: "" };
-      state.gToken = "";
+      state.user = { id: 0, name: "", email: "", imageUrl: "", active: false };
       state.accessToken = "";
     },
   },

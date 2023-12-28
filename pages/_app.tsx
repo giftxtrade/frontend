@@ -8,6 +8,9 @@ import "../styles/main.css"
 import "../public/fonts/fonts.css"
 import Footer from "../components/Footer"
 import LoadingScreen from "../components/LoadingScreen"
+import { GoogleOAuthProvider } from "@react-oauth/google"
+
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 function MyApp({ Component, pageProps }: AppProps) {
   // Set true if auth state is initialized
@@ -72,7 +75,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       {init ? (
         <>
           <ChakraProvider>
-            <Component {...pageProps} />
+            <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+              <Component {...pageProps} />
+            </GoogleOAuthProvider>
           </ChakraProvider>
 
           <Footer />
