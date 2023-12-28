@@ -17,14 +17,12 @@ import { BsInboxesFill, BsPlusCircle } from "react-icons/bs"
 import { NewEvent } from "../components/NewEvent"
 import axios, { AxiosResponse } from "axios"
 import { api } from "../util/api"
-import { IEventUser } from "../types/Event"
 import { AuthState } from "../store/jwt-payload"
 import Invites from "../components/Invites"
 import { unstable_batchedUpdates } from "react-dom"
 import EventBoxSm from "../components/EventBoxSm"
 import { useRouter } from "next/router"
 import NextLink from "next/link"
-import { eventNameSlug } from "../util/links"
 import EventBoxSmLoading from "../components/EventBoxSmLoading"
 import { Link } from "@chakra-ui/react"
 import * as NLink from "next/link"
@@ -132,8 +130,8 @@ export default function Home() {
       .get(`${api.accept_invite}/${eventId}`, {
         headers: { Authorization: "Bearer " + authState.token },
       })
-      .then(({ data }) => {
-        router.push(`/events/${data.id}/${eventNameSlug(data.name)}`)
+      .then(({ data }: AxiosResponse<Event>) => {
+        router.push(`/events/${data.id}/${data.slug}`)
       })
       .catch((err) => console.log(err))
   }
@@ -250,7 +248,7 @@ export default function Home() {
                   <Stack spacing={3}>
                     {events.map((e, i) => (
                       <NLink.default
-                        href={`/events/${e.id}/${eventNameSlug(e.name)}`}
+                        href={`/events/${e.id}/${e.slug}`}
                         key={`event#${i}`}
                       >
                         <a

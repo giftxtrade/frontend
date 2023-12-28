@@ -47,7 +47,7 @@ export default function EventPage() {
       () => {
         axios
           .get(`${api.draws}/me/${eventId}`, {
-            headers: { Authorization: "Bearer " + authState.accessToken },
+            headers: { Authorization: "Bearer " + authState.token },
           })
           .then(({ data }: { data: IDrawParticipant }) => {
             setLoading(false)
@@ -94,7 +94,7 @@ export default function EventPage() {
           sidebar={
             <MyWishlist
               event={event}
-              accessToken={authState.accessToken}
+              accessToken={authState.token}
               meParticipant={meParticipant}
             />
           }
@@ -128,12 +128,7 @@ export default function EventPage() {
         />
       </Head>
 
-      <Navbar
-        loggedIn={authState.loggedIn}
-        accessToken={authState.accessToken}
-        user={authState.user}
-        gToken={authState.gToken}
-      />
+      <Navbar />
 
       <Container maxW="4xl" mb="20">
         {renderEventBlock()}
@@ -172,7 +167,7 @@ export function fetchEvent(
 
   axios
     .get(`${api.events}/${eventId}`, {
-      headers: { Authorization: "Bearer " + authState.accessToken },
+      headers: { Authorization: "Bearer " + authState.token },
     })
     .then(({ data }: { data: IEventFull }) => {
       unstable_batchedUpdates(() => {

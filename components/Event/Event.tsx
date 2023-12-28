@@ -68,38 +68,38 @@ export default function Event({
   const [isXSmallScreen] = useMediaQuery("(max-width: 365px)");
 
   const generateLink = () => {
-    setLinkLoading(true);
-    setLinkError(false);
+    setLinkLoading(true)
+    setLinkError(false)
 
     axios
       .post(
         `${api.get_link}/${event.id}`,
         { expirationDate: new Date(event.drawAt).toString() },
-        { headers: { Authorization: "Bearer " + authState.accessToken } }
+        { headers: { Authorization: "Bearer " + authState.token } },
       )
       .then(({ data }: { data: ILink }) => {
         unstable_batchedUpdates(() => {
-          setLinkError(false);
-          setLinkLoading(false);
+          setLinkError(false)
+          setLinkLoading(false)
 
-          const eventWithLink: IEventFull = { ...event };
-          eventWithLink.links = [data];
-          setEvent(eventWithLink);
-        });
+          const eventWithLink: IEventFull = { ...event }
+          eventWithLink.links = [data]
+          setEvent(eventWithLink)
+        })
       })
       .catch((_) => {
         unstable_batchedUpdates(() => {
-          setLinkError(true);
-          setLinkLoading(false);
-        });
-      });
-  };
+          setLinkError(true)
+          setLinkLoading(false)
+        })
+      })
+  }
 
   return (
     <>
       {!meParticipant.accepted ? (
         <Box mb="5">
-          <PendingInvite event={event} accessToken={authState.accessToken} />
+          <PendingInvite event={event} accessToken={authState.token} />
         </Box>
       ) : (
         <></>
@@ -150,7 +150,7 @@ export default function Event({
                 colorScheme="teal"
                 title="Event budget"
               >
-                {numberToCurrency(event.budget)}
+                {event.budget}
               </Badge>
             </Box>
 
@@ -178,36 +178,38 @@ export default function Event({
 
         <Box mt="5">
           <Stack direction="row" spacing="2" justifyContent="flex-end">
-            {meParticipant.organizer ? (
-              <Button
-                leftIcon={<Icon as={BsShuffle} />}
-                size={isXSmallScreen ? "xs" : "sm"}
-                colorScheme="blue"
-                onClick={() => {
-                  setShowDraw(true);
-                  onOpen();
-                }}
-                disabled={
-                  !event.participants
-                    .map((v) => v.accepted)
-                    .reduce((prev, cur) => prev && cur) ||
-                  event.participants.length < 2
-                }
-              >
-                Draw
-              </Button>
-            ) : (
-              <></>
-            )}
+            {
+              meParticipant.organizer ? (
+                <Button
+                  leftIcon={<Icon as={BsShuffle} />}
+                  size={isXSmallScreen ? "xs" : "sm"}
+                  colorScheme="blue"
+                  onClick={() => {
+                    setShowDraw(true)
+                    onOpen()
+                  }}
+                  disabled={
+                    !event.participants
+                      .map((v) => v.accepted)
+                      .reduce((prev, cur) => prev && cur) ||
+                    event.participants.length < 2
+                  }
+                >
+                  Draw
+                </Button>
+              ) : (
+                <></>
+              )
+            }
 
-            <Button
+            ;<Button
               leftIcon={<Icon as={BsLink45Deg} />}
               size={isXSmallScreen ? "xs" : "sm"}
               colorScheme="teal"
               onClick={() => {
-                setLinkModal(true);
-                onOpen();
-                if (event.links.length === 0) generateLink();
+                setLinkModal(true)
+                onOpen()
+                if (event.links.length === 0) generateLink()
               }}
             >
               Share Link
@@ -219,8 +221,8 @@ export default function Event({
                 size={isXSmallScreen ? "xs" : "sm"}
                 colorScheme="blackAlpha"
                 onClick={() => {
-                  setSettingsModal(true);
-                  onOpen();
+                  setSettingsModal(true)
+                  onOpen()
                 }}
               >
                 Settings
@@ -231,8 +233,8 @@ export default function Event({
                 size={isXSmallScreen ? "xs" : "sm"}
                 colorScheme="red"
                 onClick={() => {
-                  setLeaveGroupModal(true);
-                  onOpen();
+                  setLeaveGroupModal(true)
+                  onOpen()
                 }}
                 variant="ghost"
               >
@@ -338,5 +340,5 @@ export default function Event({
         isOpen={isOpen}
       />
     </>
-  );
+  )
 }
