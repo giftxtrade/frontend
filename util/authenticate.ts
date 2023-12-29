@@ -1,9 +1,10 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { api } from '../util/api';
-import { authStore, login, logout } from '../store/auth-store';
+import { authStore, login, logout, ACCESS_TOKEN_KEY } from '../store/auth-store';
+import { Auth } from '@giftxtrade/api-types';
 
 export default async function authenticate() {
-  const accessToken = localStorage.getItem('access_token')
+  const accessToken = localStorage.getItem(ACCESS_TOKEN_KEY)
   if (!accessToken || accessToken.trim() === "") {
     authStore.dispatch(logout());
     return false;
@@ -14,11 +15,10 @@ export default async function authenticate() {
   await axios.get(api.profile, {
     headers: { 'Authorization': `Bearer ${accessToken}` }
   })
-    .then(({ data }) => {
+    .then(({ data }: AxiosResponse<Auth>) => {
       authStore.dispatch(login({
-        accessToken: accessToken,
+        token: data.token,
         user: data.user,
-        gToken: data.gToken
       }))
 
       loggedIn = true
