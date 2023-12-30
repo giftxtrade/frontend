@@ -9,7 +9,6 @@ import {
 } from "@chakra-ui/react"
 import moment from "moment"
 import { BsCheck, BsX, BsClock } from "react-icons/bs"
-import { eventNameSlug } from "../util/links"
 import ParticipantsMini from "./ParticipantsMini"
 import Link from "next/link"
 import { User, Event } from "@giftxtrade/api-types"
@@ -19,8 +18,8 @@ export interface IEventBoxSmProps {
   isInvite: boolean
   index: number
   user: User
-  handleAccept: (eventId: number, index: number) => void
-  handleDecline: (eventId: number, index: number) => void
+  handleAccept: (eventId: number) => void
+  handleDecline: (eventId: number) => void
 }
 
 export default function EventBoxSm({
@@ -28,10 +27,9 @@ export default function EventBoxSm({
   isInvite,
   handleAccept,
   handleDecline,
-  index,
   user,
 }: IEventBoxSmProps) {
-  const eventUrl = `/events/${event.id}/${eventNameSlug(event.name)}`
+  const eventUrl = `/events/${event.id}/${event.slug}`
   const meParticipant = event.participants?.find(
     (e) => e.email === user.email && user.id == e.userId,
   )
@@ -127,7 +125,7 @@ export default function EventBoxSm({
             size="xs"
             colorScheme="green"
             title="Accept this event invite"
-            onClick={() => handleAccept(event.id, index)}
+            onClick={() => handleAccept(event.id)}
             leftIcon={<Icon as={BsCheck} boxSize="4" />}
           >
             Accept
@@ -138,7 +136,7 @@ export default function EventBoxSm({
             colorScheme="red"
             variant="ghost"
             title="Decline this event invite"
-            onClick={() => handleDecline(event.id, index)}
+            onClick={() => handleDecline(event.id)}
             leftIcon={<Icon as={BsX} boxSize="4" />}
           >
             Decline

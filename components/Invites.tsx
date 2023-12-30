@@ -6,15 +6,14 @@ import {
   Spinner,
   Button,
   Stack,
-} from '@chakra-ui/react'
-import { User } from '../store/jwt-payload'
-import { IEventUser } from '../types/Event'
-import EventBoxSm from './EventBoxSm'
+} from "@chakra-ui/react"
+import EventBoxSm from "./EventBoxSm"
+import { Event, User } from "@giftxtrade/api-types"
 
 export interface IInvitesProps {
-  invites: IEventUser[]
-  handleAccept: (eventId: number, index: number) => void
-  handleDecline: (eventId: number, index: number) => void
+  invites: Event[]
+  handleAccept: (eventId: number) => void
+  handleDecline: (eventId: number) => void
   user: User
 }
 

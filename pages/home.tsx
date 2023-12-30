@@ -115,29 +115,38 @@ export default function Home() {
     return <></>
   }
 
-  const handleAccept = (eventId: number, index: number) => {
-    setEvents([invites[index], ...events])
-    setInvites(invites.filter((_, i) => i !== index))
-    toast({
-      title: "Invite accepted!",
-      status: "info",
-      duration: 2000,
-      isClosable: true,
-      variant: "subtle",
-    })
-
+  const handleAccept = (eventId: number) => {
     axios
       .get(`${api.accept_invite}/${eventId}`, {
         headers: { Authorization: "Bearer " + authState.token },
       })
-      .then(({ data }: AxiosResponse<Event>) => {
-        router.push(`/events/${data.id}/${data.slug}`)
+      .then(({ data: event }: AxiosResponse<Event>) => {
+        setEvents(
+          [event, ...events].sort((a, b) => a.drawAt.localeCompare(b.drawAt)),
+        )
+        setInvites(invites.filter(({ id }) => id !== event.id))
+        toast({
+          title: "Invite accepted!",
+          status: "info",
+          duration: 2000,
+          isClosable: true,
+          variant: "subtle",
+        })
+        router.push(`/events/${event.id}/${event.slug}`)
       })
-      .catch((err) => console.log(err))
+      .catch((_err) => {
+        toast({
+          title: "Could not accept invite. Please try again.",
+          status: "error",
+          duration: 2000,
+          isClosable: true,
+          variant: "subtle",
+        })
+      })
   }
 
-  const handleDecline = (eventId: number, index: number) => {
-    setInvites(invites.filter((_, i) => i !== index))
+  const handleDecline = (eventId: number) => {
+    setInvites(invites.filter((e) => e.id !== eventId))
     toast({
       title: "Invite declined!",
       status: "info",
