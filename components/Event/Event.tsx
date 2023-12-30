@@ -9,8 +9,7 @@ import {
   useMediaQuery,
   useDisclosure,
 } from "@chakra-ui/react";
-import moment from "moment";
-import numberToCurrency from "../../util/currency";
+import moment from "moment"
 import {
   BsClock,
   BsFillPeopleFill,
@@ -18,30 +17,30 @@ import {
   BsGearWideConnected,
   BsLink45Deg,
   BsShuffle,
-} from "react-icons/bs";
-import PendingInvite from "../PendingInvite";
-import { IParticipantUser } from "../../types/Participant";
-import { IEventFull } from "../../types/Event";
-import { AuthState } from "../../store/jwt-payload";
-import { Dispatch, SetStateAction, useState } from "react";
-import axios from "axios";
-import { api } from "../../util/api";
-import { ILink } from "../../types/Link";
-import { unstable_batchedUpdates } from "react-dom";
-import ParticipantUser from "../ParticipantUser";
-import styles from "../../styles/eventId.module.css";
-import EventOptionsModal from "./EventOptionsModal";
+} from "react-icons/bs"
+import PendingInvite from "../PendingInvite"
+import { IParticipantUser } from "../../types/Participant"
+import { AuthState } from "../../store/jwt-payload"
+import { Dispatch, SetStateAction, useState } from "react"
+import axios from "axios"
+import { api } from "../../util/api"
+import { ILink } from "../../types/Link"
+import { unstable_batchedUpdates } from "react-dom"
+import ParticipantUser from "../ParticipantUser"
+import styles from "../../styles/eventId.module.css"
+import EventOptionsModal from "./EventOptionsModal"
+import { Event } from "@giftxtrade/api-types"
 
 export interface IEventProps {
-  event: IEventFull;
-  authState: AuthState;
-  meParticipant: IParticipantUser;
-  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
-  myDraw: IParticipantUser | undefined;
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>;
+  event: Event
+  authState: AuthState
+  meParticipant: IParticipantUser
+  setEvent: Dispatch<SetStateAction<Event | undefined>>
+  myDraw: IParticipantUser | undefined
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
 }
 
-export default function Event({
+export default function EventComponent({
   event,
   authState,
   meParticipant,
@@ -49,23 +48,23 @@ export default function Event({
   myDraw,
   setMyDraw,
 }: IEventProps) {
-  const [showDraw, setShowDraw] = useState(false);
-  const [linkModal, setLinkModal] = useState(false);
-  const [settingsModal, setSettingsModal] = useState(false);
-  const [leaveGroupModal, setLeaveGroupModal] = useState(true);
-  const [linkLoading, setLinkLoading] = useState(false);
-  const [linkError, setLinkError] = useState(false);
+  const [showDraw, setShowDraw] = useState(false)
+  const [linkModal, setLinkModal] = useState(false)
+  const [settingsModal, setSettingsModal] = useState(false)
+  const [leaveGroupModal, setLeaveGroupModal] = useState(true)
+  const [linkLoading, setLinkLoading] = useState(false)
+  const [linkError, setLinkError] = useState(false)
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const totalParticipants = event.participants.filter(
-    (p) => p.participates
-  ).length;
-  const activeParticipants = event.participants.filter(
-    (p) => p.participates && p.accepted
-  ).length;
+  const totalParticipants = event.participants?.filter(
+    (p) => p.participates,
+  ).length
+  const activeParticipants = event.participants?.filter(
+    (p) => p.participates && p.accepted,
+  ).length
 
-  const [isXSmallScreen] = useMediaQuery("(max-width: 365px)");
+  const [isXSmallScreen] = useMediaQuery("(max-width: 365px)")
 
   const generateLink = () => {
     setLinkLoading(true)
@@ -82,7 +81,7 @@ export default function Event({
           setLinkError(false)
           setLinkLoading(false)
 
-          const eventWithLink: IEventFull = { ...event }
+          const eventWithLink: Event = { ...event }
           eventWithLink.links = [data]
           setEvent(eventWithLink)
         })
@@ -178,43 +177,40 @@ export default function Event({
 
         <Box mt="5">
           <Stack direction="row" spacing="2" justifyContent="flex-end">
-            {
-              meParticipant.organizer ? (
-                <Button
-                  leftIcon={<Icon as={BsShuffle} />}
-                  size={isXSmallScreen ? "xs" : "sm"}
-                  colorScheme="blue"
-                  onClick={() => {
-                    setShowDraw(true)
-                    onOpen()
-                  }}
-                  disabled={
-                    !event.participants
-                      .map((v) => v.accepted)
-                      .reduce((prev, cur) => prev && cur) ||
-                    event.participants.length < 2
-                  }
-                >
-                  Draw
-                </Button>
-              ) : (
-                <></>
-              )
-            }
-
-            ;<Button
+            {meParticipant.organizer ? (
+              <Button
+                leftIcon={<Icon as={BsShuffle} />}
+                size={isXSmallScreen ? "xs" : "sm"}
+                colorScheme="blue"
+                onClick={() => {
+                  setShowDraw(true)
+                  onOpen()
+                }}
+                disabled={
+                  !event.participants
+                    ?.map((v) => v.accepted)
+                    ?.reduce((prev, cur) => prev && cur) ||
+                  event.participants.length < 2
+                }
+              >
+                Draw
+              </Button>
+            ) : (
+              <></>
+            )}
+            ;
+            <Button
               leftIcon={<Icon as={BsLink45Deg} />}
               size={isXSmallScreen ? "xs" : "sm"}
               colorScheme="teal"
               onClick={() => {
                 setLinkModal(true)
                 onOpen()
-                if (event.links.length === 0) generateLink()
+                if (event.links?.length === 0) generateLink()
               }}
             >
               Share Link
             </Button>
-
             {meParticipant.organizer ? (
               <Button
                 leftIcon={<Icon as={BsGearWideConnected} />}
@@ -276,8 +272,8 @@ export default function Event({
 
           <Stack direction="column" spacing={5}>
             {event.participants
-              .filter((p) => p.organizer)
-              .map((p, i) => (
+              ?.filter((p) => p.organizer)
+              ?.map((p, i) => (
                 <ParticipantUser
                   user={p.user}
                   name={p.name}
@@ -300,8 +296,8 @@ export default function Event({
           </Heading>
           <Stack direction="column" spacing={5}>
             {event.participants
-              .filter((p) => p.participates)
-              .map((p, i) => (
+              ?.filter((p) => p.participates)
+              ?.map((p, i) => (
                 <ParticipantUser
                   user={p.user}
                   name={p.name}

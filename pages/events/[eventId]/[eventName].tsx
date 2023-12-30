@@ -1,14 +1,13 @@
 import Head from "next/head";
 import Navbar from "../../../components/Navbar";
 import { useState, useEffect, SetStateAction, Dispatch } from "react";
-import { authStore } from "../../../store/auth-store";
-import { IEventFull } from "../../../types/Event";
-import { NextRouter, useRouter } from "next/router";
-import { api } from "../../../util/api";
-import axios from "axios";
+import { authStore } from "../../../store/auth-store"
+import { NextRouter, useRouter } from "next/router"
+import { api } from "../../../util/api"
+import axios, { AxiosResponse } from "axios"
 import { Container, Icon } from "@chakra-ui/react"
 import { AuthState } from "../../../store/jwt-payload"
-import Event from "../../../components/Event/Event"
+import EventComponent from "../../../components/Event/Event"
 import { BsExclamationCircle } from "react-icons/bs"
 import ErrorBlock from "../../../components/ErrorBlock"
 import ContentWrapper from "../../../components/ContentWrapper"
@@ -20,13 +19,14 @@ import EventSidebarMedium from "../../../components/Event/EventSidebarMedium"
 import { unstable_batchedUpdates } from "react-dom"
 import { eventNameSlug } from "../../../util/links"
 import EventSidebarLoading from "../../../components/Event/EventSidebarLoading"
+import { Event } from "@giftxtrade/api-types"
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true) // Loading state for the event page
   const [error, setError] = useState(false)
 
   const [authState, setAuthState] = useState<AuthState>(authStore.getState())
-  const [event, setEvent] = useState<IEventFull>()
+  const [event, setEvent] = useState<Event>()
   const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
   const [myDraw, setMyDraw] = useState<IParticipantUser>()
 
@@ -82,7 +82,7 @@ export default function EventPage() {
       return (
         <ContentWrapper
           primary={
-            <Event
+            <EventComponent
               event={event}
               authState={authState}
               meParticipant={meParticipant}
@@ -141,7 +141,7 @@ export function fetchEvent(
   eventId: number | string | string[] | undefined,
   authState: AuthState,
   setAuthState: Dispatch<SetStateAction<AuthState>>,
-  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>,
+  setEvent: Dispatch<SetStateAction<Event | undefined>>,
   setMeParticipant: Dispatch<SetStateAction<IParticipantUser | undefined>>,
   setError: Dispatch<SetStateAction<boolean>>,
   setLoading: Dispatch<SetStateAction<boolean>>,
@@ -169,11 +169,12 @@ export function fetchEvent(
     .get(`${api.events}/${eventId}`, {
       headers: { Authorization: "Bearer " + authState.token },
     })
-    .then(({ data }: { data: IEventFull }) => {
+    .then(({ data }: AxiosResponse<Event>) => {
       unstable_batchedUpdates(() => {
         setEvent(data)
         setMeParticipant(
-          data.participants.find((p) => p.email === authState.user.email),
+          data.participants?.find((p) => p.email === authState.user.email) ||
+            [],
         )
       })
 

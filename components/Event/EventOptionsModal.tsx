@@ -1,39 +1,39 @@
-import { IEventFull } from "../../types/Event";
-import { IParticipantUser } from "../../types/Participant";
-import GetLinkEvent from "./GetLinkEvent";
-import Draws from "./Draws";
-import Settings from "./Settings";
-import LeaveGroup from "../LeaveGroup";
-import { AuthState } from "../../store/jwt-payload";
-import React, { Dispatch, SetStateAction } from "react";
-import { Modal, ModalOverlay } from "@chakra-ui/react";
+import { IParticipantUser } from "../../types/Participant"
+import GetLinkEvent from "./GetLinkEvent"
+import Draws from "./Draws"
+import Settings from "./Settings"
+import LeaveGroup from "../LeaveGroup"
+import { AuthState } from "../../store/jwt-payload"
+import React, { Dispatch, SetStateAction } from "react"
+import { Modal, ModalOverlay } from "@chakra-ui/react"
+import { Event } from "@giftxtrade/api-types"
 
 export interface IEventOptionsModalProps {
-  event: IEventFull;
-  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
+  event: Event
+  setEvent: Dispatch<SetStateAction<Event | undefined>>
 
-  meParticipant: IParticipantUser;
-  authState: AuthState;
+  meParticipant: IParticipantUser
+  authState: AuthState
 
-  myDraw: IParticipantUser | undefined;
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>;
+  myDraw: IParticipantUser | undefined
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
 
-  linkModal: boolean;
-  linkLoading: boolean;
-  linkError: boolean;
-  setLinkModal: Dispatch<SetStateAction<boolean>>;
+  linkModal: boolean
+  linkLoading: boolean
+  linkError: boolean
+  setLinkModal: Dispatch<SetStateAction<boolean>>
 
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 
-  showDraw: boolean;
-  setShowDraw: Dispatch<SetStateAction<boolean>>;
+  showDraw: boolean
+  setShowDraw: Dispatch<SetStateAction<boolean>>
 
-  settingsModal: boolean;
-  setSettingsModal: Dispatch<SetStateAction<boolean>>;
+  settingsModal: boolean
+  setSettingsModal: Dispatch<SetStateAction<boolean>>
 
-  leaveGroupModal: boolean;
-  setLeaveGroupModal: Dispatch<SetStateAction<boolean>>;
+  leaveGroupModal: boolean
+  setLeaveGroupModal: Dispatch<SetStateAction<boolean>>
 }
 
 export default function EventOptionsModal({
@@ -67,22 +67,22 @@ export default function EventOptionsModal({
           onClose={onClose}
           setLinkModal={setLinkModal}
         />
-      );
+      )
     } else if (showDraw) {
       return (
         <Draws
           setShowDraw={setShowDraw}
           onClose={onClose}
-          accessToken={authState.accessToken}
+          accessToken={authState.token}
           event={event}
           setMyDraw={setMyDraw}
           meParticipant={meParticipant}
         />
-      );
+      )
     } else if (meParticipant?.organizer && settingsModal) {
       return (
         <Settings
-          accessToken={authState.accessToken}
+          accessToken={authState.token}
           event={event}
           onClose={onClose}
           setSettingsModal={setSettingsModal}
@@ -91,28 +91,28 @@ export default function EventOptionsModal({
           myDraw={myDraw}
           setMyDraw={setMyDraw}
         />
-      );
+      )
     } else if (meParticipant && leaveGroupModal) {
       return (
         <LeaveGroup
-          accessToken={authState.accessToken}
+          accessToken={authState.token}
           event={event}
           onClose={onClose}
           setLeaveGroupModal={setLeaveGroupModal}
           meParticipant={meParticipant}
         />
-      );
+      )
     }
-    return <></>;
-  };
+    return <></>
+  }
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => {
-        setLinkModal(false);
-        setShowDraw(false);
-        onClose();
+        setLinkModal(false)
+        setShowDraw(false)
+        onClose()
       }}
       size={showDraw ? "xl" : "md"}
       closeOnOverlayClick={false}
@@ -121,5 +121,5 @@ export default function EventOptionsModal({
 
       {renderModal()}
     </Modal>
-  );
+  )
 }

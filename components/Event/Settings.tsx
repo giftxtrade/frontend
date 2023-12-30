@@ -36,24 +36,24 @@ import {
   ButtonGroup,
   useDisclosure,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { IEvent, IEventFull } from "../../types/Event";
-import { api } from "../../util/api";
-import { unstable_batchedUpdates } from "react-dom";
-import { IParticipantUser, IParticipant } from "../../types/Participant";
-import { useRouter } from "next/router";
-import { ManageParticipant } from "../ManageParticipant";
-import { eventNameSlug } from "../../util/links";
+import axios, { AxiosResponse } from "axios"
+import { api } from "../../util/api"
+import { unstable_batchedUpdates } from "react-dom"
+import { IParticipantUser } from "../../types/Participant"
+import { useRouter } from "next/router"
+import { ManageParticipant } from "../ManageParticipant"
+import { eventNameSlug } from "../../util/links"
+import { DeleteStatus, Event, UpdateEvent } from "@giftxtrade/api-types"
 
 export interface ISettingsProps {
-  setSettingsModal: Dispatch<SetStateAction<boolean>>;
-  onClose: () => void;
-  accessToken: string;
-  event: IEventFull;
-  meParticipant: IParticipantUser;
-  setEvent: Dispatch<SetStateAction<IEventFull | undefined>>;
-  myDraw: IParticipantUser | undefined;
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>;
+  setSettingsModal: Dispatch<SetStateAction<boolean>>
+  onClose: () => void
+  accessToken: string
+  event: Event
+  meParticipant: IParticipantUser
+  setEvent: Dispatch<SetStateAction<Event | undefined>>
+  myDraw: IParticipantUser | undefined
+  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
 }
 
 export default function Settings({
@@ -67,90 +67,95 @@ export default function Settings({
   setMyDraw,
 }: ISettingsProps) {
   const [invalidTitle, setInvalidTitle] = useState(
-    eventNameSlug(event.name) === "" ? true : false
-  );
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState(event.name);
-  const [description, setDescription] = useState(event.description);
-  const [budget, setBudget] = useState(event.budget);
+    eventNameSlug(event.name) === "" ? true : false,
+  )
+  const [loading, setLoading] = useState(true)
+  const [name, setName] = useState(event.name)
+  const [description, setDescription] = useState(event.description)
+  const [budget, setBudget] = useState(parseFloat(event.budget.substr(1)))
   const [drawDate, setDrawDate] = useState(
-    new Date(event.drawAt).toISOString().substr(0, 10)
-  );
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [errorUpdate, setErrorUpdate] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const toast = useToast();
+    new Date(event.drawAt).toISOString().substr(0, 10),
+  )
+  const [loadingUpdate, setLoadingUpdate] = useState(false)
+  const [errorUpdate, setErrorUpdate] = useState(false)
+  const [loadingDelete, setLoadingDelete] = useState(false)
+  const toast = useToast()
 
-  const popover = useDisclosure();
+  const popover = useDisclosure()
 
-  const router = useRouter();
+  const router = useRouter()
 
   const updateEvent = (e: any) => {
-    setLoadingUpdate(true);
+    setLoadingUpdate(true)
     axios
       .patch(
         `${api.events}/${event.id}`,
-        { name, description, budget, drawAt: new Date(drawDate) },
+        {
+          name,
+          description,
+          budget: budget,
+          drawAt: new Date(drawDate).toISOString(),
+        } as UpdateEvent,
         {
           headers: { Authorization: "Bearer " + accessToken },
-        }
+        },
       )
-      .then(({ data }: { data: IEventFull }) => {
+      .then(({ data }: AxiosResponse<Event>) => {
         toast({
           title: "Event updated!",
           status: "success",
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
-        onClose();
+        })
+        onClose()
         unstable_batchedUpdates(() => {
-          setLoadingUpdate(false);
-          setEvent(data);
-        });
+          setLoadingUpdate(false)
+          setEvent(data)
+        })
       })
       .catch((err) => {
-        setLoadingUpdate(false);
-      });
-    e.preventDefault();
-  };
+        setLoadingUpdate(false)
+      })
+    e.preventDefault()
+  }
 
   const deleteEvent = () => {
-    setLoadingDelete(true);
+    setLoadingDelete(true)
     axios
       .delete(`${api.events}/${event.id}`, {
         headers: { Authorization: "Bearer " + accessToken },
       })
-      .then(({ data }: { data: IEvent }) => {
-        setLoadingDelete(false);
+      .then((_: AxiosResponse<DeleteStatus>) => {
+        setLoadingDelete(false)
         toast({
           title: "Event deleted!",
           status: "info",
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
-        onClose();
-        router.push("/home");
+        })
+        onClose()
+        router.push("/home")
       })
       .catch((err) => {
-        setLoadingDelete(false);
-      });
-  };
+        setLoadingDelete(false)
+      })
+  }
 
   const removeParticipant = (i: number, participant: IParticipantUser) => {
-    const newEvent = { ...event };
-    newEvent.participants = event.participants.filter(
-      (p) => p.id !== participant.id
-    );
-    setEvent(newEvent);
+    const newEvent = { ...event }
+    newEvent.participants = event.participants?.filter(
+      (p) => p.id !== participant.id,
+    )
+    setEvent(newEvent)
 
-    if (myDraw?.id === participant.id) setMyDraw(undefined);
+    if (myDraw?.id === participant.id) setMyDraw(undefined)
 
     axios
       .delete(
         `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
-        { headers: { Authorization: "Bearer " + accessToken } }
+        { headers: { Authorization: "Bearer " + accessToken } },
       )
       .then((data) => {
         toast({
@@ -159,7 +164,7 @@ export default function Settings({
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
+        })
       })
       .catch((err) => {
         toast({
@@ -170,34 +175,34 @@ export default function Settings({
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
-      });
-  };
+        })
+      })
+  }
 
   const updateOrganizerStatus = (
     i: number,
     participant: IParticipantUser,
-    status: boolean
+    status: boolean,
   ) => {
-    const newParticipant = participant;
-    newParticipant.organizer = status;
-    const updatedParticipants = event.participants.filter(
-      (p) => p.id !== participant.id
-    );
+    const newParticipant = participant
+    newParticipant.organizer = status
+    const updatedParticipants = event.participants?.filter(
+      (p) => p.id !== participant.id,
+    )
 
-    const newEvent = { ...event };
+    const newEvent = { ...event }
     newEvent.participants = [
-      ...updatedParticipants.slice(0, i),
+      ...(updatedParticipants?.slice(0, i) || []),
       newParticipant,
-      ...updatedParticipants.slice(i),
-    ];
-    setEvent(newEvent);
+      ...(updatedParticipants?.slice(i) || []),
+    ]
+    setEvent(newEvent)
 
     axios
       .patch(
         `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
         { organizer: status },
-        { headers: { Authorization: "Bearer " + accessToken } }
+        { headers: { Authorization: "Bearer " + accessToken } },
       )
       .then((data) => {
         toast({
@@ -208,7 +213,7 @@ export default function Settings({
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
+        })
       })
       .catch((err) => {
         toast({
@@ -219,17 +224,17 @@ export default function Settings({
           duration: 2000,
           isClosable: true,
           variant: "subtle",
-        });
-      });
-  };
+        })
+      })
+  }
 
   return (
     <ModalContent>
       <ModalHeader>Settings</ModalHeader>
       <ModalCloseButton
         onClick={() => {
-          setSettingsModal(false);
-          onClose();
+          setSettingsModal(false)
+          onClose()
         }}
       />
 
@@ -251,13 +256,13 @@ export default function Settings({
                     name="name"
                     value={name}
                     onChange={(e: any) => {
-                      const val = e.target.value;
-                      setName(val);
+                      const val = e.target.value
+                      setName(val)
 
                       if (eventNameSlug(val) === "") {
-                        setInvalidTitle(true);
+                        setInvalidTitle(true)
                       } else {
-                        setInvalidTitle(false);
+                        setInvalidTitle(false)
                       }
                     }}
                     isInvalid={invalidTitle}
@@ -386,8 +391,8 @@ export default function Settings({
                             colorScheme="red"
                             isLoading={loadingDelete}
                             onClick={() => {
-                              popover.onClose();
-                              deleteEvent();
+                              popover.onClose()
+                              deleteEvent()
                             }}
                           >
                             Delete Event
@@ -402,7 +407,7 @@ export default function Settings({
 
             <TabPanel>
               <Stack direction="column" spacing="10">
-                {event.participants.map((p, i) => (
+                {event.participants?.map((p, i) => (
                   <ManageParticipant
                     id={i + 1}
                     p={p}
@@ -420,5 +425,5 @@ export default function Settings({
 
       <ModalFooter></ModalFooter>
     </ModalContent>
-  );
+  )
 }
