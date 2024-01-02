@@ -22,14 +22,13 @@ import PendingInvite from "../PendingInvite"
 import { IParticipantUser } from "../../types/Participant"
 import { AuthState } from "../../store/jwt-payload"
 import { Dispatch, SetStateAction, useState } from "react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { api } from "../../util/api"
-import { ILink } from "../../types/Link"
 import { unstable_batchedUpdates } from "react-dom"
 import ParticipantUser from "../ParticipantUser"
 import styles from "../../styles/eventId.module.css"
 import EventOptionsModal from "./EventOptionsModal"
-import { Event } from "@giftxtrade/api-types"
+import { Event, Link } from "@giftxtrade/api-types"
 
 export interface IEventProps {
   event: Event
@@ -76,7 +75,7 @@ export default function EventComponent({
         { expirationDate: new Date(event.drawAt).toString() },
         { headers: { Authorization: "Bearer " + authState.token } },
       )
-      .then(({ data }: { data: ILink }) => {
+      .then(({ data }: AxiosResponse<Link>) => {
         unstable_batchedUpdates(() => {
           setLinkError(false)
           setLinkLoading(false)
@@ -154,7 +153,7 @@ export default function EventComponent({
             </Box>
 
             <Box
-              d="flext"
+              d="flex"
               alignContent="center"
               justifyContent="center"
               title={`${activeParticipants}/${totalParticipants} active participants`}

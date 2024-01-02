@@ -1,6 +1,4 @@
-import { IParticipantUser } from '../types/Participant';
-import NextLink from 'next/link';
-import { User } from '../store/jwt-payload';
+import NextLink from "next/link"
 import {
   Box,
   Stack,
@@ -9,25 +7,27 @@ import {
   Heading,
   Text,
   LinkBox,
-  LinkOverlay
+  LinkOverlay,
 } from "@chakra-ui/react"
-import { IEvent } from '../types/Event';
-import { eventNameSlug } from '../util/links';
+import { eventNameSlug } from "../util/links"
+import { Event, User, Participant } from "@giftxtrade/api-types"
 
-export interface IParticipantUserProps {
-  id: number
-  name: string
-  email: string
-  address: string
-  organizer: boolean
-  participates: boolean
-  accepted: boolean
-  user: User | null
-  event: IEvent
+export interface IParticipantUserProps extends Participant {
+  event: Event
 }
 
-export default function ParticipantUser({ id, name, email, address, organizer, participates, accepted, user, event }: IParticipantUserProps) {
-  const avatarSize = '50px'
+export default function ParticipantUser({
+  id,
+  name,
+  email,
+  address,
+  organizer,
+  participates,
+  accepted,
+  user,
+  event,
+}: IParticipantUserProps) {
+  const avatarSize = "50px"
   const link = `/events/${event.id}/${eventNameSlug(event.name)}/${id}`
 
   return (
@@ -86,5 +86,5 @@ export default function ParticipantUser({ id, name, email, address, organizer, p
         </LinkBox>
       </NextLink>
     </Box>
-  );
+  )
 }
