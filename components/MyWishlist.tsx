@@ -6,27 +6,26 @@ import {
   Flex,
   Link,
   Box,
-  Stack
-} from '@chakra-ui/react'
-import { IEventFull } from "../types/Event";
-import { BsPlusCircle } from "react-icons/bs";
-import NextLink from "next/link";
-import { IWish } from "../types/Wish";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { api } from "../util/api";
-import { unstable_batchedUpdates } from "react-dom";
-import { WishlistLoadingItem, WishlistProductItem } from "./WishlistItem";
-import { IProduct } from "../types/Product";
-import { IParticipantUser } from "../types/Participant";
+  Stack,
+} from "@chakra-ui/react"
+import { BsPlusCircle } from "react-icons/bs"
+import NextLink from "next/link"
+import { IWish } from "../types/Wish"
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { api } from "../util/api"
+import { unstable_batchedUpdates } from "react-dom"
+import { WishlistLoadingItem, WishlistProductItem } from "./WishlistItem"
+import { IProduct } from "../types/Product"
 import AddAddress from "./AddAddress";
 import { RiShoppingBag3Fill } from "react-icons/ri";
 import { eventNameSlug } from "../util/links";
+import { Participant, Event } from "@giftxtrade/api-types"
 
 export interface IMyWishlistProps {
-  event: IEventFull;
-  meParticipant: IParticipantUser | undefined;
-  accessToken: string;
+  event: Event
+  meParticipant: Participant | undefined
+  accessToken: string
 }
 
 export default function MyWishlist({

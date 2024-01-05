@@ -8,18 +8,18 @@ import {
   Text,
   Button
 } from '@chakra-ui/react'
-import axios from 'axios';
-import { IEvent } from '../types/Event';
+import axios from "axios"
 import { api } from '../util/api';
 import { IDraw } from '../types/Draw';
 import { IParticipant } from '../types/Participant';
 import { useRouter } from 'next/router';
+import { Event } from "@giftxtrade/api-types"
 
 export interface ILeaveGroupProps {
   setLeaveGroupModal: Dispatch<SetStateAction<boolean>>
   onClose: () => void
   accessToken: string
-  event: IEvent
+  event: Event
   meParticipant: IParticipant
 }
 

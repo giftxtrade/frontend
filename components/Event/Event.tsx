@@ -19,7 +19,6 @@ import {
   BsShuffle,
 } from "react-icons/bs"
 import PendingInvite from "../PendingInvite"
-import { IParticipantUser } from "../../types/Participant"
 import { AuthState } from "../../store/jwt-payload"
 import { Dispatch, SetStateAction, useState } from "react"
 import axios, { AxiosResponse } from "axios"
@@ -28,15 +27,15 @@ import { unstable_batchedUpdates } from "react-dom"
 import ParticipantUser from "../ParticipantUser"
 import styles from "../../styles/eventId.module.css"
 import EventOptionsModal from "./EventOptionsModal"
-import { Event, Link } from "@giftxtrade/api-types"
+import { Event, Link, Participant } from "@giftxtrade/api-types"
 
 export interface IEventProps {
   event: Event
   authState: AuthState
-  meParticipant: IParticipantUser
+  meParticipant: Participant
   setEvent: Dispatch<SetStateAction<Event | undefined>>
-  myDraw: IParticipantUser | undefined
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
+  myDraw: Participant | undefined
+  setMyDraw: Dispatch<SetStateAction<Participant | undefined>>
 }
 
 export default function EventComponent({

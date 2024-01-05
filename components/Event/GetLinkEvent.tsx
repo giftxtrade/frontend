@@ -1,5 +1,4 @@
-import GetLink from "../GetLink";
-import { ILink } from "../../types/Link";
+import GetLink from "../GetLink"
 import {
   Flex,
   Spinner,
@@ -14,16 +13,17 @@ import {
   AlertTitle,
   AlertDescription,
   AlertIcon,
-} from "@chakra-ui/react";
-import { Dispatch, SetStateAction } from "react";
+} from "@chakra-ui/react"
+import { Dispatch, SetStateAction } from "react"
+import { Link } from "@giftxtrade/api-types"
 
 export interface IGetLinkEvent {
-  link: ILink | undefined;
-  drawDate: string;
-  linkLoading: boolean;
-  linkError: boolean;
-  onClose: () => void;
-  setLinkModal: Dispatch<SetStateAction<boolean>>;
+  link: Link | undefined
+  drawDate: string
+  linkLoading: boolean
+  linkError: boolean
+  onClose: () => void
+  setLinkModal: Dispatch<SetStateAction<boolean>>
 }
 
 export default function GetLinkEvent({
@@ -39,8 +39,8 @@ export default function GetLinkEvent({
       <ModalHeader>Get Link</ModalHeader>
       <ModalCloseButton
         onClick={() => {
-          setLinkModal(false);
-          onClose();
+          setLinkModal(false)
+          onClose()
         }}
       />
       <ModalBody>
@@ -74,5 +74,5 @@ export default function GetLinkEvent({
 
       <ModalFooter></ModalFooter>
     </ModalContent>
-  );
+  )
 }

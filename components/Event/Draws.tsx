@@ -5,31 +5,28 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Text,
   Button,
   Flex,
-  Stack,
   Spinner,
   Heading,
   Box,
   SimpleGrid,
-  useToast
-} from '@chakra-ui/react'
-import axios from 'axios';
-import { IEvent } from "../../types/Event";
+  useToast,
+} from "@chakra-ui/react"
+import axios from "axios"
 import { api } from "../../util/api";
 import { IDraw, IDrawParticipant } from "../../types/Draw";
 import { unstable_batchedUpdates } from "react-dom";
 import ParticipantUser from "./../ParticipantUser";
-import { User } from "../../store/jwt-payload";
-import { IParticipant, IParticipantUser } from "../../types/Participant";
+import { IParticipantUser } from "../../types/Participant"
+import { Event } from "@giftxtrade/api-types"
 
 export interface IDrawsProps {
   setShowDraw: Dispatch<SetStateAction<boolean>>
   setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
   onClose: () => void
   accessToken: string
-  event: IEvent
+  event: Event
   meParticipant: IParticipantUser | undefined
 }
 

@@ -12,23 +12,23 @@ import { BsExclamationCircle } from "react-icons/bs"
 import ErrorBlock from "../../../components/ErrorBlock"
 import ContentWrapper from "../../../components/ContentWrapper"
 import EventLoading from "../../../components/Event/EventLoading"
-import { IParticipantUser } from "../../../types/Participant"
 import { IDrawParticipant } from "../../../types/Draw"
 import MyWishlist from "../../../components/MyWishlist"
 import EventSidebarMedium from "../../../components/Event/EventSidebarMedium"
 import { unstable_batchedUpdates } from "react-dom"
 import { eventNameSlug } from "../../../util/links"
 import EventSidebarLoading from "../../../components/Event/EventSidebarLoading"
-import { Event } from "@giftxtrade/api-types"
+import { Event, Participant } from "@giftxtrade/api-types"
 
 export default function EventPage() {
   const [loading, setLoading] = useState(true) // Loading state for the event page
   const [error, setError] = useState(false)
+  const [refresh, setRefresh] = useState(false)
 
   const [authState, setAuthState] = useState<AuthState>(authStore.getState())
   const [event, setEvent] = useState<Event>()
-  const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
-  const [myDraw, setMyDraw] = useState<IParticipantUser>()
+  const [meParticipant, setMeParticipant] = useState<Participant>()
+  const [myDraw, setMyDraw] = useState<Participant>()
 
   const router = useRouter()
   const { eventId, eventName } = router.query
@@ -58,7 +58,7 @@ export default function EventPage() {
           })
       },
     )
-  }, [authState])
+  }, [authState, refresh])
 
   useEffect(() => {
     if (event && eventName) {
@@ -109,10 +109,16 @@ export default function EventPage() {
       )
     } else if (error) {
       return (
-        <ErrorBlock
-          message="Event could not be found"
-          icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
-        />
+        <>
+          <ErrorBlock
+            message="Event could not be found"
+            icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
+          />
+
+          <a href="#" onClick={() => setRefresh(true)}>
+            Reload
+          </a>
+        </>
       )
     }
   }
@@ -142,7 +148,7 @@ export function fetchEvent(
   authState: AuthState,
   setAuthState: Dispatch<SetStateAction<AuthState>>,
   setEvent: Dispatch<SetStateAction<Event | undefined>>,
-  setMeParticipant: Dispatch<SetStateAction<IParticipantUser | undefined>>,
+  setMeParticipant: Dispatch<SetStateAction<Participant | undefined>>,
   setError: Dispatch<SetStateAction<boolean>>,
   setLoading: Dispatch<SetStateAction<boolean>>,
   router: NextRouter,
@@ -173,8 +179,7 @@ export function fetchEvent(
       unstable_batchedUpdates(() => {
         setEvent(data)
         setMeParticipant(
-          data.participants?.find((p) => p.email === authState.user.email) ||
-            [],
+          data.participants?.find((p) => p.email === authState.user.email)!,
         )
       })
 

@@ -1,4 +1,3 @@
-import { IParticipantUser } from "../../types/Participant"
 import GetLinkEvent from "./GetLinkEvent"
 import Draws from "./Draws"
 import Settings from "./Settings"
@@ -6,17 +5,17 @@ import LeaveGroup from "../LeaveGroup"
 import { AuthState } from "../../store/jwt-payload"
 import React, { Dispatch, SetStateAction } from "react"
 import { Modal, ModalOverlay } from "@chakra-ui/react"
-import { Event } from "@giftxtrade/api-types"
+import { Event, Participant } from "@giftxtrade/api-types"
 
 export interface IEventOptionsModalProps {
   event: Event
   setEvent: Dispatch<SetStateAction<Event | undefined>>
 
-  meParticipant: IParticipantUser
+  meParticipant: Participant
   authState: AuthState
 
-  myDraw: IParticipantUser | undefined
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
+  myDraw: Participant | undefined
+  setMyDraw: Dispatch<SetStateAction<Participant | undefined>>
 
   linkModal: boolean
   linkLoading: boolean
@@ -60,7 +59,7 @@ export default function EventOptionsModal({
     if (linkModal) {
       return (
         <GetLinkEvent
-          link={event.links.length === 1 ? event.links[0] : undefined}
+          link={event.links?.length === 1 ? event.links[0] : undefined}
           drawDate={event.drawAt}
           linkLoading={linkLoading}
           linkError={linkError}
