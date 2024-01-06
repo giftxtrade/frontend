@@ -147,15 +147,9 @@ export function NewEvent({
         setEvent(data)
 
         axios
-          .post(
-            `${api.get_link}/${data.id}`,
-            {
-              expirationDate: new Date(drawDate).toString(),
-            },
-            {
-              headers: { Authorization: "Bearer " + accessToken },
-            },
-          )
+          .get(`${api.get_link}/${data.id}`, {
+            headers: { Authorization: "Bearer " + accessToken },
+          })
           .then(({ data }) => {
             unstable_batchedUpdates(() => {
               setError(false)

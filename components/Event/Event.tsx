@@ -69,11 +69,9 @@ export default function EventComponent({
     setLinkError(false)
 
     axios
-      .post(
-        `${api.get_link}/${event.id}`,
-        { expirationDate: new Date(event.drawAt).toString() },
-        { headers: { Authorization: "Bearer " + authState.token } },
-      )
+      .get(`${api.get_link}/${event.id}`, {
+        headers: { Authorization: "Bearer " + authState.token },
+      })
       .then(({ data }: AxiosResponse<Link>) => {
         unstable_batchedUpdates(() => {
           setLinkError(false)
@@ -196,7 +194,7 @@ export default function EventComponent({
             ) : (
               <></>
             )}
-            ;
+
             <Button
               leftIcon={<Icon as={BsLink45Deg} />}
               size={isXSmallScreen ? "xs" : "sm"}
@@ -204,11 +202,12 @@ export default function EventComponent({
               onClick={() => {
                 setLinkModal(true)
                 onOpen()
-                if (event.links?.length === 0) generateLink()
+                if (!event.links || event.links?.length === 0) generateLink()
               }}
             >
               Share Link
             </Button>
+
             {meParticipant.organizer ? (
               <Button
                 leftIcon={<Icon as={BsGearWideConnected} />}
