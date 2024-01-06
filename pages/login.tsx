@@ -30,20 +30,9 @@ export default function Login(props: { redirect: string | null }) {
           )
 
           const redirect = sessionStorage.getItem("redirect")
-          const inviteCode = sessionStorage.getItem("invite_code")
-          if (inviteCode) {
-            axios
-              .get(`${api.invite_code}/${inviteCode}`, {
-                headers: { Authorization: "Bearer " + data.token },
-              })
-              .then(({ data }) => {
-                sessionStorage.removeItem("invite_code")
-                router.push("/home")
-              })
-          } else {
-            sessionStorage.removeItem("redirect")
-            router.push(redirect ? redirect : "/home")
-          }
+          if (!redirect || redirect === "") return
+          sessionStorage.removeItem("redirect")
+          router.push(redirect ? redirect : "/home")
         })
         .catch((_) => setError(true))
     },
