@@ -39,21 +39,25 @@ import {
 import axios, { AxiosResponse } from "axios"
 import { api } from "../../util/api"
 import { unstable_batchedUpdates } from "react-dom"
-import { IParticipantUser } from "../../types/Participant"
 import { useRouter } from "next/router"
 import { ManageParticipant } from "../ManageParticipant"
 import { eventNameSlug } from "../../util/links"
-import { DeleteStatus, Event, UpdateEvent } from "@giftxtrade/api-types"
+import {
+  DeleteStatus,
+  Event,
+  UpdateEvent,
+  Participant,
+} from "@giftxtrade/api-types"
 
 export interface ISettingsProps {
   setSettingsModal: Dispatch<SetStateAction<boolean>>
   onClose: () => void
   accessToken: string
   event: Event
-  meParticipant: IParticipantUser
+  meParticipant: Participant
   setEvent: Dispatch<SetStateAction<Event | undefined>>
-  myDraw: IParticipantUser | undefined
-  setMyDraw: Dispatch<SetStateAction<IParticipantUser | undefined>>
+  myDraw: Participant | undefined
+  setMyDraw: Dispatch<SetStateAction<Participant | undefined>>
 }
 
 export default function Settings({
@@ -143,7 +147,7 @@ export default function Settings({
       })
   }
 
-  const removeParticipant = (i: number, participant: IParticipantUser) => {
+  const removeParticipant = (i: number, participant: Participant) => {
     const newEvent = { ...event }
     newEvent.participants = event.participants?.filter(
       (p) => p.id !== participant.id,
@@ -154,7 +158,7 @@ export default function Settings({
 
     axios
       .delete(
-        `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+        `${api.manage_participants}/${event.id}?participantId=${participant.id}`,
         { headers: { Authorization: "Bearer " + accessToken } },
       )
       .then((data) => {
@@ -181,7 +185,7 @@ export default function Settings({
 
   const updateOrganizerStatus = (
     i: number,
-    participant: IParticipantUser,
+    participant: Participant,
     status: boolean,
   ) => {
     const newParticipant = participant
@@ -200,11 +204,11 @@ export default function Settings({
 
     axios
       .patch(
-        `${api.manage_participants}?eventId=${event.id}&participantId=${participant.id}`,
+        `${api.manage_participants}/${event.id}?participantId=${participant.id}`,
         { organizer: status },
         { headers: { Authorization: "Bearer " + accessToken } },
       )
-      .then((data) => {
+      .then((data: AxiosResponse<Participant>) => {
         toast({
           title: status
             ? `${participant.name} is now an organizer!`

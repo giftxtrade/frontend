@@ -11,14 +11,18 @@ import {
   Icon
 } from '@chakra-ui/react'
 import { DeleteIcon } from '@chakra-ui/icons';
-import { IParticipant, IParticipantUser } from '../types/Participant';
+import { Participant } from "@giftxtrade/api-types"
 
 export interface IManageParticipantProps {
   id: number
-  p: IParticipantUser
-  meParticipant: IParticipant
-  removeParticipant: (i: number, p: IParticipantUser) => void
-  updateOrganizerStatus: (i: number, participant: IParticipantUser, status: boolean) => void
+  p: Participant
+  meParticipant: Participant
+  removeParticipant: (i: number, p: Participant) => void
+  updateOrganizerStatus: (
+    i: number,
+    participant: Participant,
+    status: boolean,
+  ) => void
 }
 
 export function ManageParticipant({ id, p, meParticipant, removeParticipant, updateOrganizerStatus }: IManageParticipantProps) {
