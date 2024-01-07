@@ -9,8 +9,7 @@ import {
   LinkBox,
   LinkOverlay,
 } from "@chakra-ui/react"
-import { eventNameSlug } from "../util/links"
-import { Event, User, Participant } from "@giftxtrade/api-types"
+import { Event, Participant } from "@giftxtrade/api-types"
 
 export interface IParticipantUserProps extends Participant {
   event: Event
@@ -20,15 +19,12 @@ export default function ParticipantUser({
   id,
   name,
   email,
-  address,
-  organizer,
-  participates,
   accepted,
   user,
   event,
 }: IParticipantUserProps) {
   const avatarSize = "50px"
-  const link = `/events/${event.id}/${eventNameSlug(event.name)}/${id}`
+  const link = `/events/${event.id}/${event?.slug}/${id}`
 
   return (
     <Box>
