@@ -58,7 +58,7 @@ export default function EventPage() {
           })
       },
     )
-  }, [authState, refresh])
+  }, [authState, refresh, eventId])
 
   useEffect(() => {
     if (event && eventName) {
@@ -162,12 +162,12 @@ export function fetchEvent(
     }
     setAuthState(authStore.getState())
   })
-
-  if (!authState.loggedIn || !eventId) {
-    if (!authState.loggedIn) {
-      router.push(`/login?redirect=${currentPath}`)
-      return () => unsubscribe()
-    }
+  if (!authState.loggedIn) {
+    router.push(`/login?redirect=${currentPath}`)
+    return () => unsubscribe()
+  }
+  if (!eventId) {
+    setError(true)
     return () => unsubscribe()
   }
 
