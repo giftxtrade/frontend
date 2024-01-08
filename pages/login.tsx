@@ -29,10 +29,9 @@ export default function Login(props: { redirect: string | null }) {
             }),
           )
 
-          const redirect = sessionStorage.getItem("redirect")
-          if (!redirect || redirect === "") return
+          const redirect = sessionStorage.getItem("redirect")?.trim() || ""
           sessionStorage.removeItem("redirect")
-          router.push(redirect ? redirect : "/home")
+          router.push(redirect !== "" ? redirect : "/home")
         })
         .catch((_) => setError(true))
     },
