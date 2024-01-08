@@ -36,8 +36,9 @@ Ensure that you create a file named `.env.local` within the root of the project.
 #### Step 2: Populate file
 Add the following to the `.env.local` file:
 ```
-NEXT_PUBLIC_API_BASE=http://localhost:3001/
+NEXT_PUBLIC_API_BASE=http://localhost:8080/
 NEXT_PUBLIC_BASE=http://localhost:3000/
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=547624899217-qgp0rt4mm2chev60iht9r2n2acrt94f4.apps.googleusercontent.com
 ```
 
 
