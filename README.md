@@ -28,7 +28,7 @@ npm install
 ```
 
 ### Define environment variables
-GiftTrade uses environment variables to help speed up development time and to make sure both developement and prodcution code are similar with little to no tweaks. Therefore, we define these variables to ensure this behaviour.
+GiftTrade uses environment variables to help speed up development time and to make sure both development and production code are similar with little to no tweaks. Therefore, we define these variables to ensure this behavior.
 
 #### Step 1: Create `.env.local` file
 Ensure that you create a file named `.env.local` within the root of the project.
@@ -42,7 +42,7 @@ NEXT_PUBLIC_BASE=http://localhost:3000/
 
 
 ## Run with developement mode
-Ensure that the API server is running and is taken care of. Then start the frontend devlopement server
+Ensure that the API server is running and is taken care of. Then start the frontend devolvement server
 ```
 npm run dev
 ```
