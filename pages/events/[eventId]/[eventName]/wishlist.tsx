@@ -78,16 +78,11 @@ export default function WishlistPage() {
         </title>
       </Head>
 
-      <Navbar
-        loggedIn={authState.loggedIn}
-        accessToken={authState.accessToken}
-        user={authState.user}
-        gToken={authState.gToken}
-      />
+      <Navbar />
 
       <Container maxW="4xl" mb="20">
         {renderWishlistBlock()}
       </Container>
     </>
-  );
+  )
 }

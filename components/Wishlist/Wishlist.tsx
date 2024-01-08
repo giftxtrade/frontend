@@ -1,7 +1,5 @@
-import { AuthState } from "../../store/jwt-payload";
-import { IEventFull } from "../../types/Event";
-import { IParticipantUser } from "../../types/Participant";
-import React, { useState, useEffect } from "react";
+import { AuthState } from "../../store/jwt-payload"
+import React, { useState, useEffect } from "react"
 import {
   Heading,
   Text,
@@ -14,24 +12,24 @@ import {
   ModalCloseButton,
   ModalHeader,
   useMediaQuery,
-} from "@chakra-ui/react";
-import axios from "axios";
-import { unstable_batchedUpdates } from "react-dom";
-import styles from "../../styles/ParticipantWishlist.module.css";
-import { IWish } from "../../types/Wish";
-import { IProduct } from "../../types/Product";
-import { api } from "../../util/api";
-import PendingInvite from "../PendingInvite";
-import Search from "../Search";
-import WishlistTotal from "../WishlistTotal";
-import { WishlistLoadingItem } from "../WishlistItem";
-import WishlistItemSelect from "../WishlistItemSelect";
-import WishlistNav from "../WishlistNav";
+} from "@chakra-ui/react"
+import axios from "axios"
+import { unstable_batchedUpdates } from "react-dom"
+import styles from "../../styles/ParticipantWishlist.module.css"
+import { IWish } from "../../types/Wish"
+import { api } from "../../util/api"
+import PendingInvite from "../PendingInvite"
+import Search from "../Search"
+import WishlistTotal from "../WishlistTotal"
+import { WishlistLoadingItem } from "../WishlistItem"
+import WishlistItemSelect from "../WishlistItemSelect"
+import WishlistNav from "../WishlistNav"
 import ContentWrapper from "../ContentWrapper"
+import { Product, Event, Participant } from "@giftxtrade/api-types"
 
 export interface IWishlistProps {
-  event: IEventFull
-  meParticipant: IParticipantUser
+  event: Event
+  meParticipant: Participant
   authStore: AuthState
 }
 
@@ -44,14 +42,14 @@ export default function Wishlist({
   const [wishes, setWishes] = useState(Array<IWish>())
   const [wishProductIds, setWishProductIds] = useState(new Set<number>())
   const [showWishlist, setShowWishlist] = useState(false)
-  const [selectedProducts, setSelectedProducts] = useState(Array<IProduct>())
+  const [selectedProducts, setSelectedProducts] = useState(Array<Product>())
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     axios
       .get(`${api.wishes}/${event.id}`, {
-        headers: { Authorization: "Bearer " + authStore.accessToken },
+        headers: { Authorization: "Bearer " + authStore },
       })
       .then(({ data }: { data: IWish[] }) => {
         const productIdSet = new Set<number>()
@@ -61,7 +59,7 @@ export default function Wishlist({
           setWishes(data)
           setLoadingWishes(false)
           setWishProductIds(productIdSet)
-          setSelectedProducts(data.map<IProduct>((w) => w.product))
+          setSelectedProducts(data.map<Product>((w) => w.product))
         })
       })
       .catch((err) => {
@@ -69,7 +67,7 @@ export default function Wishlist({
       })
   }, [])
 
-  const addWish = (product: IProduct) => {
+  const addWish = (product: Product) => {
     setWishProductIds(wishProductIds.add(product.id))
     axios
       .post(
@@ -80,7 +78,7 @@ export default function Wishlist({
           participantId: meParticipant.id,
         },
         {
-          headers: { Authorization: "Bearer " + authStore.accessToken },
+          headers: { Authorization: "Bearer " + authStore.token },
         },
       )
       .then(({ data }: { data: IWish }) => {
@@ -90,13 +88,13 @@ export default function Wishlist({
       .catch((_) => console.log("Could not add wish"))
   }
 
-  const removeWish = (product: IProduct) => {
+  const removeWish = (product: Product) => {
     wishProductIds.delete(product.id)
     setWishProductIds(wishProductIds)
     setWishes(wishes.filter((w) => w.product.id !== product.id))
     axios
       .delete(api.wishes, {
-        headers: { Authorization: "Bearer " + authStore.accessToken },
+        headers: { Authorization: "Bearer " + authStore.token },
         data: {
           eventId: event.id,
           productId: product.id,
@@ -119,17 +117,14 @@ export default function Wishlist({
           <>
             {!meParticipant.accepted ? (
               <Box mb="5">
-                <PendingInvite
-                  event={event}
-                  accessToken={authStore.accessToken}
-                />
+                <PendingInvite event={event} accessToken={authStore.token} />
               </Box>
             ) : (
               <></>
             )}
 
             <Search
-              accessToken={authStore.accessToken}
+              accessToken={authStore.token}
               minPrice={1}
               maxPrice={event.budget}
               pageLimit={50}
@@ -178,7 +173,7 @@ export default function Wishlist({
                       product={product}
                       selectedProducts={selectedProducts}
                       setSelectedProducts={setSelectedProducts}
-                      removeWish={(pr: IProduct) => {
+                      removeWish={(pr: Product) => {
                         setSelectedProducts(
                           selectedProducts.filter((p) => p.id !== pr.id),
                         )
@@ -229,7 +224,7 @@ export default function Wishlist({
                         product={product}
                         selectedProducts={selectedProducts}
                         setSelectedProducts={setSelectedProducts}
-                        removeWish={(pr: IProduct) => {
+                        removeWish={(pr: Product) => {
                           setSelectedProducts(
                             selectedProducts.filter((p) => p.id !== pr.id),
                           )
