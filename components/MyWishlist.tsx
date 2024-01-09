@@ -24,7 +24,7 @@ import { Participant, Event } from "@giftxtrade/api-types"
 
 export interface IMyWishlistProps {
   event: Event
-  meParticipant: Participant | undefined
+  meParticipant: Participant
   accessToken: string
 }
 
@@ -33,11 +33,11 @@ export default function MyWishlist({
   meParticipant,
   accessToken,
 }: IMyWishlistProps) {
-  const [wishes, setWishes] = useState(Array<IWish>());
-  const [loading, setLoading] = useState(true);
+  const [wishes, setWishes] = useState(Array<IWish>())
+  const [loading, setLoading] = useState(true)
 
-  const id = event.id;
-  const name = event.name;
+  const id = event.id
+  const name = event.name
 
   useEffect(() => {
     axios
@@ -46,17 +46,17 @@ export default function MyWishlist({
       })
       .then(({ data }: { data: IWish[] }) => {
         unstable_batchedUpdates(() => {
-          setWishes(data);
-          setLoading(false);
-        });
+          setWishes(data)
+          setLoading(false)
+        })
       })
       .catch(() => {
-        setLoading(false);
-      });
-  }, []);
+        setLoading(false)
+      })
+  }, [])
 
   const removeWish = (product: IProduct) => {
-    setWishes(wishes.filter((w) => w.product.id !== product.id));
+    setWishes(wishes.filter((w) => w.product.id !== product.id))
     axios
       .delete(api.wishes, {
         headers: { Authorization: "Bearer " + accessToken },
@@ -67,8 +67,8 @@ export default function MyWishlist({
         },
       })
       .then(({ data }) => {})
-      .catch((_) => {});
-  };
+      .catch((_) => {})
+  }
 
   return (
     <>
@@ -123,5 +123,5 @@ export default function MyWishlist({
         )}
       </Box>
     </>
-  );
+  )
 }

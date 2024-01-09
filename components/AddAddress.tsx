@@ -16,15 +16,15 @@ import {
   PopoverArrow,
   PopoverCloseButton,
 } from "@chakra-ui/react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { api } from "../util/api"
 import { BsArrowRightShort, BsGeo } from "react-icons/bs"
 import { unstable_batchedUpdates } from "react-dom"
 import React from "react"
-import { Participant } from "@giftxtrade/api-types"
+import { Participant, PatchParticipant } from "@giftxtrade/api-types"
 
 export interface IAddAddressProps {
-  meParticipant: Participant | undefined
+  meParticipant: Participant
   accessToken: string
 }
 
@@ -33,7 +33,7 @@ export default function AddAddress({
   accessToken,
 }: IAddAddressProps) {
   const [address, setAddress] = useState(
-    meParticipant?.address ? meParticipant.address : "",
+    meParticipant.address ? meParticipant.address : "",
   )
   const [loading, setLoading] = useState(false)
   const [loadingLocation, setLoadingLocation] = useState(false)
@@ -49,13 +49,13 @@ export default function AddAddress({
     setLoading(true)
     axios
       .patch(
-        `${api.participants}/${meParticipant?.id}`,
-        { address: myAddress },
+        `${api.participants}/${meParticipant.eventId}/${meParticipant.id}`,
+        { address: myAddress } as PatchParticipant,
         {
           headers: { Authorization: "Bearer " + accessToken },
         },
       )
-      .then(({ data }) => {
+      .then((_res: AxiosResponse<Participant>) => {
         toast({
           title: "Address updated!",
           description: myAddress,
@@ -66,8 +66,8 @@ export default function AddAddress({
         })
         setLoading(false)
       })
-      .catch((err) => {
-        console.log(err)
+      .catch((_err) => {
+        toast({ title: "Could not update address", status: "error" })
         setLoading(false)
       })
   }

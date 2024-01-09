@@ -50,6 +50,11 @@ export default function ParticipantPage() {
       .then(({ data }: AxiosResponse<Participant>) => {
         setParticipant({ ...data })
         setLoading(false)
+        setMeParticipant(
+          data.event?.participants?.find(
+            ({ userId }) => userId === authState.user.id,
+          ),
+        )
       })
       .catch((_) => {
         setLoading(false)
