@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--openssl-legacy-provider' next dev",
+    "dev-windows": "cross-env NODE_OPTIONS='--openssl-legacy-provider' next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
@@ -34,7 +35,7 @@
     "slugify": "^1.6.0"
   },
   "devDependencies": {
-    "@giftxtrade/api-types": "1.0.6",
+    "@giftxtrade/api-types": "1.0.8",
     "@types/aos": "^3.0.4",
     "@types/cookies": "^0.7.6",
     "@types/react": "17.0.9",

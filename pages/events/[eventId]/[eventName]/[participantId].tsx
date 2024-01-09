@@ -12,77 +12,59 @@ import {
 import Head from "next/head";
 import Navbar from "../../../../components/Navbar";
 import { useMediaQuery } from "@chakra-ui/react";
-import { AuthState } from "../../../../store/jwt-payload";
-import { IEventFull } from "../../../../types/Event";
-import {
-  IParticipantUser,
-  IParticipantUserWishes,
-} from "../../../../types/Participant";
-import { api } from "../../../../util/api";
-import axios from "axios";
-import { MdLocationCity } from "react-icons/md";
-import ParticipantWishlist from "../../../../components/ParticipantWishlist";
-import PendingInvite from "../../../../components/PendingInvite";
-import BackButton from "../../../../components/BackButton";
-import { eventNameSlug } from "../../../../util/links";
-import { useRouter } from "next/router";
-import { authStore } from "../../../../store/auth-store";
-import { fetchEvent } from "../[eventName]";
-import ErrorBlock from "../../../../components/ErrorBlock";
-import { BsExclamationCircle } from "react-icons/bs";
+import { IParticipantUserWishes } from "../../../../types/Participant"
+import { api } from "../../../../util/api"
+import axios, { AxiosResponse } from "axios"
+import { MdLocationCity } from "react-icons/md"
+import ParticipantWishlist from "../../../../components/ParticipantWishlist"
+import PendingInvite from "../../../../components/PendingInvite"
+import BackButton from "../../../../components/BackButton"
+import { useRouter } from "next/router"
+import { authStore } from "../../../../store/auth-store"
+import ErrorBlock from "../../../../components/ErrorBlock"
+import { BsExclamationCircle } from "react-icons/bs"
 import ContentWrapper from "../../../../components/ContentWrapper"
 import { IDrawParticipant } from "../../../../types/Draw"
 import EventProfileLoading from "../../../../components/Event/EventProfileLoading"
+import { Event, Participant } from "@giftxtrade/api-types"
 
 export default function ParticipantPage() {
   const router = useRouter()
-  const { eventId, participantId } = router.query
+  const authState = authStore.getState()
 
-  const [loading, setLoading] = useState(true) // Loading state for the event page
+  const [loading, setLoading] = useState(false) // Loading state for the event page
   const [error, setError] = useState(false)
 
-  const [authState, setAuthState] = useState<AuthState>(authStore.getState())
-  const [event, setEvent] = useState<IEventFull>()
-  const [meParticipant, setMeParticipant] = useState<IParticipantUser>()
-  const [participant, setParticipant] = useState<IParticipantUserWishes>()
-  const [myDraw, setMyDraw] = useState<IParticipantUser>()
+  const [meParticipant, setMeParticipant] = useState<Participant>()
+  const [participant, setParticipant] = useState<Participant>()
+  const [myDraw, setMyDraw] = useState<Participant>()
 
   useEffect(() => {
-    return fetchEvent(
-      eventId,
-      authState,
-      setAuthState,
-      setEvent,
-      setMeParticipant,
-      setError,
-      setLoading,
-      router,
-      window.location.pathname,
-      () => {
-        axios
-          .get(`${api.participants}/${eventId}/${participantId}`, {
-            headers: { Authorization: "Bearer " + authState.accessToken },
-          })
-          .then(({ data }: { data: IParticipantUserWishes }) => {
-            setParticipant({ ...data })
-            setLoading(false)
-          })
-          .catch((_) => {
-            setLoading(false)
-            setError(true)
-          })
+    const { eventId, participantId } = router.query
+    if (!eventId && !participantId) return
 
-        axios
-          .get(`${api.draws}/me/${eventId}`, {
-            headers: { Authorization: "Bearer " + authState.accessToken },
-          })
-          .then(({ data }: { data: IDrawParticipant }) => {
-            setMyDraw(data.drawee)
-          })
-          .catch((_) => {})
-      },
-    )
-  }, [authState])
+    axios
+      .get(`${api.participants}/${eventId}/${participantId}`, {
+        headers: { Authorization: `Bearer ${authState.token}` },
+      })
+      .then(({ data }: AxiosResponse<Participant>) => {
+        setParticipant({ ...data })
+        setLoading(false)
+      })
+      .catch((_) => {
+        setLoading(false)
+        setError(true)
+      })
+
+    // axios
+    //   .get(`${api.draws}/me/${eventId}`, {
+    //     headers: { Authorization: "Bearer " + authState.token },
+    //   })
+    //   .then(({ data }: { data: IDrawParticipant }) => {
+    //     setMyDraw(data.drawee)
+    //   })
+    //   .catch((_) => {})
+  }, [authState, router])
 
   // Media queries
   const [isMediumScreen] = useMediaQuery("(max-width: 900px)")
@@ -99,20 +81,20 @@ export default function ParticipantPage() {
           icon={<Icon as={BsExclamationCircle} boxSize="20" mb="7" />}
         />
       )
-    } else if (loading || !participant) {
+    } else if (loading) {
       return <EventProfileLoading />
-    } else if (event && meParticipant && participant) {
+    } else if (participant && participant.event) {
       const isMyDraw = myDraw ? myDraw.id === participant.id : false
 
       return (
         <ContentWrapper
           primary={
             <>
-              {!meParticipant.accepted ? (
+              {!meParticipant?.accepted ? (
                 <Box mb="5">
                   <PendingInvite
-                    event={event}
-                    accessToken={authState.accessToken}
+                    event={participant.event}
+                    accessToken={authState.token}
                   />
                 </Box>
               ) : (
@@ -120,7 +102,7 @@ export default function ParticipantPage() {
               )}
 
               <BackButton
-                href={`/events/${event.id}/${eventNameSlug(event.name)}`}
+                href={`/events/${participant.event.id}/${participant.event.slug}`}
                 value="Back to Event"
               />
 
@@ -198,7 +180,7 @@ export default function ParticipantPage() {
                   </Box>
                 </Stack>
 
-                {isMediumScreen ? (
+                {isMediumScreen && participant.wishes ? (
                   <Box mt="14">
                     <ParticipantWishlist
                       name={name}
@@ -214,7 +196,7 @@ export default function ParticipantPage() {
           }
           sidebar={
             <Container flex="1" pl="2" pr="0">
-              {!isMediumScreen ? (
+              {!isMediumScreen && participant.wishes ? (
                 <ParticipantWishlist
                   name={name}
                   wishlist={participant.wishes}
@@ -234,18 +216,13 @@ export default function ParticipantPage() {
     <>
       <Head>
         <title>
-          {event && participant
-            ? `${participant.name} | ${event.name} - GiftTrade`
+          {participant && participant.event
+            ? `${participant.name} | ${participant.event.name} - GiftTrade`
             : "GiftTrade"}
         </title>
       </Head>
 
-      <Navbar
-        loggedIn={authState.loggedIn}
-        accessToken={authState.accessToken}
-        user={authState.user}
-        gToken={authState.gToken}
-      />
+      <Navbar />
 
       <Container maxW="4xl" mb="20">
         {renderParticipantBlock()}

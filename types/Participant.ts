@@ -1,5 +1,4 @@
-import { User } from "../store/jwt-payload";
-import { IParticipantForm } from "../components/NewEvent";
+import { User } from "@giftxtrade/api-types";
 import { IWish } from "./Wish";
 
 export interface IParticipant {

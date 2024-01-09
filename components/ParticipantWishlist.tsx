@@ -11,10 +11,11 @@ import { IProduct } from '../types/Product';
 import styles from '../styles/ParticipantWishlist.module.css'
 import WishlistItemSelect from './WishlistItemSelect';
 import WishlistTotal from './WishlistTotal';
+import { Wish } from "@giftxtrade/api-types"
 
 export interface IParticipantWishlistProps {
   name: string | undefined
-  wishlist: Array<IWish>
+  wishlist: Wish[]
   isMyDraw: boolean
 }
 

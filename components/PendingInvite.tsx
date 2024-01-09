@@ -1,5 +1,5 @@
 import { useState } from "react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { api } from "../util/api"
 import { useRouter } from "next/router"
 import { Event } from "@giftxtrade/api-types"
@@ -44,7 +44,7 @@ export default function PendingInvite({
                   .get(`${api.accept_invite}/${event.id}`, {
                     headers: { Authorization: "Bearer " + accessToken },
                   })
-                  .then(({ data }) => {
+                  .then((_res: AxiosResponse<Event>) => {
                     router.reload()
                   })
                   .catch((_) => setLoading(false))
