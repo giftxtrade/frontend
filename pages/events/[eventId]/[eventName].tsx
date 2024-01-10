@@ -49,9 +49,9 @@ export default function EventPage() {
           .get(`${api.draws}/me/${eventId}`, {
             headers: { Authorization: "Bearer " + authState.token },
           })
-          .then(({ data }: { data: IDrawParticipant }) => {
+          .then(({ data }: AxiosResponse<Participant>) => {
             setLoading(false)
-            setMyDraw(data.drawee)
+            setMyDraw(data)
           })
           .catch((_) => {
             setLoading(false)

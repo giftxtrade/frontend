@@ -26,6 +26,7 @@ import WishlistItemSelect from "../WishlistItemSelect"
 import WishlistNav from "../WishlistNav"
 import ContentWrapper from "../ContentWrapper"
 import { Product, Event, Participant } from "@giftxtrade/api-types"
+import currency from "currency.js"
 
 export interface IWishlistProps {
   event: Event
@@ -126,7 +127,7 @@ export default function Wishlist({
             <Search
               accessToken={authStore.token}
               minPrice={1}
-              maxPrice={event.budget}
+              maxPrice={currency(event.budget).value}
               pageLimit={50}
               event={event}
               addWish={addWish}

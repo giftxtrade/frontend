@@ -1,11 +1,11 @@
-import { api } from '../util/api';
-import { Masonry, useInfiniteLoader } from 'masonic'
-import ProductSm from './ProductSm';
+import { api } from "../util/api"
+import ProductSm from "./ProductSm"
 import axios from "axios"
-import { useState, Dispatch, SetStateAction } from 'react';
-import { Flex, Spinner, Heading, Box, useMediaQuery } from '@chakra-ui/react';
-import { unstable_batchedUpdates } from "react-dom";
+import { useState, Dispatch, SetStateAction } from "react"
+import { Flex, Spinner, Heading, Box, useMediaQuery } from "@chakra-ui/react"
+import { unstable_batchedUpdates } from "react-dom"
 import { Product } from "@giftxtrade/api-types"
+import { useEffect } from "react"
 
 export interface ISearchResultsProps {
   results: Product[]
@@ -42,14 +42,14 @@ export default function SearchResults({
   setHasMore,
 
   addWish,
-  removeWish
+  removeWish,
 }: ISearchResultsProps) {
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(2)
-  const maxPages = 15;
+  const maxPages = 15
 
-  const [isMedSmallScreen] = useMediaQuery('(max-width: 535px)')
-  const [isTinyScreen] = useMediaQuery('(max-width: 300px)')
+  const [isMedSmallScreen] = useMediaQuery("(max-width: 535px)")
+  const [isTinyScreen] = useMediaQuery("(max-width: 300px)")
 
   const callNextPage = () => {
     if (page > maxPages) {
@@ -57,9 +57,8 @@ export default function SearchResults({
       return
     }
 
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${minPrice}&max_price=${maxPrice}&sort=${sort}`
-    if (search !== '' || search.length > 2)
-      url += `&search=${search}`
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}`
+    if (search !== "" || search.length > 2) url += `&search=${search}`
 
     setLoading(true)
 
@@ -86,47 +85,58 @@ export default function SearchResults({
       })
   }
 
-  const loadMore = useInfiniteLoader(callNextPage, {
-    totalItems: pageLimit * maxPages,
-  })
+  // const loadMore = useInfiniteLoader(callNextPage, {
+  //   totalItems: pageLimit * maxPages,
+  // })
+
+  // useEffect(() => {
+  //   callNextPage()
+  // }, [])
 
   const columnBreakPoints = () => {
-    if (isTinyScreen)
-      return 1
-    if (isMedSmallScreen)
-      return 2
-    return 3;
+    if (isTinyScreen) return 1
+    if (isMedSmallScreen) return 2
+    return 3
   }
 
   return (
-    <Box ml='-8px' mr='-8px'>
-      <Masonry
-        items={results}
-        columnCount={columnBreakPoints()}
-        render={({ index, data }: any) => (
-          <ProductSm
-            product={data}
-            productSet={productSet}
-            key={`sp#${index}`}
-
-            addWish={addWish}
-            removeWish={removeWish}
-          />
-        )}
-        onRender={loadMore}
-        style={{ outline: "none" }}
-      />
+    <Box ml="-8px" mr="-8px">
+      {results.map((product, index) => (
+        <ProductSm
+          product={product}
+          productSet={productSet}
+          key={`sp#${index}`}
+          addWish={addWish}
+          removeWish={removeWish}
+        />
+      ))}
 
       <Box>
         {loading ? (
-          <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='14'>
-            <Spinner size='md' />
+          <Flex
+            direction="row"
+            maxW="full"
+            alignItems="center"
+            justifyContent="center"
+            p="14"
+          >
+            <Spinner size="md" />
           </Flex>
         ) : !hasMore ? (
-            <Flex direction='row' maxW='full' alignItems="center" justifyContent="center" p='14'>
-            <Heading textAlign='center' size='sm'>No more results</Heading>
+          <Flex
+            direction="row"
+            maxW="full"
+            alignItems="center"
+            justifyContent="center"
+            p="14"
+          >
+            <Heading textAlign="center" size="sm">
+              No more results
+            </Heading>
           </Flex>
-        ) : <></>}
+        ) : (
+          <></>
+        )}
       </Box>
     </Box>
   )

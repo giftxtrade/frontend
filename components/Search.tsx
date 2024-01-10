@@ -23,18 +23,17 @@ import { FcClearFilters } from "react-icons/fc"
 import SearchResults from "./SearchResults"
 import styles from "../styles/Search.module.css"
 import SearchOptions from "./SearchOptions"
-import { IEvent } from "../types/Event"
 import BackButton from "./BackButton"
 import { eventNameSlug } from "../util/links"
 import SearchLoading from "./SearchLoading"
-import { Product } from "@giftxtrade/api-types"
+import { Product, Event } from "@giftxtrade/api-types"
 
 export interface ISearchProps {
   accessToken: string
   pageLimit: number
   minPrice: number
   maxPrice: number
-  event: IEvent
+  event: Event
   productSet: Set<number>
 
   addWish: (product: Product) => void
@@ -83,9 +82,9 @@ export default function Search({
     min?: number,
     sort?: string,
   ) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&min_price=${
+    let url = `${api.products}?limit=${pageLimit}&page=${page}&minPrice=${
       min ? min : minPriceGlobal
-    }&max_price=${max ? max : maxPriceGlobal}&sort=${
+    }&maxPrice=${max ? max : maxPriceGlobal}&sort=${
       sort ? sort : sortGlobal
     }&search=${search ? search : searchGlobal}`
 
