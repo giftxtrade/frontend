@@ -92,8 +92,10 @@ export default function Search({
     setLoadState(true)
 
     axios
-      .get(url)
-      .then(({ data }: AxiosResponse<Product>) => {
+      .get(url, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
+      .then(({ data }: AxiosResponse<Product[]>) => {
         unstable_batchedUpdates(() => {
           setResults(data)
           setLoadState(false)

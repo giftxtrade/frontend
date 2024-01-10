@@ -49,7 +49,7 @@ export default function Wishlist({
   useEffect(() => {
     axios
       .get(`${api.wishes}/${event.id}`, {
-        headers: { Authorization: "Bearer " + authStore },
+        headers: { Authorization: "Bearer " + authStore.token },
       })
       .then(({ data }: { data: IWish[] }) => {
         const productIdSet = new Set<number>()

@@ -1,14 +1,14 @@
 import { api } from '../util/api';
 import { Masonry, useInfiniteLoader } from 'masonic'
 import ProductSm from './ProductSm';
-import axios from 'axios';
-import { IProduct } from '../types/Product';
+import axios from "axios"
 import { useState, Dispatch, SetStateAction } from 'react';
 import { Flex, Spinner, Heading, Box, useMediaQuery } from '@chakra-ui/react';
 import { unstable_batchedUpdates } from "react-dom";
+import { Product } from "@giftxtrade/api-types"
 
 export interface ISearchResultsProps {
-  results: IProduct[]
+  results: Product[]
   accessToken: string
   pageLimit: number
   minPrice: number
@@ -19,11 +19,11 @@ export interface ISearchResultsProps {
   sort: string
 
   setError: Dispatch<SetStateAction<boolean>>
-  setResults: Dispatch<SetStateAction<IProduct[]>>
+  setResults: Dispatch<SetStateAction<Product[]>>
   setHasMore: Dispatch<SetStateAction<boolean>>
 
-  addWish: (product: IProduct) => void
-  removeWish: (product: IProduct) => void
+  addWish: (product: Product) => void
+  removeWish: (product: Product) => void
 }
 
 export default function SearchResults({
@@ -63,8 +63,9 @@ export default function SearchResults({
 
     setLoading(true)
 
-    axios.get(url)
-      .then(({ data }: { data: IProduct[] }) => {
+    axios
+      .get(url, { headers: { Authorization: `Bearer ${accessToken}` } })
+      .then(({ data }: { data: Product[] }) => {
         unstable_batchedUpdates(() => {
           setError(false)
           try {
@@ -76,7 +77,8 @@ export default function SearchResults({
           setPage(page + 1)
           setLoading(false)
         })
-      }).catch(err => {
+      })
+      .catch((err) => {
         unstable_batchedUpdates(() => {
           setHasMore(false)
           setLoading(false)
