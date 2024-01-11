@@ -82,16 +82,25 @@ export default function Search({
     min?: number,
     sort?: string,
   ) => {
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&minPrice=${
-      min ? min : minPriceGlobal
-    }&maxPrice=${max ? max : maxPriceGlobal}&sort=${
-      sort ? sort : sortGlobal
-    }&search=${search ? search : searchGlobal}`
+    const searchUrl = new URL(api.products)
+    searchUrl.searchParams.append("limit", pageLimit.toString())
+    searchUrl.searchParams.append("page", page.toString())
+    searchUrl.searchParams.append(
+      "minPrice",
+      min ? min.toString() : minPriceGlobal.toString(),
+    )
+    searchUrl.searchParams.append(
+      "maxPrice",
+      max ? max.toString() : maxPriceGlobal.toString(),
+    )
+    searchUrl.searchParams.append("sort", sort ? sort : sortGlobal)
+    if (search && search.length > 2)
+      searchUrl.searchParams.append("search", search)
 
     setLoadState(true)
 
     axios
-      .get(url, {
+      .get(searchUrl.href, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then(({ data }: AxiosResponse<Product[]>) => {

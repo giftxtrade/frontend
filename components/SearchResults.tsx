@@ -57,13 +57,20 @@ export default function SearchResults({
       return
     }
 
-    let url = `${api.products}?limit=${pageLimit}&page=${page}&minPrice=${minPrice}&maxPrice=${maxPrice}&sort=${sort}`
-    if (search !== "" || search.length > 2) url += `&search=${search}`
+    const searchUrl = new URL(api.products)
+    searchUrl.searchParams.append("limit", pageLimit.toString())
+    searchUrl.searchParams.append("page", page.toString())
+    searchUrl.searchParams.append("minPrice", minPrice.toString())
+    searchUrl.searchParams.append("maxPrice", maxPrice.toString())
+    searchUrl.searchParams.append("sort", sort)
+    if (search.length > 2) searchUrl.searchParams.append("search", search)
 
     setLoading(true)
 
     axios
-      .get(url, { headers: { Authorization: `Bearer ${accessToken}` } })
+      .get(searchUrl.href, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      })
       .then(({ data }: { data: Product[] }) => {
         unstable_batchedUpdates(() => {
           setError(false)

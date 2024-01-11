@@ -6,5 +6,8 @@
 .productImg {
   background-color: #eee;
   width: 100%;
-  min-height: 150px;
+}
+
+.productImgNone {
+  height: 142px;
 }
