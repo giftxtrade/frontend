@@ -1,11 +1,10 @@
-import { api } from "../util/api"
 import ProductSm from "./ProductSm"
 import axios from "axios"
 import { useState, Dispatch, SetStateAction } from "react"
 import { Flex, Spinner, Heading, Box, useMediaQuery } from "@chakra-ui/react"
 import { unstable_batchedUpdates } from "react-dom"
 import { Product } from "@giftxtrade/api-types"
-import { useEffect } from "react"
+import { getSearchUrl, SearchSortType } from "./Search"
 
 export interface ISearchResultsProps {
   results: Product[]
@@ -16,7 +15,7 @@ export interface ISearchResultsProps {
   search: string
   hasMore: boolean
   productSet: Set<number>
-  sort: string
+  sort: SearchSortType
 
   setError: Dispatch<SetStateAction<boolean>>
   setResults: Dispatch<SetStateAction<Product[]>>
@@ -57,18 +56,17 @@ export default function SearchResults({
       return
     }
 
-    const searchUrl = new URL(api.products)
-    searchUrl.searchParams.append("limit", pageLimit.toString())
-    searchUrl.searchParams.append("page", page.toString())
-    searchUrl.searchParams.append("minPrice", minPrice.toString())
-    searchUrl.searchParams.append("maxPrice", maxPrice.toString())
-    searchUrl.searchParams.append("sort", sort)
-    if (search.length > 2) searchUrl.searchParams.append("search", search)
-
     setLoading(true)
-
+    const searchUrl = getSearchUrl(
+      pageLimit,
+      page,
+      minPrice,
+      maxPrice,
+      search,
+      sort,
+    )
     axios
-      .get(searchUrl.href, {
+      .get(searchUrl, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then(({ data }: { data: Product[] }) => {

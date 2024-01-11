@@ -9,10 +9,7 @@ import {
   Flex,
   Icon,
   Text,
-  Tag,
-  TagLabel,
-  TagCloseButton,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react"
 import { SearchIcon } from '@chakra-ui/icons'
 import React, { useState, SetStateAction } from 'react';
 import { unstable_batchedUpdates } from "react-dom";
@@ -27,6 +24,27 @@ import BackButton from "./BackButton"
 import { eventNameSlug } from "../util/links"
 import SearchLoading from "./SearchLoading"
 import { Product, Event } from "@giftxtrade/api-types"
+
+export type SearchSortType = "rating" | "price"
+
+export function getSearchUrl(
+  limit: number,
+  page: number,
+  minPrice: number,
+  maxPrice: number,
+  search?: string,
+  sort?: SearchSortType,
+): string {
+  const searchUrl = new URL(api.products)
+  searchUrl.searchParams.append("limit", limit.toString())
+  searchUrl.searchParams.append("page", page.toString())
+  searchUrl.searchParams.append("minPrice", minPrice.toString())
+  searchUrl.searchParams.append("maxPrice", maxPrice.toString())
+  searchUrl.searchParams.append("sort", sort ? sort : "rating")
+  if (search && search.length > 2)
+    searchUrl.searchParams.append("search", search)
+  return searchUrl.href
+}
 
 export interface ISearchProps {
   accessToken: string
@@ -72,7 +90,7 @@ export default function Search({
   const [scroll, setScroll] = useState(false)
   const [minPriceGlobal, setMinPriceGlobal] = useState(minPrice)
   const [maxPriceGlobal, setMaxPriceGlobal] = useState(maxPrice)
-  const [sortGlobal, setSortGlobal] = useState("rating")
+  const [sortGlobal, setSortGlobal] = useState<SearchSortType>("rating")
 
   const getProducts = (
     setLoadState: (value: SetStateAction<boolean>) => void,
@@ -80,27 +98,20 @@ export default function Search({
     search?: string,
     max?: number,
     min?: number,
-    sort?: string,
+    sort?: SearchSortType,
   ) => {
-    const searchUrl = new URL(api.products)
-    searchUrl.searchParams.append("limit", pageLimit.toString())
-    searchUrl.searchParams.append("page", page.toString())
-    searchUrl.searchParams.append(
-      "minPrice",
-      min ? min.toString() : minPriceGlobal.toString(),
-    )
-    searchUrl.searchParams.append(
-      "maxPrice",
-      max ? max.toString() : maxPriceGlobal.toString(),
-    )
-    searchUrl.searchParams.append("sort", sort ? sort : sortGlobal)
-    if (search && search.length > 2)
-      searchUrl.searchParams.append("search", search)
-
     setLoadState(true)
 
+    const searchUrl = getSearchUrl(
+      pageLimit,
+      page,
+      min ? min : minPriceGlobal,
+      max ? max : maxPriceGlobal,
+      search,
+      sort,
+    )
     axios
-      .get(searchUrl.href, {
+      .get(searchUrl, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then(({ data }: AxiosResponse<Product[]>) => {
