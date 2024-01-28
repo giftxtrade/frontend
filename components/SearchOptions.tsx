@@ -27,14 +27,11 @@ export interface ISearchOptionsProps {
 export default function SearchOptions({
   min,
   max,
-  globalMax,
   search,
   sort,
   setSearchLoading,
   getProducts,
-  setSearch,
   setMax,
-  setMin,
   setSort,
 }: ISearchOptionsProps) {
   const [m, setM] = useState(max.toString())
@@ -72,16 +69,12 @@ export default function SearchOptions({
           maxW="5em"
           onChange={(e) => setM(e.target.value)}
           onKeyDown={(e: any) => {
-            if (e.key === "Enter") {
-              let val = 0.0
-              try {
-                val = parseFloat(m)
-              } catch (e) {
-                val = 0.0
-              }
-              setMax(val)
-              getProducts(setSearchLoading, 1, undefined, val)
-            }
+            if (e.key !== "Enter") return
+            try {
+              const maxVal = parseFloat(m)
+              setMax(maxVal)
+              getProducts(setSearchLoading, 1, search, maxVal, min, sort)
+            } catch (_e) {}
           }}
         />
       </Stack>
@@ -100,14 +93,7 @@ export default function SearchOptions({
           onChange={(e) => {
             const tagLower = e.target.value as SearchSortType
             setSort(tagLower)
-            getProducts(
-              setSearchLoading,
-              1,
-              undefined,
-              undefined,
-              undefined,
-              tagLower,
-            )
+            getProducts(setSearchLoading, 1, search, max, min, tagLower)
           }}
           value={sort}
           id="sortOptions"

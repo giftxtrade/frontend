@@ -149,7 +149,7 @@ export default function Search({
           <SearchLoading />
         ) : (
           <SearchResults
-            results={results}
+            products={results}
             pageLimit={pageLimit}
             minPrice={minPriceGlobal}
             maxPrice={maxPriceGlobal}
@@ -211,7 +211,14 @@ export default function Search({
 
               timeout = setTimeout(function () {
                 window.scrollTo(0, 0)
-                getProducts(setSearchLoading, 1, q)
+                getProducts(
+                  setSearchLoading,
+                  1,
+                  q,
+                  maxPriceGlobal,
+                  minPriceGlobal,
+                  sortGlobal,
+                )
               }, 500)
             }}
             onChange={(e: any) => {
