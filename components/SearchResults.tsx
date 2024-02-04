@@ -1,13 +1,21 @@
 import ProductSm from "./ProductSm"
 import axios from "axios"
 import { useState, Dispatch, SetStateAction } from "react"
-import { Flex, Spinner, Heading, Box, useMediaQuery } from "@chakra-ui/react"
+import {
+  Flex,
+  Spinner,
+  Heading,
+  Box,
+  useMediaQuery,
+  Text,
+} from "@chakra-ui/react"
 import { unstable_batchedUpdates } from "react-dom"
 import { Product } from "@giftxtrade/api-types"
 import { getSearchUrl, SearchSortType } from "./Search"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 export interface ISearchResultsProps {
-  results: Product[]
+  products: Product[]
   accessToken: string
   pageLimit: number
   minPrice: number
@@ -26,7 +34,7 @@ export interface ISearchResultsProps {
 }
 
 export default function SearchResults({
-  results,
+  products,
   pageLimit,
   minPrice,
   maxPrice,
@@ -73,7 +81,7 @@ export default function SearchResults({
         unstable_batchedUpdates(() => {
           setError(false)
           try {
-            setResults([...results, ...data])
+            setResults([...products, ...data])
           } catch (e) {
             setResults([...data])
           }
@@ -90,14 +98,6 @@ export default function SearchResults({
       })
   }
 
-  // const loadMore = useInfiniteLoader(callNextPage, {
-  //   totalItems: pageLimit * maxPages,
-  // })
-
-  // useEffect(() => {
-  //   callNextPage()
-  // }, [])
-
   const columnBreakPoints = () => {
     if (isTinyScreen) return 1
     if (isMedSmallScreen) return 2
@@ -106,15 +106,23 @@ export default function SearchResults({
 
   return (
     <Box ml="-8px" mr="-8px">
-      {results.map((product, index) => (
-        <ProductSm
-          product={product}
-          productSet={productSet}
-          key={`sp#${index}`}
-          addWish={addWish}
-          removeWish={removeWish}
-        />
-      ))}
+      <InfiniteScroll
+        dataLength={products.length}
+        next={callNextPage}
+        hasMore
+        loader={<></>}
+        endMessage={<Text>No more results</Text>}
+      >
+        {products.map((product, index) => (
+          <ProductSm
+            product={product}
+            productSet={productSet}
+            key={`sp#${index}`}
+            addWish={addWish}
+            removeWish={removeWish}
+          />
+        ))}
+      </InfiniteScroll>
 
       <Box>
         {loading ? (
