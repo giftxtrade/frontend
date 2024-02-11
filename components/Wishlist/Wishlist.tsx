@@ -13,10 +13,9 @@ import {
   ModalHeader,
   useMediaQuery,
 } from "@chakra-ui/react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { unstable_batchedUpdates } from "react-dom"
 import styles from "../../styles/ParticipantWishlist.module.css"
-import { IWish } from "../../types/Wish"
 import { api } from "../../util/api"
 import PendingInvite from "../PendingInvite"
 import Search from "../Search"
@@ -25,8 +24,15 @@ import { WishlistLoadingItem } from "../WishlistItem"
 import WishlistItemSelect from "../WishlistItemSelect"
 import WishlistNav from "../WishlistNav"
 import ContentWrapper from "../ContentWrapper"
-import { Product, Event, Participant } from "@giftxtrade/api-types"
+import {
+  Product,
+  Event,
+  Participant,
+  Wish,
+  DeleteWish,
+} from "@giftxtrade/api-types"
 import currency from "currency.js"
+import { useToast } from "@chakra-ui/react"
 
 export interface IWishlistProps {
   event: Event
@@ -40,27 +46,34 @@ export default function Wishlist({
   authStore,
 }: IWishlistProps) {
   const [loadingWishes, setLoadingWishes] = useState(true)
-  const [wishes, setWishes] = useState(Array<IWish>())
+  const [wishes, setWishes] = useState(Array<Wish>())
   const [wishProductIds, setWishProductIds] = useState(new Set<number>())
   const [showWishlist, setShowWishlist] = useState(false)
   const [selectedProducts, setSelectedProducts] = useState(Array<Product>())
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const toast = useToast()
 
   useEffect(() => {
     axios
-      .get(`${api.wishes}/${event.id}`, {
+      .get(`${api.wishes}/${event.id}/${meParticipant.id}`, {
         headers: { Authorization: "Bearer " + authStore.token },
       })
-      .then(({ data }: { data: IWish[] }) => {
+      .then(({ data }: AxiosResponse<Wish[]>) => {
         const productIdSet = new Set<number>()
-        data.forEach(({ product }) => productIdSet.add(product.id))
+        data.forEach(({ product }) => {
+          if (product) productIdSet.add(product.id)
+        })
 
         unstable_batchedUpdates(() => {
           setWishes(data)
           setLoadingWishes(false)
           setWishProductIds(productIdSet)
-          setSelectedProducts(data.map<Product>((w) => w.product))
+          setSelectedProducts(
+            data
+              .filter(({ product }) => product)
+              .map(({ product }) => product!),
+          )
         })
       })
       .catch((err) => {
@@ -72,40 +85,51 @@ export default function Wishlist({
     setWishProductIds(wishProductIds.add(product.id))
     axios
       .post(
-        api.wishes,
+        `${api.wishes}/${event.id}`,
         {
-          eventId: event.id,
           productId: product.id,
-          participantId: meParticipant.id,
         },
         {
           headers: { Authorization: "Bearer " + authStore.token },
         },
       )
-      .then(({ data }: { data: IWish }) => {
+      .then(({ data }: AxiosResponse<Wish>) => {
         setWishes([data, ...wishes])
-        setSelectedProducts([...selectedProducts, data.product])
+        if (data.product)
+          setSelectedProducts([...selectedProducts, data.product])
       })
-      .catch((_) => console.log("Could not add wish"))
+      .catch((_) => {
+        toast({
+          title: "Could not add wish",
+          status: "error",
+        })
+      })
   }
 
-  const removeWish = (product: Product) => {
-    wishProductIds.delete(product.id)
+  const removeWish = (wish: Wish) => {
+    wishProductIds.delete(wish.product?.id ?? 0)
     setWishProductIds(wishProductIds)
-    setWishes(wishes.filter((w) => w.product.id !== product.id))
+    setWishes(wishes.filter((w) => w.product?.id !== wish.product?.id))
+    const productsCopy = [...selectedProducts]
     axios
-      .delete(api.wishes, {
+      .delete(`${api.wishes}/${event.id}`, {
         headers: { Authorization: "Bearer " + authStore.token },
         data: {
-          eventId: event.id,
-          productId: product.id,
-          participantId: meParticipant.id,
-        },
+          wishId: wish.id,
+        } as DeleteWish,
       })
-      .then(({ data }) => {
-        setSelectedProducts(selectedProducts.filter((p) => p.id !== product.id))
+      .then(({ data }: AxiosResponse<Wish>) => {
+        setSelectedProducts(
+          selectedProducts.filter((p) => p.id !== data.product?.id),
+        )
       })
-      .catch((_) => {})
+      .catch((_) => {
+        toast({
+          title: "Wish item was not delete. Please try again.",
+          status: "error",
+        })
+        setSelectedProducts(productsCopy)
+      })
   }
 
   // Media queries
@@ -168,21 +192,28 @@ export default function Wishlist({
                   Your wishlist is empty
                 </Text>
               ) : (
-                wishes.map(({ product }, i) => (
-                  <Box mb="5" key={`wishItem#${i}`}>
-                    <WishlistItemSelect
-                      product={product}
-                      selectedProducts={selectedProducts}
-                      setSelectedProducts={setSelectedProducts}
-                      removeWish={(pr: Product) => {
-                        setSelectedProducts(
-                          selectedProducts.filter((p) => p.id !== pr.id),
-                        )
-                        removeWish(pr)
-                      }}
-                    />
-                  </Box>
-                ))
+                wishes.map((wish, i) =>
+                  wish.product ? (
+                    <Box mb="5" key={`wishItem#${i}`}>
+                      <WishlistItemSelect
+                        product={wish.product}
+                        wish={wish}
+                        selectedProducts={selectedProducts}
+                        setSelectedProducts={setSelectedProducts}
+                        removeWish={(w: Wish) => {
+                          setSelectedProducts(
+                            selectedProducts.filter(
+                              (p) => p.id !== w.product?.id,
+                            ),
+                          )
+                          removeWish(w)
+                        }}
+                      />
+                    </Box>
+                  ) : (
+                    <></>
+                  ),
+                )
               )}
             </Box>
           </Box>
@@ -219,21 +250,28 @@ export default function Wishlist({
                     Your wishlist is empty
                   </Text>
                 ) : (
-                  wishes.map(({ product }, i) => (
-                    <Box mb="5" key={`wishItemMd#${i}`}>
-                      <WishlistItemSelect
-                        product={product}
-                        selectedProducts={selectedProducts}
-                        setSelectedProducts={setSelectedProducts}
-                        removeWish={(pr: Product) => {
-                          setSelectedProducts(
-                            selectedProducts.filter((p) => p.id !== pr.id),
-                          )
-                          removeWish(pr)
-                        }}
-                      />
-                    </Box>
-                  ))
+                  wishes.map((wish, i) =>
+                    wish.product ? (
+                      <Box mb="5" key={`wishItemMd#${i}`}>
+                        <WishlistItemSelect
+                          product={wish.product}
+                          wish={wish}
+                          selectedProducts={selectedProducts}
+                          setSelectedProducts={setSelectedProducts}
+                          removeWish={(w: Wish) => {
+                            setSelectedProducts(
+                              selectedProducts.filter(
+                                (p) => p.id !== w.product?.id,
+                              ),
+                            )
+                            removeWish(w)
+                          }}
+                        />
+                      </Box>
+                    ) : (
+                      <></>
+                    ),
+                  )
                 )}
               </ModalBody>
             </ModalContent>

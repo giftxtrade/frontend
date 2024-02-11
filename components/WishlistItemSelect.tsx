@@ -1,18 +1,20 @@
 import { WishlistProductItem } from "./WishlistItem"
 import { Dispatch, SetStateAction } from "react"
-import { Product } from "@giftxtrade/api-types"
+import { Product, Wish } from "@giftxtrade/api-types"
 import { Flex, Checkbox, Box } from "@chakra-ui/react"
 
 export interface IWishlistItemSelectProps {
   selectedProducts: Product[]
   product: Product
-  removeWish: ((product: Product) => void) | null
+  wish: Wish
+  removeWish: ((wish: Wish) => void) | null
   setSelectedProducts: Dispatch<SetStateAction<Product[]>>
 }
 
 export default function WishlistItemSelect({
   selectedProducts,
   product,
+  wish,
   removeWish,
   setSelectedProducts,
 }: IWishlistItemSelectProps) {
@@ -37,7 +39,11 @@ export default function WishlistItemSelect({
       />
 
       <Box flex="100">
-        <WishlistProductItem product={product} removeWish={removeWish} />
+        <WishlistProductItem
+          product={product}
+          wish={wish}
+          removeWish={removeWish}
+        />
       </Box>
     </Flex>
   )

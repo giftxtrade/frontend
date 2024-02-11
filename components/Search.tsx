@@ -23,7 +23,7 @@ import SearchOptions from "./SearchOptions"
 import BackButton from "./BackButton"
 import { eventNameSlug } from "../util/links"
 import SearchLoading from "./SearchLoading"
-import { Product, Event } from "@giftxtrade/api-types"
+import { Product, Event, Wish } from "@giftxtrade/api-types"
 
 export type SearchSortType = "rating" | "price"
 
@@ -55,7 +55,7 @@ export interface ISearchProps {
   productSet: Set<number>
 
   addWish: (product: Product) => void
-  removeWish: (product: Product) => void
+  removeWish: (wish: Wish) => void
 }
 
 let timeout: any = null

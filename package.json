@@ -36,7 +36,7 @@
     "slugify": "^1.6.0"
   },
   "devDependencies": {
-    "@giftxtrade/api-types": "1.0.8",
+    "@giftxtrade/api-types": "1.1.1",
     "@types/aos": "^3.0.4",
     "@types/cookies": "^0.7.6",
     "@types/react": "17.0.9",

@@ -12,14 +12,14 @@ import { generateAmazonAffiliateLink } from "../util/links"
 import StarRatings from "react-star-ratings"
 import { IoMdAddCircle } from "react-icons/io"
 import styles from "../styles/ProductSm.module.css"
-import { Product } from "@giftxtrade/api-types"
+import { Product, Wish } from "@giftxtrade/api-types"
 
 export interface IProductSmProps {
   product: Product
   productSet: Set<number>
 
   addWish: (product: Product) => void
-  removeWish: (product: Product) => void
+  removeWish: (wish: Wish) => void
 }
 
 export default function ProductSm({ product, productSet, addWish }: IProductSmProps) {

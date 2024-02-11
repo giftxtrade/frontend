@@ -1,7 +1,7 @@
 import { Text, Flex, Link, Box, Image, Button, Stack } from "@chakra-ui/react"
 import { generateAmazonAffiliateLink } from "../util/links"
 import StarRatings from "react-star-ratings"
-import { Product } from "@giftxtrade/api-types"
+import { Product, Wish } from "@giftxtrade/api-types"
 
 export function WishlistLoadingItem() {
   return (
@@ -31,11 +31,13 @@ export function WishlistLoadingItem() {
 
 export interface IWishlistProductProps {
   product: Product
-  removeWish: ((product: Product) => void) | null
+  wish: Wish
+  removeWish: ((wish: Wish) => void) | null
 }
 
 export function WishlistProductItem({
   product,
+  wish,
   removeWish,
 }: IWishlistProductProps) {
   const link = generateAmazonAffiliateLink(product.productKey)
@@ -80,7 +82,7 @@ export function WishlistProductItem({
               float="right"
               colorScheme="red"
               size="xs"
-              onClick={() => removeWish(product)}
+              onClick={() => removeWish(wish)}
             >
               Remove
             </Button>

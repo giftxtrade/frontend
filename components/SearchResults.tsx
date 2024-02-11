@@ -10,7 +10,7 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { unstable_batchedUpdates } from "react-dom"
-import { Product } from "@giftxtrade/api-types"
+import { Product, Wish } from "@giftxtrade/api-types"
 import { getSearchUrl, SearchSortType } from "./Search"
 import InfiniteScroll from "react-infinite-scroll-component"
 
@@ -30,7 +30,7 @@ export interface ISearchResultsProps {
   setHasMore: Dispatch<SetStateAction<boolean>>
 
   addWish: (product: Product) => void
-  removeWish: (product: Product) => void
+  removeWish: (wish: Wish) => void
 }
 
 export default function SearchResults({
