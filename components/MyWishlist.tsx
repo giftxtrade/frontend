@@ -10,17 +10,15 @@ import {
 } from "@chakra-ui/react"
 import { BsPlusCircle } from "react-icons/bs"
 import NextLink from "next/link"
-import { IWish } from "../types/Wish"
 import { useEffect, useState } from "react"
-import axios from "axios"
+import axios, { AxiosResponse } from "axios"
 import { api } from "../util/api"
 import { unstable_batchedUpdates } from "react-dom"
 import { WishlistLoadingItem, WishlistProductItem } from "./WishlistItem"
-import { IProduct } from "../types/Product"
-import AddAddress from "./AddAddress";
-import { RiShoppingBag3Fill } from "react-icons/ri";
-import { eventNameSlug } from "../util/links";
-import { Participant, Event } from "@giftxtrade/api-types"
+import AddAddress from "./AddAddress"
+import { RiShoppingBag3Fill } from "react-icons/ri"
+import { eventNameSlug } from "../util/links"
+import { Participant, Event, Wish, DeleteWish } from "@giftxtrade/api-types"
 
 export interface IMyWishlistProps {
   event: Event
@@ -33,7 +31,7 @@ export default function MyWishlist({
   meParticipant,
   accessToken,
 }: IMyWishlistProps) {
-  const [wishes, setWishes] = useState(Array<IWish>())
+  const [wishes, setWishes] = useState(Array<Wish>())
   const [loading, setLoading] = useState(true)
 
   const id = event.id
@@ -41,10 +39,10 @@ export default function MyWishlist({
 
   useEffect(() => {
     axios
-      .get(`${api.wishes}/${id}`, {
+      .get(`${api.wishes}/${id}/${meParticipant.id}`, {
         headers: { Authorization: "Bearer " + accessToken },
       })
-      .then(({ data }: { data: IWish[] }) => {
+      .then(({ data }: AxiosResponse<Wish[]>) => {
         unstable_batchedUpdates(() => {
           setWishes(data)
           setLoading(false)
@@ -55,16 +53,14 @@ export default function MyWishlist({
       })
   }, [])
 
-  const removeWish = (product: IProduct) => {
-    setWishes(wishes.filter((w) => w.product.id !== product.id))
+  const removeWish = (wish: Wish) => {
+    setWishes(wishes.filter((w) => w.product?.id !== wish.product?.id))
     axios
-      .delete(api.wishes, {
+      .delete(`${api.wishes}/${event.id}`, {
         headers: { Authorization: "Bearer " + accessToken },
         data: {
-          eventId: id,
-          productId: product.id,
-          participantId: meParticipant?.id,
-        },
+          wishId: wish.id,
+        } as DeleteWish,
       })
       .then(({ data }) => {})
       .catch((_) => {})
@@ -115,11 +111,19 @@ export default function MyWishlist({
             </Text>
           </Stack>
         ) : (
-          wishes.map(({ product }, i) => (
-            <Box mb="10" key={`wishitem#${i}`}>
-              <WishlistProductItem product={product} removeWish={removeWish} />
-            </Box>
-          ))
+          wishes.map((wish, i) =>
+            wish.product ? (
+              <Box mb="10" key={`wishitem#${i}`}>
+                <WishlistProductItem
+                  product={wish.product}
+                  wish={wish}
+                  removeWish={removeWish}
+                />
+              </Box>
+            ) : (
+              <></>
+            ),
+          )
         )}
       </Box>
     </>
