@@ -12,6 +12,7 @@ import { BsCheck, BsX, BsClock } from "react-icons/bs"
 import ParticipantsMini from "./ParticipantsMini"
 import Link from "next/link"
 import { User, Event } from "@giftxtrade/api-types"
+import { eventNameSlug } from "../util/links"
 
 export interface IEventBoxSmProps {
   event: Event
@@ -29,7 +30,10 @@ export default function EventBoxSm({
   handleDecline,
   user,
 }: IEventBoxSmProps) {
-  const eventUrl = `/events/${event.id}/${event.slug}`
+  const eventUrl = `/events/${event.id}/${
+    event.slug ?? eventNameSlug(event.name)
+  }`
+  console.log(eventUrl)
   const meParticipant = event.participants?.find(
     (e) => e.email === user.email && user.id == e.userId,
   )

@@ -29,6 +29,7 @@ import * as NLink from "next/link"
 import { authStore } from "../store/auth-store"
 import ContentWrapper from "../components/ContentWrapper"
 import { Event } from "@giftxtrade/api-types"
+import { eventNameSlug } from "../util/links"
 
 export default function Home() {
   const [authState, setAuthState] = useState<AuthState>(authStore.getState())
@@ -257,7 +258,9 @@ export default function Home() {
                   <Stack spacing={3}>
                     {events.map((e, i) => (
                       <NLink.default
-                        href={`/events/${e.id}/${e.slug}`}
+                        href={`/events/${e.id}/${
+                          e.slug ?? eventNameSlug(e.name)
+                        }`}
                         key={`event#${i}`}
                       >
                         <a
