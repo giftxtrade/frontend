@@ -7,13 +7,15 @@ import { DocumentContext } from 'next/document';
 import { toStringOrNull } from '../util/content';
 import { useGoogleLogin } from "@react-oauth/google"
 import axios, { AxiosResponse } from "axios"
-import { authStore, login } from "../store/auth-store"
+import { ACCESS_TOKEN_KEY, authStore, login } from "../store/auth-store"
 import { Flex, Link } from "@chakra-ui/react"
 import { Auth } from "@giftxtrade/api-types"
+import { useCookies } from "react-cookie"
 
 export default function Login(props: { redirect: string | null }) {
   const router = useRouter()
   const [error, setError] = useState(false)
+  const [_, setCookie] = useCookies()
 
   const oauth = useGoogleLogin({
     onSuccess: (token) => {
@@ -22,6 +24,7 @@ export default function Login(props: { redirect: string | null }) {
       axios
         .get(requestUri)
         .then(({ data }: AxiosResponse<Auth>) => {
+          setCookie(ACCESS_TOKEN_KEY, data.token)
           authStore.dispatch(
             login({
               user: data.user,

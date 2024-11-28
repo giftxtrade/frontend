@@ -17,7 +17,9 @@ export const getServerSideProps = async (ctx: DocumentContext) => {
     }
   }
 
-  if (notFound || !props?.eventDetails || !props?.accessToken) {
+  if (!props) return { notFound: true }
+
+  if (notFound || !props.eventDetails || !props.loggedIn) {
     return { notFound: true }
   }
 };

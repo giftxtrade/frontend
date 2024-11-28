@@ -2,48 +2,43 @@ import { DocumentContext } from "next/document";
 import axios from 'axios';
 import cookie, { serialize } from 'cookie';
 import { api } from './api';
-import { User } from "../store/jwt-payload";
+import { Auth } from "@giftxtrade/api-types";
+import { AuthState } from "../store/jwt-payload";
+import { ACCESS_TOKEN_KEY } from "../store/auth-store";
 
-export async function serverSideAuth(ctx: DocumentContext) {
-  const myCookie = ctx?.req?.headers?.cookie ? ctx.req.headers.cookie : '';
-  const accessToken = cookie.parse(myCookie).access_token
+export async function serverSideAuth(ctx: DocumentContext): Promise<{ props: AuthState }> {
+  const myCookie = ctx.req?.headers?.cookie ?? '';
+  const accessToken = cookie.parse(myCookie)[ACCESS_TOKEN_KEY]
 
-  if (ctx.res && (!accessToken || accessToken === '')) {
-    const currentUrl = ctx?.req?.url;
+  if (!accessToken || accessToken === '') {
+    const currentUrl = ctx.req?.url;
 
-    ctx.res.writeHead(302, { Location: currentUrl ? `/login?redirect=${currentUrl}` : '/login' });
-    ctx.res.end();
-    return { props: {} }
+    ctx.res?.writeHead(302, { Location: `/login?redirect=${currentUrl ?? '/'}` });
+    ctx.res?.end();
+    return { props: {} as AuthState }
   }
 
-  let user: User | undefined
-  let gToken: string = ''
-  await axios.get(api.profile, {
+  const { data, status } = await axios.get<Auth>(api.profile, {
     headers: {
-      "Authorization": "Bearer " + accessToken
+      "Authorization": `Bearer ${accessToken}`
     }
   })
-    .then(({ data }) => {
-      user = data.user
-      gToken = data.gToken
-    })
-    .catch(_ => {
-      if (ctx.res) {
-        ctx.res.statusCode = 302
-        ctx.res.setHeader('Set-Cookie', [
-          serialize('access_token', '', {
-            maxAge: -1,
-            path: '/',
-          }),
-        ])
-        ctx.res.writeHead(302, { Location: '/' });
-        ctx.res.end();
-      }
-      return { props: {} }
-    })
+  if (!data || status !== 200) {
+    if (!ctx.res) return {} as any;
+
+    ctx.res.statusCode = 302
+    ctx.res.setHeader('Set-Cookie', [
+      serialize('access_token', '', {
+        maxAge: -1,
+        path: '/',
+      }),
+    ])
+    ctx.res.writeHead(302, { Location: '/' });
+    ctx.res.end();
+  }
 
   return {
-    props: { accessToken, user, gToken, loggedIn: true }
+    props: { token: data.token, user: data.user, loggedIn: true }
   }
 }
 

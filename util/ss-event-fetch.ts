@@ -1,19 +1,12 @@
 import { DocumentContext } from 'next/document';
 import { serverSideAuth } from './server-side-auth';
-import { IEvent, IEventDetails, IEventFull } from '../types/Event';
-import { IParticipantUser, IParticipant } from '../types/Participant';
-import { ILink } from '../types/Link';
+import { IEventDetails } from '../types/Event';
 import axios from 'axios';
 import { api } from './api';
-import { IDraw } from '../types/Draw';
-import { User } from '../store/jwt-payload';
 import { eventNameSlug } from './links';
+import { AuthState } from '../store/jwt-payload';
 
-export interface IServiceSideEventProps {
-  accessToken: string | undefined
-  user: User | undefined
-  gToken: string | undefined
-  loggedIn: boolean | undefined
+export interface IServiceSideEventProps extends AuthState {
   eventDetails: IEventDetails
 }
 
@@ -34,11 +27,10 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
     eventName = q
 
   const { props } = await serverSideAuth(ctx)
-
   let eventDetails: IEventDetails | undefined
   if (props.loggedIn) {
     await axios.get(`${api.events}/${idRaw}?verify=true`, {
-      headers: { "Authorization": "Bearer " + props.accessToken }
+      headers: { "Authorization": `Bearer ${props.token}` }
     })
       .then(({ data }: { data: IEventDetails }) => {
         eventDetails = data
@@ -47,7 +39,7 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
   }
 
   if (!eventDetails) {
-    return getProps(undefined, true, undefined)
+    return getProps(undefined, true)
   }
 
   const eventSlug = eventNameSlug(eventDetails.name);
@@ -60,15 +52,12 @@ export default async function eventFetch(ctx: DocumentContext): Promise<IServerS
   }
 
   return getProps({
-    accessToken: props.accessToken,
-    user: props.user,
-    gToken: props.gToken,
-    loggedIn: props.loggedIn,
-    eventDetails: eventDetails
+    ...props,
+    eventDetails,
   }, false, undefined)
 }
 
-function getProps(props: IServiceSideEventProps | undefined, notFound: boolean, destination: string | undefined): IServerSideEventFetch {
+function getProps(props: IServiceSideEventProps | undefined, notFound: boolean, destination?: string): IServerSideEventFetch {
   return {
     props,
     notFound,
