@@ -33,7 +33,6 @@ export default function EventBoxSm({
   const eventUrl = `/events/${event.id}/${
     event.slug ?? eventNameSlug(event.name)
   }`
-  console.log(eventUrl)
   const meParticipant = event.participants?.find(
     (e) => e.email === user.email && user.id == e.userId,
   )

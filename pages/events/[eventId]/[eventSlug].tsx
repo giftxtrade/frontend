@@ -1,6 +1,6 @@
-import Head from "next/head";
-import Navbar from "../../../components/Navbar";
-import { useState, useEffect, SetStateAction, Dispatch } from "react";
+import Head from "next/head"
+import Navbar from "../../../components/Navbar"
+import { useState, useEffect, SetStateAction, Dispatch } from "react"
 import { authStore } from "../../../store/auth-store"
 import { NextRouter, useRouter } from "next/router"
 import { api } from "../../../util/api"
@@ -12,7 +12,6 @@ import { BsExclamationCircle } from "react-icons/bs"
 import ErrorBlock from "../../../components/ErrorBlock"
 import ContentWrapper from "../../../components/ContentWrapper"
 import EventLoading from "../../../components/Event/EventLoading"
-import { IDrawParticipant } from "../../../types/Draw"
 import MyWishlist from "../../../components/MyWishlist"
 import EventSidebarMedium from "../../../components/Event/EventSidebarMedium"
 import { unstable_batchedUpdates } from "react-dom"
@@ -31,11 +30,12 @@ export default function EventPage() {
   const [myDraw, setMyDraw] = useState<Participant>()
 
   const router = useRouter()
-  const { eventId, eventName } = router.query
+  const { eventId, eventSlug } = router.query
 
   useEffect(() => {
     return fetchEvent(
       eventId,
+      eventSlug,
       authState,
       setAuthState,
       setEvent,
@@ -59,16 +59,6 @@ export default function EventPage() {
       },
     )
   }, [authState, refresh, eventId])
-
-  useEffect(() => {
-    if (event && eventName) {
-      const properSlug = eventNameSlug(event.name)
-      if (eventName != properSlug) {
-        console.log("Update to new slug " + properSlug)
-        window.history.pushState({}, "", `/events/${eventId}/${eventName}`)
-      }
-    }
-  }, [event])
 
   const renderEventBlock = () => {
     if (loading) {
@@ -144,7 +134,8 @@ export default function EventPage() {
 }
 
 export function fetchEvent(
-  eventId: number | string | string[] | undefined,
+  eventId: string | string[] | undefined,
+  eventSlug: string | string[] | undefined,
   authState: AuthState,
   setAuthState: Dispatch<SetStateAction<AuthState>>,
   setEvent: Dispatch<SetStateAction<Event | undefined>>,
@@ -156,26 +147,26 @@ export function fetchEvent(
   callback: () => any,
 ) {
   setError(false)
-  const unsubscribe = authStore.subscribe(() => {
-    if (!authStore.getState().loggedIn) {
-      router.push(`/login?redirect=${currentPath}`)
-    }
-    setAuthState(authStore.getState())
-  })
-  if (!authState.loggedIn) {
-    router.push(`/login?redirect=${currentPath}`)
-    return () => unsubscribe()
-  }
-  if (!eventId) {
+  if (!eventId || typeof eventId === "object") {
     setError(true)
-    return () => unsubscribe()
+    return
+  }
+  if (!eventSlug || typeof eventSlug === "object") {
+    setError(true)
+    return
   }
 
   axios
-    .get(`${api.events}/${eventId}`, {
-      headers: { Authorization: "Bearer " + authState.token },
+    .get<Event>(`${api.events}/${eventId}`, {
+      headers: { Authorization: `Bearer ${authState.token}` },
     })
-    .then(({ data }: AxiosResponse<Event>) => {
+    .then(({ data }) => {
+      const slug = data.slug ?? eventNameSlug(data.name)
+      if (eventSlug !== slug) {
+        console.log("pushing new url")
+        router.push(`/events/${eventId}/${slug}`)
+      }
+
       unstable_batchedUpdates(() => {
         setEvent(data)
         setMeParticipant(
@@ -189,6 +180,4 @@ export function fetchEvent(
       setLoading(false)
       setError(true)
     })
-
-  return () => unsubscribe()
 }

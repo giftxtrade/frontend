@@ -11,8 +11,7 @@ import {
 } from "@chakra-ui/react";
 import Head from "next/head";
 import Navbar from "../../../../components/Navbar";
-import { useMediaQuery } from "@chakra-ui/react";
-import { IParticipantUserWishes } from "../../../../types/Participant"
+import { useMediaQuery } from "@chakra-ui/react"
 import { api } from "../../../../util/api"
 import axios, { AxiosResponse } from "axios"
 import { MdLocationCity } from "react-icons/md"
@@ -24,9 +23,8 @@ import { authStore } from "../../../../store/auth-store"
 import ErrorBlock from "../../../../components/ErrorBlock"
 import { BsExclamationCircle } from "react-icons/bs"
 import ContentWrapper from "../../../../components/ContentWrapper"
-import { IDrawParticipant } from "../../../../types/Draw"
 import EventProfileLoading from "../../../../components/Event/EventProfileLoading"
-import { Event, Participant } from "@giftxtrade/api-types"
+import { Participant } from "@giftxtrade/api-types"
 
 export default function ParticipantPage() {
   const router = useRouter()
