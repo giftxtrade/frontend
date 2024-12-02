@@ -1,12 +1,12 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit'
 import { AuthState } from "./jwt-payload";
-import { Auth } from '@giftxtrade/api-types';
+import { Auth, User } from '@giftxtrade/api-types';
 
 export const ACCESS_TOKEN_KEY = "access_token"
 
 export const authSlice = createSlice({
   name: "auth",
-  initialState: {} as AuthState,
+  initialState: { loggedIn: false, token: "", user: {} as User } as AuthState,
   reducers: {
     login: (state, { payload }: { payload: Auth }) => {
       if (!payload.token || payload.token.trim() === "") return;

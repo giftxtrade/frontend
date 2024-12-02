@@ -1,30 +1,32 @@
-import type { AppProps } from 'next/app'
-import { ChakraProvider } from '@chakra-ui/react'
+"use client"
+import type { AppProps } from "next/app"
+import { ChakraProvider } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import authenticate from "../util/authenticate"
-import Head from "next/head"
 import { content } from "../util/content"
 import "../styles/main.css"
 import "../public/fonts/fonts.css"
 import Footer from "../components/Footer"
 import LoadingScreen from "../components/LoadingScreen"
 import { GoogleOAuthProvider } from "@react-oauth/google"
+import { useRouter } from "next/router"
+import Head from "next/head"
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
 
 function MyApp({ Component, pageProps }: AppProps) {
-  // Set true if auth state is initialized
-  const [init, setInit] = useState(false)
-
-  const authFunc = async () => {
-    if (!init) {
-      await authenticate()
-      setInit(true)
-    }
-  }
+  const router = useRouter()
+  const [init, setInit] = useState(false) // Set true if auth state is initialized
 
   useEffect(() => {
-    authFunc()
+    authenticate()
+      .then((loggedIn) => {
+        if (!loggedIn) {
+          throw new Error("unauthorized")
+        }
+        setInit(true)
+      })
+      .catch((err) => console.log(err))
   }, [])
 
   const invitePageDescription =
